@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+    <link rel="stylesheet" type="text/css" href="css/index.css" />
+    <link rel="stylesheet" type="text/css" href="css/jquery.mobile.css" />
+
+    <meta name="msapplication-tap-highlight" content="no" />
+    <title>Hello World</title>
+</head>
+<body>
+
+
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/jquery.mobile.js"></script>
+<script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript" src="js/index.js"></script>
+<script type="text/javascript">
+    app.initialize();
+</script>
+<div data-role="page" id="signin">
+    <div data-role="header" >
+        <h2>Test application</h2>
+    </div>
+    <div role="main" class="ui-content" id="signin_content">
+        <input style="text" id="login" placeholder="Login"/>
+        <input type="password" style="password" id="password" placeholder="Password"/>
+        <button onclick="app.signin()">Sign In</button>
+    </div>
+    <div data-role="footer"  position="fixed"><h3>&copy; Valant</h3></div>
+</div>
+<div data-role="page" id="tasks">
+    <div data-role="header" >
+        <h2>Task list</h2>
+    </div>
+    <div role="main" class="ui-content" id="tasks_content">
+        <table data-role="table" id="table-custom-2" data-mode="columntoggle" class="ui-body-d ui-shadow table-stripe ui-responsive" data-column-btn-theme="b" data-column-btn-text="Columns to display..." data-column-popup-theme="a">
+            <thead>
+            <tr class="ui-bar-d">
+                <th data-priority="2">Rank</th>
+                <th>Movie Title</th>
+                <!--<th data-priority="3"><abbr title="Choise file">Choise</abbr></th>-->
+                <th data-priority="1"><abbr title="Go to task">Details</abbr></th>
+                <!--<th data-priority="5"><abbr title="Make a photo">Photo</abbr></th>-->
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th>1</th>
+                <td><a href="javascript: app.showTaskDetail(1)" data-rel="external">Citizen Kane</a></td>
+                <!--<td><button onclick="app.choiseFile()">Choise</button></td>-->
+                <td><button onclick="app.showTaskDetail(1)">Details</button></td>
+                <!--<td><button onclick="app.makePhoto()">Photo</button></td>-->
+            </tr>
+            <tr>
+                <th>2</th>
+                <td><a href="javascript: app.showTaskDetail(2)" data-rel="external">Casablanca</a></td>
+                <!--<td><button onclick="app.choiseFile()">Choise</button></td>-->
+                <td><button onclick="app.showTaskDetail(2)">Details</button></td>
+                <!--<td>64</td>-->
+            </tr>
+            <tr>
+                <th>3</th>
+                <td><a href="javascript: app.showTaskDetail(3)" data-rel="external">The Godfather</a></td>
+                <!--<td><button onclick="app.choiseFile()">Choise</button></td>-->
+                <td><button onclick="app.showTaskDetail(3)">Details</button></td>
+                <!--<td>87</td>-->
+            </tr>
+            <tr>
+                <th>4</th>
+                <td><a href="javascript: app.showTaskDetail(4)" data-rel="external">Gone with the Wind</a></td>
+                <!--<td><button onclick="app.choiseFile()">Choise</button></td>-->
+                <td><button onclick="app.showTaskDetail(4)">Details</button></td>
+                <!--<td>87</td>-->
+            </tr>
+            <tr>
+                <th>5</th>
+                <td><a href="javascript: app.showTaskDetail(5)" data-rel="external">Lawrence of Arabia</a></td>
+                <!--<td><button onclick="app.choiseFile()">Choise</button></td>-->
+                <td><button onclick="app.showTaskDetail(5)">Details</button></td>
+                <!--<td>87</td>-->
+            </tr>
+            <tr>
+                <th>6</th>
+                <td><a href="javascript: app.showTaskDetail(6)" data-rel="external">Dr. Strangelove Or How I Learned to Stop Worrying and Love the Bomb</a></td>
+                <!--<td><button onclick="app.choiseFile()">Choise</button></td>-->
+                <td><button onclick="app.showTaskDetail(6)">Details</button></td>
+                <!--<td>74</td>-->
+            </tr>
+            <tr>
+                <th>7</th>
+                <td><a href="javascript: app.showTaskDetail(7)" data-rel="external">The Graduate</a></td>
+                <!--<td><button onclick="app.choiseFile()">Choise</button></td>-->
+                <td><button onclick="app.showTaskDetail(7)">Details</button></td>
+                <!--<td>122</td>-->
+            </tr>
+            <tr>
+                <th>8</th>
+                <td><a href="javascript: app.showTaskDetail(8)" data-rel="external">The Wizard of Oz</a></td>
+                <!--<td><button onclick="app.choiseFile()">Choise</button></td>-->
+                <td><button onclick="app.showTaskDetail(8)">Details</button></td>
+                <!--<td>72</td>-->
+            </tr>
+            <tr>
+                <th>9</th>
+                <td><a href="javascript: app.showTaskDetail(9)" data-rel="external">Singin' in the Rain</a></td>
+                <!--<td><button onclick="app.choiseFile()">Choise</button></td>-->
+                <td><button onclick="app.showTaskDetail(9)">Details</button></td>
+                <!--<td>85</td>-->
+            </tr>
+            <tr>
+                <th>10</th>
+                <td class="title"><a href="javascript: app.showTaskDetail(10)" data-rel="external">Inception</a></td>
+                <!--<td><button onclick="app.choiseFile()">Choise</button></td>-->
+                <td><button onclick="app.showTaskDetail(10)">Details</button></td>
+                <!--<td>78</td>-->
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div data-role="footer"  position="fixed"><h3>&copy; Valant</h3></div>
+</div>
+<div data-role="page" id="taskDetails">
+    <div data-role="header" >
+        <h2>Task details</h2>
+    </div>
+    <div role="main" class="ui-content" id="taskContent">
+        <h3>TASK DESCRIPTION</h3>
+        <p>task description --- tttttt</p>
+        <div id="photos"></div>
+        <div id="barCodes"></div>
+        <div id="files"></div>
+        <div id="taskControls">
+            <button onclick="app.choiseFile()">Attach file to task</button>
+            <button onclick="app.scanBarCode()">Scan barcode</button>
+            <button onclick="app.makePhoto()">Make a photo</button>
+            <button onclick="app.uploadTaskData()">Save</button>
+        </div>
+    </div>
+    <div data-role="footer"  position="fixed"><h3>&copy; Valant</h3></div>
+</div>
+<div data-role="page" id="progress">
+    <div data-role="header" >
+        <h2>Save data</h2>
+    </div>
+    <div role="main" class="ui-content" id="progressContent">
+        <h3>Upload...</h3>
+        <div id="progressBars"></div>
+    </div>
+    <div data-role="footer" position="fixed"><h3>&copy; Valant</h3></div>
+</div>
+</body>
+</html>
