@@ -1,2 +1,2 @@
-/Users/godson/mobileApps/hello/platforms/android/ant-build/AndroidManifest.xml : \
-/Users/godson/mobileApps/hello/platforms/android/AndroidManifest.xml \
+/Users/godson/projects/field-technician/mobileApp/platforms/android/ant-build/AndroidManifest.xml : \
+/Users/godson/projects/field-technician/mobileApp/platforms/android/AndroidManifest.xml \

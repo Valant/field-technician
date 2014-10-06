@@ -104,8 +104,8 @@ var app = {
         options.mimeType = "image/jpeg";
 
         var params = {};
-        params.value1 = "test";
-        params.value2 = "param";
+        params.task_id = "333";
+        params.name = "file name";
 
 
         options.params = params;
