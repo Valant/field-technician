@@ -5,7 +5,7 @@
 # You have to carefully check all non-`/vagrant` paths here if you use a custom box.
 
 DB_PASS=mysqlroot
-DB_NAME=boilerplate
+DB_NAME=field_technician
 
 # We are going to install packages here
 sudo apt-get update
