@@ -51,7 +51,7 @@ var app = {
     prepareDB: function () {
         console.log("Prepare db");
         console.log("CREATE DB")
-        this.db = window.openDatabase("hello_app_db4.sqlite", "1.0", "Hello app db", 100000);
+        this.db = window.openDatabase("hello_app_db5.sqlite", "1.0", "Hello app db", 100000);
         console.log("CREATE TABLE")
         this.db.transaction(this.populateDB.bind(this), this.dbError.bind(this));
     },
@@ -99,13 +99,13 @@ var app = {
     },
     uploadPhoto: function (imageURI, id) {
         var options = new FileUploadOptions();
-        options.fileKey = "file";
+        options.fileKey = "path";
         options.fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1);
         options.mimeType = "image/jpeg";
 
         var params = {};
-        params.task_id = "333";
-        params.name = "file name";
+        params.task_id = app.task_id;
+        params.name = options.fileName;
 
 
         options.params = params;
@@ -116,22 +116,30 @@ var app = {
 
         var ft = new FileTransfer();
         var self = this;
-        ft.onprogress = function(progressEvent) {
+        ft.onprogress = function (progressEvent) {
             if (progressEvent.lengthComputable) {
                 var perc = Math.floor(progressEvent.loaded / progressEvent.total * 100);
-                self.setProgressBarValue("slider_"+id,perc);
+                self.setProgressBarValue("slider_" + id, perc);
             }
         };
-        ft.upload(imageURI, encodeURI("http://mapmobility.z.valant.com.ua/upload.php"), this.uploadPhotoWin.bind(this), this.uploadPhotoFail.bind(this), options);
+        ft.upload(imageURI, encodeURI("http://api.field-technician.loc/taskattachment/upload"), this.uploadPhotoWin.bind(this), this.uploadPhotoFail.bind(this), options);
     },
-    createProgressBar: function(id, text){
+    createProgressBar: function (id, text) {
         var cont = $("<div>");
         $("<p>").appendTo(cont).text(text);
-        $('<input>').appendTo(cont).attr({'name':'slider_'+id,'id':'slider_'+id,'data-highlight':'true','min':'0','max':'100','value':'50','type':'range'}).slider({
-            create: function( event, ui ) {
+        $('<input>').appendTo(cont).attr({
+            'name': 'slider_' + id,
+            'id': 'slider_' + id,
+            'data-highlight': 'true',
+            'min': '0',
+            'max': '100',
+            'value': '50',
+            'type': 'range'
+        }).slider({
+            create: function (event, ui) {
                 $(this).parent().find('input').hide();
-                $(this).parent().find('input').css('margin-left','-9999px'); // Fix for some FF versions
-                $(this).parent().find('.ui-slider-track').css('margin','0 15px 0 15px');
+                $(this).parent().find('input').css('margin-left', '-9999px'); // Fix for some FF versions
+                $(this).parent().find('.ui-slider-track').css('margin', '0 15px 0 15px');
                 $(this).parent().find('.ui-slider-handle').hide();
             }
         }).slider("refresh");
@@ -150,9 +158,9 @@ var app = {
         console.log("upload error target " + error.target);
         this.checkUploadFinish()
     },
-    checkUploadFinish: function(){
+    checkUploadFinish: function () {
         this.uploaded++;
-        if(this.uploaded == this.needToUpload){
+        if (this.uploaded == this.needToUpload) {
             $.mobile.navigate("#tasks");
         }
     },
@@ -205,7 +213,7 @@ var app = {
         $.mobile.navigate("#progress");
         this.needToUpload = filesList.length;
         this.uploaded = 0;
-        $.each(filesList, function(key, val){
+        $.each(filesList, function (key, val) {
             self.uploadPhoto(val, key);
         });
 
@@ -240,8 +248,8 @@ var app = {
         jQuery("#files").empty();
         jQuery("#barCodes").empty();
     },
-    setProgressBarValue: function(id, value){
-        $('#'+id).val(value);
-        $('#'+id).slider("refresh");
+    setProgressBarValue: function (id, value) {
+        $('#' + id).val(value);
+        $('#' + id).slider("refresh");
     }
 };
