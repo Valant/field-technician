@@ -3,6 +3,8 @@
 namespace common\models;
 
 use Yii;
+use yii\web\UploadedFile;
+
 
 /**
  * This is the model class for table "task_attachment".
@@ -30,7 +32,7 @@ class TaskAttachment extends \yii\db\ActiveRecord
         return [
             [['task_id'], 'required'],
             [['task_id'], 'integer'],
-            [['path'], 'string', 'max' => 400],
+	        [ [ 'path' ], 'file' ],
             [['name'], 'string', 'max' => 255]
         ];
     }
