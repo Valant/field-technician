@@ -58,6 +58,7 @@ var app = {
     populateDB: function (tx) {
         console.log("POPULATE DB");
         tx.executeSql('CREATE TABLE IF NOT EXISTS taskData(task_id INTEGER, type VARCHAR(50), data TEXT)');
+        tx.executeSql('CREATE TABLE IF NOT EXISTS taskAttachment(task_id INTEGER, type VARCHAR(50), data TEXT, attachment_id INTEGER)');
     },
     signin: function () {
         console.log("User login: " + $("#login").val());
@@ -65,8 +66,6 @@ var app = {
         $.mobile.navigate("#tasks");
     },
     scanBarCode: function () {
-        console.log("START SCAN");
-
         try {
             window.plugins.barcodeScanner.scan(
                 function (result) {
@@ -146,10 +145,14 @@ var app = {
         cont.appendTo('#progressBars');
     },
     uploadPhotoWin: function (r) {
-        console.log(r);
+        var data = JSON.parse(r.response);
+        console.log(JSON.parse(r.response));
         console.log("Code = " + r.responseCode);
         console.log("Response = " + r.response);
         console.log("Sent = " + r.bytesSent);
+        this.db.transaction(function (tx) {
+            tx.executeSql("INSERT INTO taskAttachment (task_id, type, data, attachment_id) VALUES (?, ?, ?, ?)", [data.task_id, 'photos', data.path, data.id]);
+        });
         this.checkUploadFinish();
     },
     uploadPhotoFail: function (error) {
@@ -165,7 +168,6 @@ var app = {
         }
     },
     makePhoto: function () {
-
         navigator.camera.getPicture(this.onSuccessMakePhoto, this.onFailMakePhoto, {
             quality: 50,
             destinationType: Camera.DestinationType.FILE_URI
@@ -183,31 +185,23 @@ var app = {
     },
     saveTaskData: function (tx) {
         var self = this;
-        console.log("SAVED ID: " + this.task_id);
         var filesList = [];
-        console.log("start del");
+
         tx.executeSql("DELETE FROM taskData WHERE task_id = " + this.task_id);
-        console.log("del end");
-        //tx.executeSql("INSERT INTO taskData (task_id, type, data) VALUES (?, ?, ?)", [this.task_id, 'photos', 'http://spynet.ru/uploads/images/07/00/55/2014/09/22/ff753a.jpg']);
+        tx.executeSql("DELETE FROM taskAttachment WHERE task_id = " + this.task_id);
+
         jQuery("#photos > img").each(function () {
-            console.log("insert 1 star");
             tx.executeSql("INSERT INTO taskData (task_id, type, data) VALUES (?, ?, ?)", [self.task_id, 'photos', jQuery(this).attr('src')]);
-            console.log("insert 1 end");
             filesList.push(jQuery(this).attr('src'));
-            console.log("insert 1 push");
         });
         jQuery("#files > img").each(function () {
-            console.log("insert 2 start");
             tx.executeSql("INSERT INTO taskData (task_id, type, data) VALUES (?, ?, ?)", [self.task_id, 'files', jQuery(this).attr('src')]);
-            console.log("insert 2 end");
             filesList.push(jQuery(this).attr('src'));
-            console.log("insert 2 push");
         });
 
         jQuery("#barCodes > p").each(function () {
             tx.executeSql("INSERT INTO taskData (task_id, type, data) VALUES (?, ?, ?)", [self.task_id, 'barCodes', jQuery(this).text()]);
         });
-        console.log(filesList[0]);
         this.setProgressBarValue(0);
         $("#progressBars").empty();
         $.mobile.navigate("#progress");
@@ -219,19 +213,16 @@ var app = {
 
     },
     showTaskDetail: function (task_id) {
-        console.log("Task ID: " + task_id);
         this.clearTask();
         this.task_id = task_id;
         this.db.transaction(this.getTaskData.bind(this), this.dbError.bind(this));
         $.mobile.navigate("#taskDetails");
     },
     dbError: function (err) {
-        console.log("Error processing SQL: " + err.message);
         alert(err.code + "\n" + err.message);
     },
     getTaskData: function (tx) {
-        console.log("this task " + this.task_id);
-        tx.executeSql('SELECT * FROM taskData WHERE task_id = ?', [this.task_id], this.getTaskDataSuccess.bind(this), this.dbError.bind(this));
+        tx.executeSql('SELECT * FROM taskAttachment WHERE task_id = ?', [this.task_id], this.getTaskDataSuccess.bind(this), this.dbError.bind(this));
     },
     getTaskDataSuccess: function (tx, results) {
         for (var i = 0; i < results.rows.length; i++) {
