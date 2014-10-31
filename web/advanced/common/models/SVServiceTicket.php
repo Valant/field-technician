@@ -78,6 +78,9 @@
 	 */
 	class SVServiceTicket extends \yii\db\ActiveRecord
 	{
+
+        public static $AllowedStatus = [ 'CL', 'DP', 'GB', 'IP', 'OP', 'RS', 'SC' ];
+
 		/**
 		 * @inheritdoc
 		 */
@@ -85,6 +88,7 @@
 		{
 			return 'SV_Service_Ticket';
 		}
+
 
 		/**
 		 * @inheritdoc
@@ -262,5 +266,9 @@
 				'Service_Ticket_Group_Id'         => 'Service  Ticket  Group  ID',
 				'Service_Coordinator_Employee_Id' => 'Service  Coordinator  Employee  ID',
 			];
+        }
+
+        public static function find() {
+            return parent::find()->where( [ 'Ticket_Status' => 'OP' ] )->orderBy( [ 'Service_Ticket_Id' => SORT_DESC ] )->limit( 100 );
 		}
 	}

@@ -21,6 +21,8 @@ var app = {
     task_id: false,
     uploaded: 0,
     needToUpload: 0,
+    apiUrl: 'http://api.field-technician.loc/',
+    user_id: 0,
     // Application Constructor
     initialize: function () {
         this.bindEvents();
@@ -49,10 +51,7 @@ var app = {
         console.log('Received Event: ' + id);
     },
     prepareDB: function () {
-        console.log("Prepare db");
-        console.log("CREATE DB")
-        this.db = window.openDatabase("hello_app_db5.sqlite", "1.0", "Hello app db", 100000);
-        console.log("CREATE TABLE")
+        this.db = window.openDatabase("hello_app_db6.sqlite", "1.0", "Hello app db", 100000);
         this.db.transaction(this.populateDB.bind(this), this.dbError.bind(this));
     },
     populateDB: function (tx) {
@@ -63,6 +62,19 @@ var app = {
     signin: function () {
         console.log("User login: " + $("#login").val());
         console.log("User password: " + $("#password").val());
+        this.user_id = 387;
+        this.loadTask();
+
+    },
+    loadTask: function () {
+        $.getJSON(this.apiUrl + "/ticket/find", {
+            'Ticket_Status': 'OP',
+            'Service_Tech_Id': this.user_id
+        }, this.drawTask.bind(this));
+    },
+    drawTask: function (data) {
+        console.info("task data");
+        console.log(data);
         $.mobile.navigate("#tasks");
     },
     scanBarCode: function () {
@@ -176,7 +188,6 @@ var app = {
     onSuccessMakePhoto: function (imageURI) {
         jQuery("#photos").append("<img class='photoPreview'  src='" + imageURI + "'/>");
     },
-
     onFailMakePhoto: function (message) {
         alert('Failed because: ' + message);
     },
@@ -185,6 +196,26 @@ var app = {
     },
     saveTaskData: function (tx) {
         var self = this;
+
+        this.db.transaction(function (tx) {
+            console.log("start clear task");
+            console.log('SELECT * FROM taskAttachment WHERE task_id = ' + app.task_id);
+            tx.executeSql('SELECT * FROM taskAttachment WHERE task_id = ' + app.task_id, [], function (tx, results) {
+                console.log("rows LENGTH: " + results.rows.length);
+                for (var i = 0; i < results.rows.length; i++) {
+                    console.log("TRY DELETE task attahcment: " + results.rows.item(i).attachment_id);
+                    jQuery.ajax({
+                        type: 'DELETE',
+                        url: app.apiUrl + "taskAttachment/" + results.rows.item(i).attachment_id,
+                        success: function () {
+                            tx.executeSql("DELETE FROM taskAttachment WHERE attachment_id = ?", [results.rows.item(i).attachment_id]);
+                        }
+                    });
+                }
+            });
+        }, this.dbError.bind(this));
+
+
         var filesList = [];
 
         tx.executeSql("DELETE FROM taskData WHERE task_id = " + this.task_id);
@@ -243,4 +274,6 @@ var app = {
         $('#' + id).val(value);
         $('#' + id).slider("refresh");
     }
+
+
 };
