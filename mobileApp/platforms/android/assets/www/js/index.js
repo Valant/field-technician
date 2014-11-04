@@ -21,6 +21,8 @@ var app = {
     task_id: false,
     uploaded: 0,
     needToUpload: 0,
+    apiUrl: 'http://api.field-technician.loc/',
+    user_id: 0,
     // Application Constructor
     initialize: function () {
         this.bindEvents();
@@ -49,24 +51,42 @@ var app = {
         console.log('Received Event: ' + id);
     },
     prepareDB: function () {
-        console.log("Prepare db");
-        console.log("CREATE DB")
-        this.db = window.openDatabase("hello_app_db4.sqlite", "1.0", "Hello app db", 100000);
-        console.log("CREATE TABLE")
+        this.db = window.openDatabase("hello_app_db6.sqlite", "1.0", "Hello app db", 100000);
         this.db.transaction(this.populateDB.bind(this), this.dbError.bind(this));
     },
     populateDB: function (tx) {
         console.log("POPULATE DB");
         tx.executeSql('CREATE TABLE IF NOT EXISTS taskData(task_id INTEGER, type VARCHAR(50), data TEXT)');
+        tx.executeSql('CREATE TABLE IF NOT EXISTS taskAttachment(task_id INTEGER, type VARCHAR(50), data TEXT, attachment_id INTEGER)');
     },
     signin: function () {
         console.log("User login: " + $("#login").val());
         console.log("User password: " + $("#password").val());
+        this.user_id = 387;
+        this.loadTask();
+
+    },
+    loadTask: function () {
+        $.getJSON(this.apiUrl + "/ticket/find", {
+            'Ticket_Status': 'OP',
+            'Service_Tech_Id': this.user_id
+        }, this.drawTask.bind(this));
+    },
+    drawTask: function (data) {
+        console.info("task data");
+        console.log(data);
+        $.each(data, function (index, value) {
+            console.log(value);
+            $('<tr>' +
+            '<th>' + value.Service_Ticket_Id + '</th>' +
+            '<td><a href="javascript: app.showTaskDetail(' + value.Service_Ticket_Id + ')" data-rel="external">' + value.ProblemDescription + ' - ' + value.Customer_Name + '</a></td>' +
+            '<td><button onclick="app.showTaskDetail(' + value.Service_Ticket_Id + ')">Details</button></td>' +
+            '</tr>').appendTo("#tasks #tasks_content table tbody")
+        });
+
         $.mobile.navigate("#tasks");
     },
     scanBarCode: function () {
-        console.log("START SCAN");
-
         try {
             window.plugins.barcodeScanner.scan(
                 function (result) {
@@ -99,13 +119,13 @@ var app = {
     },
     uploadPhoto: function (imageURI, id) {
         var options = new FileUploadOptions();
-        options.fileKey = "file";
+        options.fileKey = "path";
         options.fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1);
         options.mimeType = "image/jpeg";
 
         var params = {};
-        params.value1 = "test";
-        params.value2 = "param";
+        params.task_id = app.task_id;
+        params.name = options.fileName;
 
 
         options.params = params;
@@ -116,32 +136,44 @@ var app = {
 
         var ft = new FileTransfer();
         var self = this;
-        ft.onprogress = function(progressEvent) {
+        ft.onprogress = function (progressEvent) {
             if (progressEvent.lengthComputable) {
                 var perc = Math.floor(progressEvent.loaded / progressEvent.total * 100);
-                self.setProgressBarValue("slider_"+id,perc);
+                self.setProgressBarValue("slider_" + id, perc);
             }
         };
-        ft.upload(imageURI, encodeURI("http://mapmobility.z.valant.com.ua/upload.php"), this.uploadPhotoWin.bind(this), this.uploadPhotoFail.bind(this), options);
+        ft.upload(imageURI, encodeURI("http://api.field-technician.loc/taskattachment/upload"), this.uploadPhotoWin.bind(this), this.uploadPhotoFail.bind(this), options);
     },
-    createProgressBar: function(id, text){
+    createProgressBar: function (id, text) {
         var cont = $("<div>");
         $("<p>").appendTo(cont).text(text);
-        $('<input>').appendTo(cont).attr({'name':'slider_'+id,'id':'slider_'+id,'data-highlight':'true','min':'0','max':'100','value':'50','type':'range'}).slider({
-            create: function( event, ui ) {
+        $('<input>').appendTo(cont).attr({
+            'name': 'slider_' + id,
+            'id': 'slider_' + id,
+            'data-highlight': 'true',
+            'min': '0',
+            'max': '100',
+            'value': '50',
+            'type': 'range'
+        }).slider({
+            create: function (event, ui) {
                 $(this).parent().find('input').hide();
-                $(this).parent().find('input').css('margin-left','-9999px'); // Fix for some FF versions
-                $(this).parent().find('.ui-slider-track').css('margin','0 15px 0 15px');
+                $(this).parent().find('input').css('margin-left', '-9999px'); // Fix for some FF versions
+                $(this).parent().find('.ui-slider-track').css('margin', '0 15px 0 15px');
                 $(this).parent().find('.ui-slider-handle').hide();
             }
         }).slider("refresh");
         cont.appendTo('#progressBars');
     },
     uploadPhotoWin: function (r) {
-        console.log(r);
+        var data = JSON.parse(r.response);
+        console.log(JSON.parse(r.response));
         console.log("Code = " + r.responseCode);
         console.log("Response = " + r.response);
         console.log("Sent = " + r.bytesSent);
+        this.db.transaction(function (tx) {
+            tx.executeSql("INSERT INTO taskAttachment (task_id, type, data, attachment_id) VALUES (?, ?, ?, ?)", [data.task_id, 'photos', data.path, data.id]);
+        });
         this.checkUploadFinish();
     },
     uploadPhotoFail: function (error) {
@@ -150,14 +182,13 @@ var app = {
         console.log("upload error target " + error.target);
         this.checkUploadFinish()
     },
-    checkUploadFinish: function(){
+    checkUploadFinish: function () {
         this.uploaded++;
-        if(this.uploaded == this.needToUpload){
+        if (this.uploaded == this.needToUpload) {
             $.mobile.navigate("#tasks");
         }
     },
     makePhoto: function () {
-
         navigator.camera.getPicture(this.onSuccessMakePhoto, this.onFailMakePhoto, {
             quality: 50,
             destinationType: Camera.DestinationType.FILE_URI
@@ -166,7 +197,6 @@ var app = {
     onSuccessMakePhoto: function (imageURI) {
         jQuery("#photos").append("<img class='photoPreview'  src='" + imageURI + "'/>");
     },
-
     onFailMakePhoto: function (message) {
         alert('Failed because: ' + message);
     },
@@ -175,55 +205,64 @@ var app = {
     },
     saveTaskData: function (tx) {
         var self = this;
-        console.log("SAVED ID: " + this.task_id);
+
+        this.db.transaction(function (tx) {
+            console.log("start clear task");
+            console.log('SELECT * FROM taskAttachment WHERE task_id = ' + app.task_id);
+            tx.executeSql('SELECT * FROM taskAttachment WHERE task_id = ' + app.task_id, [], function (tx, results) {
+                console.log("rows LENGTH: " + results.rows.length);
+                for (var i = 0; i < results.rows.length; i++) {
+                    console.log("TRY DELETE task attahcment: " + results.rows.item(i).attachment_id);
+                    jQuery.ajax({
+                        type: 'DELETE',
+                        url: app.apiUrl + "taskAttachment/" + results.rows.item(i).attachment_id,
+                        success: function () {
+                            tx.executeSql("DELETE FROM taskAttachment WHERE attachment_id = ?", [results.rows.item(i).attachment_id]);
+                        }
+                    });
+                }
+            });
+        }, this.dbError.bind(this));
+
+
         var filesList = [];
-        console.log("start del");
+
         tx.executeSql("DELETE FROM taskData WHERE task_id = " + this.task_id);
-        console.log("del end");
-        //tx.executeSql("INSERT INTO taskData (task_id, type, data) VALUES (?, ?, ?)", [this.task_id, 'photos', 'http://spynet.ru/uploads/images/07/00/55/2014/09/22/ff753a.jpg']);
+        tx.executeSql("DELETE FROM taskAttachment WHERE task_id = " + this.task_id);
+
         jQuery("#photos > img").each(function () {
-            console.log("insert 1 star");
             tx.executeSql("INSERT INTO taskData (task_id, type, data) VALUES (?, ?, ?)", [self.task_id, 'photos', jQuery(this).attr('src')]);
-            console.log("insert 1 end");
             filesList.push(jQuery(this).attr('src'));
-            console.log("insert 1 push");
         });
         jQuery("#files > img").each(function () {
-            console.log("insert 2 start");
             tx.executeSql("INSERT INTO taskData (task_id, type, data) VALUES (?, ?, ?)", [self.task_id, 'files', jQuery(this).attr('src')]);
-            console.log("insert 2 end");
             filesList.push(jQuery(this).attr('src'));
-            console.log("insert 2 push");
         });
 
         jQuery("#barCodes > p").each(function () {
             tx.executeSql("INSERT INTO taskData (task_id, type, data) VALUES (?, ?, ?)", [self.task_id, 'barCodes', jQuery(this).text()]);
         });
-        console.log(filesList[0]);
         this.setProgressBarValue(0);
         $("#progressBars").empty();
         $.mobile.navigate("#progress");
         this.needToUpload = filesList.length;
         this.uploaded = 0;
-        $.each(filesList, function(key, val){
+        $.each(filesList, function (key, val) {
             self.uploadPhoto(val, key);
         });
 
     },
     showTaskDetail: function (task_id) {
-        console.log("Task ID: " + task_id);
         this.clearTask();
         this.task_id = task_id;
         this.db.transaction(this.getTaskData.bind(this), this.dbError.bind(this));
         $.mobile.navigate("#taskDetails");
     },
     dbError: function (err) {
-        console.log("Error processing SQL: " + err.message);
         alert(err.code + "\n" + err.message);
     },
     getTaskData: function (tx) {
-        console.log("this task " + this.task_id);
-        tx.executeSql('SELECT * FROM taskData WHERE task_id = ?', [this.task_id], this.getTaskDataSuccess.bind(this), this.dbError.bind(this));
+        tx.executeSql('SELECT * FROM taskAttachment WHERE task_id = ?', [this.task_id], this.getTaskDataSuccess.bind(this), this.dbError.bind(this));
     },
     getTaskDataSuccess: function (tx, results) {
         for (var i = 0; i < results.rows.length; i++) {
@@ -240,8 +279,10 @@ var app = {
         jQuery("#files").empty();
         jQuery("#barCodes").empty();
     },
-    setProgressBarValue: function(id, value){
-        $('#'+id).val(value);
-        $('#'+id).slider("refresh");
+    setProgressBarValue: function (id, value) {
+        $('#' + id).val(value);
+        $('#' + id).slider("refresh");
     }
+
+
 };

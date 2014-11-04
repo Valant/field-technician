@@ -23,6 +23,7 @@ var app = {
     needToUpload: 0,
     apiUrl: 'http://api.field-technician.loc/',
     user_id: 0,
+    task_data: [],
     // Application Constructor
     initialize: function () {
         this.bindEvents();
@@ -74,9 +75,8 @@ var app = {
     },
     drawTask: function (data) {
         console.info("task data");
-        console.log(data);
         $.each(data, function (index, value) {
-            console.log(value);
+            app.task_data[value.Service_Ticket_Id] = value;
             $('<tr>' +
             '<th>' + value.Service_Ticket_Id + '</th>' +
             '<td><a href="javascript: app.showTaskDetail(' + value.Service_Ticket_Id + ')" data-rel="external">' + value.ProblemDescription + ' - ' + value.Customer_Name + '</a></td>' +
@@ -252,8 +252,9 @@ var app = {
         });
 
     },
-    showTaskDetail: function (task_id) {
+    showTaskDetail: function (task_id, data) {
         this.clearTask();
+        console.log(this.task_data[task_id]);
         this.task_id = task_id;
         this.db.transaction(this.getTaskData.bind(this), this.dbError.bind(this));
         $.mobile.navigate("#taskDetails");
