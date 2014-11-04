@@ -271,4 +271,9 @@
         public static function find() {
             return parent::find()->where( [ 'Ticket_Status' => 'OP' ] )->orderBy( [ 'Service_Ticket_Id' => SORT_DESC ] )->limit( 100 );
 		}
+
+        public function getProblem() {
+            return $this->hasMany( 'SVProblem', [ 'problem_id' => 'problem_id' ] );
+        }
+
 	}
