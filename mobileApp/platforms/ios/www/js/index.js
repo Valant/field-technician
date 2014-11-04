@@ -66,15 +66,24 @@ var app = {
         this.loadTask();
 
     },
-    loadTask: function(){
-        $.getJSON(this.apiUrl+"/ticket/find", {
+    loadTask: function () {
+        $.getJSON(this.apiUrl + "/ticket/find", {
             'Ticket_Status': 'OP',
             'Service_Tech_Id': this.user_id
         }, this.drawTask.bind(this));
     },
-    drawTask: function(data){
+    drawTask: function (data) {
         console.info("task data");
         console.log(data);
+        $.each(data, function(index, value){
+            console.log(value);
+            $('<tr>'+
+            '<th>'+value.Service_Ticket_Id+'</th>'+
+            '<td><a href="javascript: app.showTaskDetail('+value.Service_Ticket_Id+')" data-rel="external">'+value.ProblemDescription+' - '+value.Customer_Name+'</a></td>'+
+            '<td><button onclick="app.showTaskDetail('+value.Service_Ticket_Id+')">Details</button></td>'+
+            '</tr>').appendTo("#tasks #tasks_content table tbody")
+        });
+
         $.mobile.navigate("#tasks");
     },
     scanBarCode: function () {
@@ -197,13 +206,13 @@ var app = {
     saveTaskData: function (tx) {
         var self = this;
 
-        this.db.transaction(function(tx){
+        this.db.transaction(function (tx) {
             console.log("start clear task");
-            console.log('SELECT * FROM taskAttachment WHERE task_id = '+app.task_id);
-            tx.executeSql('SELECT * FROM taskAttachment WHERE task_id = '+app.task_id, [],function(tx, results) {
-                console.log("rows LENGTH: "+results.rows.length);
+            console.log('SELECT * FROM taskAttachment WHERE task_id = ' + app.task_id);
+            tx.executeSql('SELECT * FROM taskAttachment WHERE task_id = ' + app.task_id, [], function (tx, results) {
+                console.log("rows LENGTH: " + results.rows.length);
                 for (var i = 0; i < results.rows.length; i++) {
-                    console.log("TRY DELETE task attahcment: "+results.rows.item(i).attachment_id);
+                    console.log("TRY DELETE task attahcment: " + results.rows.item(i).attachment_id);
                     jQuery.ajax({
                         type: 'DELETE',
                         url: app.apiUrl + "taskAttachment/" + results.rows.item(i).attachment_id,
@@ -274,8 +283,6 @@ var app = {
         $('#' + id).val(value);
         $('#' + id).slider("refresh");
     }
-
-
 
 
 };

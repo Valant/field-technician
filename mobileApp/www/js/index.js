@@ -75,6 +75,15 @@ var app = {
     drawTask: function (data) {
         console.info("task data");
         console.log(data);
+        $.each(data, function (index, value) {
+            console.log(value);
+            $('<tr>' +
+            '<th>' + value.Service_Ticket_Id + '</th>' +
+            '<td><a href="javascript: app.showTaskDetail(' + value.Service_Ticket_Id + ')" data-rel="external">' + value.ProblemDescription + ' - ' + value.Customer_Name + '</a></td>' +
+            '<td><button onclick="app.showTaskDetail(' + value.Service_Ticket_Id + ')">Details</button></td>' +
+            '</tr>').appendTo("#tasks #tasks_content table tbody")
+        });
+
         $.mobile.navigate("#tasks");
     },
     scanBarCode: function () {
