@@ -254,8 +254,38 @@ var app = {
     },
     showTaskDetail: function (task_id, data) {
         this.clearTask();
-        console.log(this.task_data[task_id]);
+        var task = this.task_data[task_id];
+        console.log(task);
         this.task_id = task_id;
+
+        $("#taskName").text(task.ProblemDescription + ' - ' + task.Customer_Name);
+        $("<p><b>Customer</b></p>").appendTo("#taskDescription");
+        $("<p><span>" + task.business_name + "</span></p>").appendTo("#taskDescription");
+        $("<p><span>" + task.Customer_Name + "</span></p>").appendTo("#taskDescription");
+        $("<p><span>" + task.address_1 + "</span></p>").appendTo("#taskDescription");
+        $("<p><span>" + task.ge1_description + "</span></p>").appendTo("#taskDescription");
+        $("<p><span>" + task.ge2_short + "</span></p>").appendTo("#taskDescription");
+        $("<p><span>" + task.ge3_description + "</span></p>").appendTo("#taskDescription");
+
+        $("<p><b>Site</b></p>").appendTo("#taskDescription");
+        $("<p><span>" + task.customer_number + "</span></p>").appendTo("#taskDescription");
+        $("<p><span>" + task.Customer_Site_Address + "</span></p>").appendTo("#taskDescription");
+        $("<p><span>" + task.Customer_Site_Ge1_Description + "</span></p>").appendTo("#taskDescription");
+        $("<p><span>" + task.Customer_Site_Ge2_Short + "</span></p>").appendTo("#taskDescription");
+        $("<p><span>" + task.Customer_Site_Ge3_Description + "</span></p>").appendTo("#taskDescription");
+
+        $("<p><b>System Information</b></p>").appendTo("#taskDescription");
+        $("<p><span>" + task.alarm_account + "</span></p>").appendTo("#taskDescription");
+        $("<p><span>" + task.System_Description + "</span></p>").appendTo("#taskDescription");
+        $("<p><span>" + task.System_Panel_Description + "</span></p>").appendTo("#taskDescription");
+        $("<p><span>" + task.phone_1 + "</span></p>").appendTo("#taskDescription");
+        $("<p><span>" + task.cross_street + "</span></p>").appendTo("#taskDescription");
+        $("<p><span>" + task.system_comments + "</span></p>").appendTo("#taskDescription");
+
+        $("<p><b>Site</b></p>").appendTo("#taskDescription");
+        $("<p><span>" + task.customer_number + "</span></p>").appendTo("#taskDescription");
+
+
         this.db.transaction(this.getTaskData.bind(this), this.dbError.bind(this));
         $.mobile.navigate("#taskDetails");
     },
@@ -276,6 +306,8 @@ var app = {
         }
     },
     clearTask: function () {
+        jQuery("#taskName").empty();
+        jQuery("#taskDescription").empty();
         jQuery("#photos").empty();
         jQuery("#files").empty();
         jQuery("#barCodes").empty();
