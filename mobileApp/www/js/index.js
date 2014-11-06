@@ -256,20 +256,18 @@ var app = {
         var task = this.task_data[task_id];
         console.log(task);
         this.task_id = task_id;
-
-
-
-
         this.db.transaction(this.getTaskData.bind(this), this.dbError.bind(this));
-        $.mobile.navigate("#taskDetails");
+        $.when($.getJSON(this.apiUrl + "/ticket/find", {
+            'id': this.task_id
+        }, this.drawTaskDetails.bind(this))).then(function () {
+            $.mobile.navigate("#taskDetails");
+        })
+
     },
     dbError: function (err) {
         alert(err.code + "\n" + err.message);
     },
     getTaskData: function (tx) {
-        $.getJSON(this.apiUrl + "/ticket/find", {
-            'id': this.task_id
-        }, this.drawTaskDetails.bind(this));
         tx.executeSql('SELECT * FROM taskAttachment WHERE task_id = ?', [this.task_id], this.getTaskDataSuccess.bind(this), this.dbError.bind(this));
     },
     getTaskDataSuccess: function (tx, results) {
