@@ -68,13 +68,12 @@ var app = {
 
     },
     loadTask: function () {
-        $.getJSON(this.apiUrl + "/ticket/find", {
+        $.getJSON(this.apiUrl + "/ticket/list", {
             'Ticket_Status': 'OP',
             'Service_Tech_Id': this.user_id
         }, this.drawTask.bind(this));
     },
     drawTask: function (data) {
-        console.info("task data");
         $.each(data, function (index, value) {
             app.task_data[value.Service_Ticket_Id] = value;
             $('<tr>' +
@@ -258,6 +257,36 @@ var app = {
         console.log(task);
         this.task_id = task_id;
 
+
+
+
+        this.db.transaction(this.getTaskData.bind(this), this.dbError.bind(this));
+        $.mobile.navigate("#taskDetails");
+    },
+    dbError: function (err) {
+        alert(err.code + "\n" + err.message);
+    },
+    getTaskData: function (tx) {
+        $.getJSON(this.apiUrl + "/ticket/find", {
+            'id': this.task_id
+        }, this.drawTaskDetails.bind(this));
+        tx.executeSql('SELECT * FROM taskAttachment WHERE task_id = ?', [this.task_id], this.getTaskDataSuccess.bind(this), this.dbError.bind(this));
+    },
+    getTaskDataSuccess: function (tx, results) {
+        for (var i = 0; i < results.rows.length; i++) {
+            if (('photos' == results.rows.item(i).type) || ('files' == results.rows.item(i).type)) {
+                jQuery("#" + results.rows.item(i).type).append("<img class='photoPreview' src='" + results.rows.item(i).data + "'/>");
+            }
+            if ('barCodes' == results.rows.item(i).type) {
+                jQuery("#" + results.rows.item(i).type).append("<p>" + results.rows.item(i).data + "</p>");
+            }
+        }
+    },
+    drawTaskDetails: function (data) {
+        data = data.shift();
+        console.log(data);
+        this.task_data[this.task_id] = data;
+        var task = data;
         $("#taskName").text(task.ProblemDescription + ' - ' + task.Customer_Name);
         $("<p><b>Customer</b></p>").appendTo("#taskDescription");
         $("<p><span>" + task.business_name + "</span></p>").appendTo("#taskDescription");
@@ -275,35 +304,21 @@ var app = {
         $("<p><span>" + task.Customer_Site_Ge3_Description + "</span></p>").appendTo("#taskDescription");
 
         $("<p><b>System Information</b></p>").appendTo("#taskDescription");
-        $("<p><span>" + task.alarm_account + "</span></p>").appendTo("#taskDescription");
-        $("<p><span>" + task.System_Description + "</span></p>").appendTo("#taskDescription");
-        $("<p><span>" + task.System_Panel_Description + "</span></p>").appendTo("#taskDescription");
-        $("<p><span>" + task.phone_1 + "</span></p>").appendTo("#taskDescription");
-        $("<p><span>" + task.cross_street + "</span></p>").appendTo("#taskDescription");
-        $("<p><span>" + task.system_comments + "</span></p>").appendTo("#taskDescription");
+        $("<p><span>System Account: " + task.alarm_account + "</span></p>").appendTo("#taskDescription");
+        $("<p><span>System Type: " + task.System_Description + "</span></p>").appendTo("#taskDescription");
+        $("<p><span>Panel Type: " + task.System_Panel_Description + "</span></p>").appendTo("#taskDescription");
+        $("<p><span>Site Phone: " + task.phone_1 + "</span></p>").appendTo("#taskDescription");
+        $("<p><span>Cross Street: " + task.cross_street + "</span></p>").appendTo("#taskDescription");
+        $("<p><span>System Comments: " + task.system_comments + "</span></p>").appendTo("#taskDescription");
 
-        $("<p><b>Site</b></p>").appendTo("#taskDescription");
-        $("<p><span>" + task.customer_number + "</span></p>").appendTo("#taskDescription");
-
-
-        this.db.transaction(this.getTaskData.bind(this), this.dbError.bind(this));
-        $.mobile.navigate("#taskDetails");
-    },
-    dbError: function (err) {
-        alert(err.code + "\n" + err.message);
-    },
-    getTaskData: function (tx) {
-        tx.executeSql('SELECT * FROM taskAttachment WHERE task_id = ?', [this.task_id], this.getTaskDataSuccess.bind(this), this.dbError.bind(this));
-    },
-    getTaskDataSuccess: function (tx, results) {
-        for (var i = 0; i < results.rows.length; i++) {
-            if (('photos' == results.rows.item(i).type) || ('files' == results.rows.item(i).type)) {
-                jQuery("#" + results.rows.item(i).type).append("<img class='photoPreview' src='" + results.rows.item(i).data + "'/>");
-            }
-            if ('barCodes' == results.rows.item(i).type) {
-                jQuery("#" + results.rows.item(i).type).append("<p>" + results.rows.item(i).data + "</p>");
-            }
-        }
+        $("<p><b>Ticket Information</b></p>").appendTo("#taskDescription");
+        $("<p><span>Status: " + task.ticket_status + "</span></p>").appendTo("#taskDescription");
+        $("<p><span>Created on: " + task.Creation_Date + "</span></p>").appendTo("#taskDescription");
+        $("<p><span>Created by: " + task.entered_by + "</span></p>").appendTo("#taskDescription");
+        $("<p><span>Contact: " + task.Requested_By + "</span></p>").appendTo("#taskDescription");
+        $("<p><span>Phone: " + task.requested_by_phone + "</span></p>").appendTo("#taskDescription");
+        $("<p><span>Problem: " + task.ProblemDescription + "</span></p>").appendTo("#taskDescription");
+        $("<p><span>Customer Comment : " + task.CustomerComments + "</span></p>").appendTo("#taskDescription");
     },
     clearTask: function () {
         jQuery("#taskName").empty();

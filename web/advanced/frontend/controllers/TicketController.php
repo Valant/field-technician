@@ -20,8 +20,7 @@
     class TicketController extends ActiveController {
         public $modelClass = 'common\models\SVServiceTicket';
 
-        public function actionFind() {
-
+        public function actionList() {
             $whereArr = [ ];
             if ( isset( $_REQUEST['Ticket_Status'] ) ) {
                 if ( in_array( $_REQUEST['Ticket_Status'], SVServiceTicket::$AllowedStatus ) ) {
@@ -30,6 +29,30 @@
             }
             if ( isset( $_REQUEST['Service_Tech_Id'] ) ) {
                 $whereArr[':Service_Tech_Id'] = (int) $_REQUEST['Service_Tech_Id'];
+            }
+
+            $query = new Query;
+
+            return new ActiveDataProvider( [
+                'query' => $query->select( '
+                    SV_Service_Ticket.Service_Ticket_Id, SV_Problem.Description AS ProblemDescription, AR_Customer.Customer_Name
+                ' )->from( 'SV_Service_Ticket' )
+                                 ->innerJoin( 'AR_Customer', 'AR_Customer.Customer_Id = SV_Service_Ticket.Customer_Id' )
+                                 ->innerJoin( 'SV_Service_Tech_Routes',
+                                     'SV_Service_Tech_Routes.Route_Id = SV_Service_Ticket.Route_Id' )
+                                 ->innerJoin( 'SV_Problem', 'SV_Service_Ticket.Problem_Id = SV_Problem.Problem_Id' )
+                                 ->where( "SV_Service_Ticket.Ticket_Status = :Ticket_Status AND SV_Service_Tech_Routes.Service_Tech_Id = :Service_Tech_Id",
+                                     $whereArr )
+                                 ->orderBy( 'Service_Ticket_Id', 'DESC' )->limit( 100 )
+            ] );
+        }
+
+        public function actionFind() {
+
+            $whereArr = [ ];
+
+            if ( isset( $_REQUEST['id'] ) ) {
+                $whereArr[':Service_Ticket_Id'] = (int) $_REQUEST['id'];
             }
 
             $query = new Query;
@@ -46,7 +69,8 @@
                 ar_customer_site.business_name, ar_customer_site.address_1 as Customer_Site_Address, ar_customer_site.ge1_description as Customer_Site_Ge1_Description,
                 ar_customer_site.ge2_short as Customer_Site_Ge2_Short, ar_customer_site.ge3_description as Customer_Site_Ge3_Description,
                 ar_customer_system.alarm_account, sy_system.description as System_Description, sy_panel_type.description as System_Panel_Description,
-                ar_customer_site.phone_1, ar_customer_site.cross_street, ar_customer_system.system_comments
+                ar_customer_site.phone_1, ar_customer_site.cross_street, ar_customer_system.system_comments, sv_service_ticket.ticket_status,
+                sv_service_ticket.entered_by, sv_service_ticket.requested_by_phone
                 ' )->from( 'SV_Service_Ticket' )
                                  ->innerJoin( 'AR_Customer', 'AR_Customer.Customer_Id = SV_Service_Ticket.Customer_Id' )
                                  ->innerJoin( 'AR_Customer_Bill',
@@ -62,9 +86,9 @@
                                      'SV_Service_Tech_Routes.Route_Id = SV_Service_Ticket.Route_Id' )
                                  ->innerJoin( 'SV_Problem', 'SV_Service_Ticket.Problem_Id = SV_Problem.Problem_Id' )
                                  ->innerJoin( 'SV_Routes', 'SV_Routes.Route_Id = SV_Service_Tech_Routes.Route_Id' )
-                                 ->where( "SV_Service_Ticket.Ticket_Status = :Ticket_Status AND SV_Service_Tech_Routes.Service_Tech_Id = :Service_Tech_Id",
+                                 ->where( "SV_Service_Ticket.Service_Ticket_Id = :Service_Ticket_Id",
                                      $whereArr )
-                                 ->orderBy( 'Service_Ticket_Id', 'DESC' )->limit( 100 )
+                                 ->limit( 1 )
             ] );
 
         }
