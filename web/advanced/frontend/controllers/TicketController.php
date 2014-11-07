@@ -22,11 +22,6 @@
 
         public function actionList() {
             $whereArr = [ ];
-            if ( isset( $_REQUEST['Ticket_Status'] ) ) {
-                if ( in_array( $_REQUEST['Ticket_Status'], SVServiceTicket::$AllowedStatus ) ) {
-                    $whereArr[':Ticket_Status'] = $_REQUEST['Ticket_Status'];
-                }
-            }
             if ( isset( $_REQUEST['Service_Tech_Id'] ) ) {
                 $whereArr[':Service_Tech_Id'] = (int) $_REQUEST['Service_Tech_Id'];
             }
@@ -35,13 +30,17 @@
 
             return new ActiveDataProvider( [
                 'query' => $query->select( '
-                    SV_Service_Ticket.Service_Ticket_Id, SV_Problem.Description AS ProblemDescription, AR_Customer.Customer_Name
+                    SV_Service_Ticket.Service_Ticket_Id, SV_Problem.Description AS ProblemDescription,
+                    AR_Customer.Customer_Name, ar_customer_site.ge1_description as  City,
+                    SV_Service_Ticket.Ticket_Status
                 ' )->from( 'SV_Service_Ticket' )
                                  ->innerJoin( 'AR_Customer', 'AR_Customer.Customer_Id = SV_Service_Ticket.Customer_Id' )
                                  ->innerJoin( 'SV_Service_Tech_Routes',
                                      'SV_Service_Tech_Routes.Route_Id = SV_Service_Ticket.Route_Id' )
                                  ->innerJoin( 'SV_Problem', 'SV_Service_Ticket.Problem_Id = SV_Problem.Problem_Id' )
-                                 ->where( "SV_Service_Ticket.Ticket_Status = :Ticket_Status AND SV_Service_Tech_Routes.Service_Tech_Id = :Service_Tech_Id",
+                                 ->innerJoin( 'AR_Customer_Site',
+                                     'AR_Customer_Site.Customer_Site_Id = SV_Service_Ticket.Customer_Site_Id' )
+                                 ->where( "SV_Service_Ticket.Ticket_Status NOT IN ('CL', 'RS') AND SV_Service_Tech_Routes.Service_Tech_Id = :Service_Tech_Id",
                                      $whereArr )
                                  ->orderBy( 'Service_Ticket_Id', 'DESC' )->limit( 100 )
             ] );
@@ -76,7 +75,7 @@
                                  ->innerJoin( 'AR_Customer_Bill',
                                      'AR_Customer_Bill.Customer_Id = AR_Customer.Customer_Id' )
                                  ->innerJoin( 'AR_Customer_Site',
-                                     'AR_Customer_Site.Customer_Id = AR_Customer.Customer_Id' )
+                                     'AR_Customer_Site.Customer_Site_Id = SV_Service_Ticket.Customer_Site_Id' )
                                  ->innerJoin( 'AR_Customer_System',
                                      'AR_Customer_System.Customer_Id = AR_Customer.Customer_Id' )
                                  ->innerJoin( 'SY_System', 'AR_Customer_System.System_Id = SY_System.System_Id' )
