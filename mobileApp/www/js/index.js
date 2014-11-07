@@ -77,8 +77,11 @@ var app = {
         $.each(data, function (index, value) {
             app.task_data[value.Service_Ticket_Id] = value;
             $('<tr>' +
-            '<th>' + value.Service_Ticket_Id + '</th>' +
-            '<td><a href="javascript: app.showTaskDetail(' + value.Service_Ticket_Id + ')" data-rel="external">' + value.ProblemDescription + ' - ' + value.Customer_Name + '</a></td>' +
+            '<td>' + value.Service_Ticket_Id + '</td>' +
+            '<td><a href="javascript: app.showTaskDetail(' + value.Service_Ticket_Id + ')" data-rel="external">' + value.ProblemDescription + '</a></td>' +
+            '<td>' + value.Customer_Name + '</td>' +
+            '<td>' + value.City + '</td>' +
+            '<td>' + value.Ticket_Status + '</td>' +
             '<td><button onclick="app.showTaskDetail(' + value.Service_Ticket_Id + ')">Details</button></td>' +
             '</tr>').appendTo("#tasks #tasks_content table tbody")
         });
