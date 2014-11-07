@@ -51,6 +51,6 @@ class TaskAttachment extends \yii\db\ActiveRecord
     }
 
     public static function getDb() {
-        return \Yii::$app->db2;
+        return \Yii::$app->db_mysql;
     }
 }

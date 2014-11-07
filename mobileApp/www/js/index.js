@@ -132,6 +132,7 @@ var app = {
 
         options.params = params;
         console.log("options");
+        console.log(imageURI);
         console.log(options);
 
         this.createProgressBar(id, options.fileName);
@@ -144,7 +145,7 @@ var app = {
                 self.setProgressBarValue("slider_" + id, perc);
             }
         };
-        ft.upload(imageURI, encodeURI("http://api.field-technician.loc/taskattachment/upload"), this.uploadPhotoWin.bind(this), this.uploadPhotoFail.bind(this), options);
+        ft.upload(imageURI, encodeURI(this.apiUrl + "taskattachment/upload"), this.uploadPhotoWin.bind(this), this.uploadPhotoFail.bind(this), options);
     },
     createProgressBar: function (id, text) {
         var cont = $("<div>");
@@ -180,6 +181,7 @@ var app = {
     },
     uploadPhotoFail: function (error) {
         alert("An error has occurred: Code = " + error.code);
+        console.log(error);
         console.log("upload error source " + error.source);
         console.log("upload error target " + error.target);
         this.checkUploadFinish()
