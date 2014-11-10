@@ -42,7 +42,6 @@ var app = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function () {
         app.receivedEvent('deviceready');
-
     },
     // Update DOM on a Received Event
     receivedEvent: function (id) {
@@ -64,8 +63,8 @@ var app = {
         console.log("User login: " + $("#login").val());
         console.log("User password: " + $("#password").val());
         this.user_id = 387;
+        jQuery.blockUI({message: '<h1>Authorizing</h1>'});
         this.loadTask();
-
     },
     loadTask: function () {
         $.getJSON(this.apiUrl + "/ticket/list", {
@@ -85,7 +84,7 @@ var app = {
             '<td><button onclick="app.showTaskDetail(' + value.Service_Ticket_Id + ')">Details</button></td>' +
             '</tr>').appendTo("#tasks #tasks_content table tbody")
         });
-
+        jQuery.unblockUI();
         $.mobile.navigate("#tasks");
     },
     scanBarCode: function () {
@@ -257,6 +256,7 @@ var app = {
 
     },
     showTaskDetail: function (task_id, data) {
+        jQuery.blockUI({message: '<h1>Loading task data</h1>'});
         this.clearTask();
         var task = this.task_data[task_id];
         console.log(task);
@@ -265,6 +265,7 @@ var app = {
         $.when($.getJSON(this.apiUrl + "/ticket/find", {
             'id': this.task_id
         }, this.drawTaskDetails.bind(this))).then(function () {
+            jQuery.unblockUI();
             $.mobile.navigate("#taskDetails");
         })
 
