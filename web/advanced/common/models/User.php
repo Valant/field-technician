@@ -177,4 +177,8 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $this->password_reset_token = null;
     }
+
+    public static function getDb() {
+        return \Yii::$app->db_mysql;
+    }
 }
