@@ -8,10 +8,7 @@
 
     namespace frontend\controllers;
 
-    use common\models\ArCustomer;
-    use common\models\SVProblem;
     use Yii;
-    use common\models\SVServiceTicket;
     use yii\rest\ActiveController;
     use yii\data\ActiveDataProvider;
     use yii\db\Query;
