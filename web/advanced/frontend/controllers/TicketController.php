@@ -31,15 +31,17 @@
                     AR_Customer.Customer_Name, ar_customer_site.ge1_description as  City,
                     SV_Service_Ticket.Ticket_Status
                 ' )->from( 'SV_Service_Ticket' )
+                    ->innerJoin( 'SV_Service_Ticket_Dispatch',
+                        'SV_Service_Ticket_Dispatch.Service_Ticket_Id = SV_Service_Ticket.Service_Ticket_Id' )
+                    ->innerJoin( 'SV_Service_Tech',
+                        'SV_Service_Tech.Service_Tech_Id = SV_Service_Ticket_Dispatch.Service_Tech_Id' )
+                    ->innerJoin( 'SV_Problem', 'SV_Problem.Problem_Id = SV_Service_Ticket.Problem_Id' )
                                  ->innerJoin( 'AR_Customer', 'AR_Customer.Customer_Id = SV_Service_Ticket.Customer_Id' )
-                                 ->innerJoin( 'SV_Service_Tech_Routes',
-                                     'SV_Service_Tech_Routes.Route_Id = SV_Service_Ticket.Route_Id' )
-                                 ->innerJoin( 'SV_Problem', 'SV_Service_Ticket.Problem_Id = SV_Problem.Problem_Id' )
                                  ->innerJoin( 'AR_Customer_Site',
                                      'AR_Customer_Site.Customer_Site_Id = SV_Service_Ticket.Customer_Site_Id' )
-                                 ->where( "SV_Service_Ticket.Ticket_Status NOT IN ('CL', 'RS') AND SV_Service_Tech_Routes.Service_Tech_Id = :Service_Tech_Id",
+                    ->where( "SV_Service_Ticket.Ticket_Status = 'SC' AND SV_Service_Tech.Service_Tech_Id = :Service_Tech_Id",
                                      $whereArr )
-                                 ->orderBy( 'Service_Ticket_Id', 'DESC' )->limit( 100 )
+                    ->orderBy( 'SV_Service_Ticket.Service_Ticket_Id', 'DESC' )->limit( 100 )
             ] );
         }
 
