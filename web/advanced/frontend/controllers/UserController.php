@@ -19,9 +19,10 @@
         public function actionLogin() {
 
             $model = new LoginForm();
-            $model->load( Yii::$app->request->post() );
-            $model->login();
-
-            return $model->getUser();
+            if ( $model->load( Yii::$app->request->post() ) && $model->login() ) {
+                return $model->getUser();
+            } else {
+                return [ 'status' => 'error', 'message' => $model->getErrors() ];
+            }
         }
     }
