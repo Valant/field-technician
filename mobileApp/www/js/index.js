@@ -62,11 +62,22 @@ var app = {
     signin: function () {
         console.log("User login: " + $("#login").val());
         console.log("User password: " + $("#password").val());
-        this.user_id = 387;
         jQuery.blockUI({message: '<h1>Authorizing</h1>'});
-        this.loadTask();
+        jQuery.post(this.apiUrl + "/user/login", {
+            'LoginForm[username]': $("#login").val(),
+            'LoginForm[password]': $("#password").val()
+        }, function (data) {
+            console.log(data);
+            if (data.id) {
+                app.user_id = data.technition_id;
+                app.loadTask();
+            } else {
+                jQuery.unblockUI();
+            }
+        });
     },
     loadTask: function () {
+        jQuery.blockUI({message: '<h1>Load task</h1>'});
         $.getJSON(this.apiUrl + "/ticket/list", {
             'Ticket_Status': 'OP',
             'Service_Tech_Id': this.user_id
