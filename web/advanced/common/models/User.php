@@ -1,4 +1,5 @@
 <?php
+
 namespace common\models;
 
 use Yii;
@@ -8,39 +9,47 @@ use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
 /**
- * User model
+ * This is the model class for table "user".
  *
  * @property integer $id
  * @property string $username
+ * @property string $auth_key
  * @property string $password_hash
  * @property string $password_reset_token
  * @property string $email
- * @property string $auth_key
  * @property integer $role
  * @property integer $status
  * @property integer $created_at
  * @property integer $updated_at
- * @property string $password write-only password
+ * @property integer $technition_id
  */
 class User extends ActiveRecord implements IdentityInterface
 {
+
+
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
     const ROLE_USER = 10;
-
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return '{{%user}}';
+        return 'user';
+    }
+
+    /**
+     * @return \yii\db\Connection the database connection used by this AR class.
+     */
+    public static function getDb()
+    {
+        return Yii::$app->get( 'db_mysql' );
     }
 
     /**
      * @inheritdoc
      */
-    public function behaviors()
-    {
+    public function behaviors() {
         return [
             TimestampBehavior::className(),
         ];
@@ -52,17 +61,33 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            ['status', 'default', 'value' => self::STATUS_ACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
-
-            ['role', 'default', 'value' => self::ROLE_USER],
-            ['role', 'in', 'range' => [self::ROLE_USER]],
+            [ [ 'username', 'auth_key', 'password_hash', 'email', 'created_at', 'updated_at' ], 'required' ],
+            [ [ 'role', 'status', 'created_at', 'updated_at', 'technition_id' ], 'integer' ],
+            [ [ 'username', 'password_hash', 'password_reset_token', 'email' ], 'string', 'max' => 255 ],
+            [ [ 'auth_key' ], 'string', 'max' => 32 ]
         ];
     }
 
     /**
      * @inheritdoc
      */
+    public function attributeLabels() {
+        return [
+            'id'                   => 'ID',
+            'username'             => 'Username',
+            'auth_key'             => 'Auth Key',
+            'password_hash'        => 'Password Hash',
+            'password_reset_token' => 'Password Reset Token',
+            'email'                => 'Email',
+            'role'                 => 'Role',
+            'status'               => 'Status',
+            'created_at'           => 'Created At',
+            'updated_at'           => 'Updated At',
+            'technition_id'        => 'Technition ID',
+        ];
+    }
+
+
     public static function findIdentity($id)
     {
         return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
@@ -178,7 +203,4 @@ class User extends ActiveRecord implements IdentityInterface
         $this->password_reset_token = null;
     }
 
-    public static function getDb() {
-        return \Yii::$app->db_mysql;
-    }
 }

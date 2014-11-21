@@ -19,8 +19,9 @@
 
     <?= GridView::widget( [
         'dataProvider' => $dataProvider,
-        'columns'      => [
+        'columns' => [
             [ 'class' => 'yii\grid\SerialColumn' ],
+
             'id',
             'username',
             'auth_key',
@@ -31,6 +32,7 @@
             // 'status',
             // 'created_at',
             // 'updated_at',
+            // 'technition_id',
 
             [ 'class' => 'yii\grid\ActionColumn' ],
         ],

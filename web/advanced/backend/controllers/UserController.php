@@ -24,10 +24,10 @@
             ];
         }
 
-        /**
-         * Lists all User models.
-         * @return mixed
-         */
+    /**
+     * Lists all User models.
+     * @return mixed
+     */
         public function actionIndex() {
             $dataProvider = new ActiveDataProvider( [
                 'query' => User::find(),
@@ -64,7 +64,7 @@
             } else {
                 return $this->render( 'create', [
                     'model' => $model,
-                ] );
+                ]);
             }
         }
 
@@ -84,7 +84,7 @@
             } else {
                 return $this->render( 'update', [
                     'model' => $model,
-                ] );
+                ]);
             }
         }
 
@@ -115,7 +115,7 @@
             if ( ( $model = User::findOne( $id ) ) !== null ) {
                 return $model;
             } else {
-                throw new NotFoundHttpException( 'The requested page does not exist.' );
+                throw new NotFoundHttpException( 'The requested page does not exist.');
             }
-        }
     }
+}
