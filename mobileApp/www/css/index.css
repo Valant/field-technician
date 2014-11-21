@@ -131,3 +131,7 @@ h1 {
     height: auto;
     display: block;
 }
+
+.errors {
+    color: red;
+}

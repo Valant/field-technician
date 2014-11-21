@@ -69,9 +69,12 @@ var app = {
         }, function (data) {
             console.log(data);
             if (data.id) {
+                $("#signin .errors").text("");
                 app.user_id = data.technition_id;
                 app.loadTask();
             } else {
+                console.log(data.message.password[0]);
+                $("#signin .errors").text(data.message.password[0]);
                 jQuery.unblockUI();
             }
         });
