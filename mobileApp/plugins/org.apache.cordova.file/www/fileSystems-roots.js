@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.
  *
-*/
+ */
 
 // Map of fsName -> FileSystem.
 var fsMap = null;
@@ -25,7 +25,7 @@ var FileSystem = require('./FileSystem');
 var exec = require('cordova/exec');
 
 // Overridden by Android, BlackBerry 10 and iOS to populate fsMap.
-require('./fileSystems').getFs = function(name, callback) {
+require('./fileSystems').getFs = function (name, callback) {
     if (fsMap) {
         callback(fsMap[name]);
     } else {

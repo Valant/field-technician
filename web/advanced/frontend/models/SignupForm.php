@@ -1,57 +1,65 @@
 <?php
-namespace frontend\models;
+    namespace frontend\models;
 
-use common\models\User;
-use yii\base\Model;
-use Yii;
-
-/**
- * Signup form
- */
-class SignupForm extends Model
-{
-    public $username;
-    public $email;
-    public $password;
+    use common\models\User;
+    use yii\base\Model;
+    use Yii;
 
     /**
-     * @inheritdoc
+     * Signup form
      */
-    public function rules()
+    class SignupForm extends Model
     {
-        return [
-            ['username', 'filter', 'filter' => 'trim'],
-            ['username', 'required'],
-            ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This username has already been taken.'],
-            ['username', 'string', 'min' => 2, 'max' => 255],
+        public $username;
+        public $email;
+        public $password;
 
-            ['email', 'filter', 'filter' => 'trim'],
-            ['email', 'required'],
-            ['email', 'email'],
-            ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email address has already been taken.'],
-
-            ['password', 'required'],
-            ['password', 'string', 'min' => 6],
-        ];
-    }
-
-    /**
-     * Signs user up.
-     *
-     * @return User|null the saved model or null if saving fails
-     */
-    public function signup()
-    {
-        if ($this->validate()) {
-            $user = new User();
-            $user->username = $this->username;
-            $user->email = $this->email;
-            $user->setPassword($this->password);
-            $user->generateAuthKey();
-            $user->save();
-            return $user;
+        /**
+         * @inheritdoc
+         */
+        public function rules()
+        {
+            return [
+                [ 'username', 'filter', 'filter' => 'trim' ],
+                [ 'username', 'required' ],
+                [
+                    'username',
+                    'unique',
+                    'targetClass' => '\common\models\User',
+                    'message'     => 'This username has already been taken.'
+                ],
+                [ 'username', 'string', 'min' => 2, 'max' => 255 ],
+                [ 'email', 'filter', 'filter' => 'trim' ],
+                [ 'email', 'required' ],
+                [ 'email', 'email' ],
+                [
+                    'email',
+                    'unique',
+                    'targetClass' => '\common\models\User',
+                    'message'     => 'This email address has already been taken.'
+                ],
+                [ 'password', 'required' ],
+                [ 'password', 'string', 'min' => 6 ],
+            ];
         }
 
-        return null;
+        /**
+         * Signs user up.
+         *
+         * @return User|null the saved model or null if saving fails
+         */
+        public function signup()
+        {
+            if ($this->validate()) {
+                $user = new User();
+                $user->username = $this->username;
+                $user->email = $this->email;
+                $user->setPassword( $this->password );
+                $user->generateAuthKey();
+                $user->save();
+                return $user;
+            }
+
+            return null;
+        }
     }
-}

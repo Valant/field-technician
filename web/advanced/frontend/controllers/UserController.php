@@ -13,13 +13,15 @@
     use common\models\LoginForm;
 
 
-    class UserController extends ActiveController {
+    class UserController extends ActiveController
+    {
         public $modelClass = 'common\models\User';
 
-        public function actionLogin() {
+        public function actionLogin()
+        {
 
             $model = new LoginForm();
-            if ( $model->load( Yii::$app->request->post() ) && $model->login() ) {
+            if ($model->load( Yii::$app->request->post() ) && $model->login()) {
                 return $model->getUser();
             } else {
                 return [ 'status' => 'error', 'message' => $model->getErrors() ];

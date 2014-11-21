@@ -11,18 +11,21 @@
      * @property integer $Service_Tech_Id
      * @property integer $Route_Id
      */
-    class SVServiceTechRoutes extends \yii\db\ActiveRecord {
+    class SVServiceTechRoutes extends \yii\db\ActiveRecord
+    {
         /**
          * @inheritdoc
          */
-        public static function tableName() {
+        public static function tableName()
+        {
             return 'SV_Service_Tech_Routes';
         }
 
         /**
          * @inheritdoc
          */
-        public function rules() {
+        public function rules()
+        {
             return [
                 [ [ 'Service_Tech_Id', 'Route_Id' ], 'integer' ]
             ];
@@ -31,7 +34,8 @@
         /**
          * @inheritdoc
          */
-        public function attributeLabels() {
+        public function attributeLabels()
+        {
             return [
                 'Service_Tech_Route_Id' => 'Service  Tech  Route  ID',
                 'Service_Tech_Id'       => 'Service  Tech  ID',

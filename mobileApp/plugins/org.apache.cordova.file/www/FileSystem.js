@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.
  *
-*/
+ */
 
 var DirectoryEntry = require('./DirectoryEntry');
 
@@ -28,7 +28,7 @@ var DirectoryEntry = require('./DirectoryEntry');
  * {DOMString} name the unique name of the file system (readonly)
  * {DirectoryEntry} root directory of the file system (readonly)
  */
-var FileSystem = function(name, root) {
+var FileSystem = function (name, root) {
     this.name = name;
     if (root) {
         this.root = new DirectoryEntry(root.name, root.fullPath, this, root.nativeURL);
@@ -37,11 +37,11 @@ var FileSystem = function(name, root) {
     }
 };
 
-FileSystem.prototype.__format__ = function(fullPath) {
+FileSystem.prototype.__format__ = function (fullPath) {
     return fullPath;
 };
 
-FileSystem.prototype.toJSON = function() {
+FileSystem.prototype.toJSON = function () {
     return "<FileSystem: " + this.name + ">";
 };
 

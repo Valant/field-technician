@@ -17,56 +17,56 @@
  * specific language governing permissions and limitations
  * under the License.
  *
-*/
+ */
 
-exports.defineAutoTests = function() {
-  describe('Device Information (window.device)', function () {
-    it("should exist", function() {
-      expect(window.device).toBeDefined();
-    });
+exports.defineAutoTests = function () {
+    describe('Device Information (window.device)', function () {
+        it("should exist", function () {
+            expect(window.device).toBeDefined();
+        });
 
-    it("should contain a platform specification that is a string", function() {
-      expect(window.device.platform).toBeDefined();
-      expect((new String(window.device.platform)).length > 0).toBe(true);
-    });
+        it("should contain a platform specification that is a string", function () {
+            expect(window.device.platform).toBeDefined();
+            expect((new String(window.device.platform)).length > 0).toBe(true);
+        });
 
-    it("should contain a version specification that is a string", function() {
-      expect(window.device.version).toBeDefined();
-      expect((new String(window.device.version)).length > 0).toBe(true);
-    });
+        it("should contain a version specification that is a string", function () {
+            expect(window.device.version).toBeDefined();
+            expect((new String(window.device.version)).length > 0).toBe(true);
+        });
 
-    it("should contain a UUID specification that is a string or a number", function() {
-      expect(window.device.uuid).toBeDefined();
-      if (typeof window.device.uuid == 'string' || typeof window.device.uuid == 'object') {
-        expect((new String(window.device.uuid)).length > 0).toBe(true);
-      } else {
-        expect(window.device.uuid > 0).toBe(true);
-      }
-    });
+        it("should contain a UUID specification that is a string or a number", function () {
+            expect(window.device.uuid).toBeDefined();
+            if (typeof window.device.uuid == 'string' || typeof window.device.uuid == 'object') {
+                expect((new String(window.device.uuid)).length > 0).toBe(true);
+            } else {
+                expect(window.device.uuid > 0).toBe(true);
+            }
+        });
 
-    it("should contain a cordova specification that is a string", function() {
-      expect(window.device.cordova).toBeDefined();
-      expect((new String(window.device.cordova)).length > 0).toBe(true);
-    });
+        it("should contain a cordova specification that is a string", function () {
+            expect(window.device.cordova).toBeDefined();
+            expect((new String(window.device.cordova)).length > 0).toBe(true);
+        });
 
-    it("should depend on the precense of cordova.version string", function() {
-      expect(window.cordova.version).toBeDefined();
-      expect((new String(window.cordova.version)).length > 0).toBe(true);
-    });
+        it("should depend on the precense of cordova.version string", function () {
+            expect(window.cordova.version).toBeDefined();
+            expect((new String(window.cordova.version)).length > 0).toBe(true);
+        });
 
-    it("should contain device.cordova equal to cordova.version", function() {
-      expect(window.device.cordova).toBe(window.cordova.version);
-    });
+        it("should contain device.cordova equal to cordova.version", function () {
+            expect(window.device.cordova).toBe(window.cordova.version);
+        });
 
-    it("should contain a model specification that is a string", function() {
-      expect(window.device.model).toBeDefined();
-      expect((new String(window.device.model)).length > 0).toBe(true);
+        it("should contain a model specification that is a string", function () {
+            expect(window.device.model).toBeDefined();
+            expect((new String(window.device.model)).length > 0).toBe(true);
+        });
     });
-  });
 };
 
-exports.defineManualTests = function(contentEl, createActionButton) {
-  createActionButton('Dump device', function() {
-    console.log(JSON.stringify(window.device, null, '\t'));
-  });
+exports.defineManualTests = function (contentEl, createActionButton) {
+    createActionButton('Dump device', function () {
+        console.log(JSON.stringify(window.device, null, '\t'));
+    });
 };

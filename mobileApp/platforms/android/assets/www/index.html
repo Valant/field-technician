@@ -22,7 +22,9 @@
     <meta charset="utf-8" />
     <meta name="format-detection" content="telephone=no" />
     <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
-    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+    <!--<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
     <link rel="stylesheet" type="text/css" href="css/index.css" />
     <link rel="stylesheet" type="text/css" href="css/jquery.mobile.css" />
 
@@ -58,84 +60,15 @@
         <table data-role="table" id="table-custom-2" data-mode="columntoggle" class="ui-body-d ui-shadow table-stripe ui-responsive" data-column-btn-theme="b" data-column-btn-text="Columns to display..." data-column-popup-theme="a">
             <thead>
             <tr class="ui-bar-d">
-                <th data-priority="2">Rank</th>
-                <th>Movie Title</th>
-                <!--<th data-priority="3"><abbr title="Choise file">Choise</abbr></th>-->
+                <th data-priority="6"><abbr title="Ticket ID">ID</abbr></th>
+                <th><abbr title="Problem detail">Problem</abbr></th>
+                <th data-priority="3"><abbr title="Customer name">Name</abbr></th>
+                <th data-priority="4"><abbr title="Customer city">City</abbr></th>
+                <th data-priority="5"><abbr title="Ticket status">Status</abbr></th>
                 <th data-priority="1"><abbr title="Go to task">Details</abbr></th>
-                <!--<th data-priority="5"><abbr title="Make a photo">Photo</abbr></th>-->
             </tr>
             </thead>
             <tbody>
-            <!--<tr>-->
-            <!--<th>1</th>-->
-            <!--<td><a href="javascript: app.showTaskDetail(1)" data-rel="external">Citizen Kane</a></td>-->
-            <!--&lt;!&ndash;<td><button onclick="app.choiseFile()">Choise</button></td>&ndash;&gt;-->
-            <!--<td><button onclick="app.showTaskDetail(1)">Details</button></td>-->
-            <!--&lt;!&ndash;<td><button onclick="app.makePhoto()">Photo</button></td>&ndash;&gt;-->
-            <!--</tr>-->
-            <!--<tr>-->
-            <!--<th>2</th>-->
-            <!--<td><a href="javascript: app.showTaskDetail(2)" data-rel="external">Casablanca</a></td>-->
-            <!--&lt;!&ndash;<td><button onclick="app.choiseFile()">Choise</button></td>&ndash;&gt;-->
-            <!--<td><button onclick="app.showTaskDetail(2)">Details</button></td>-->
-            <!--&lt;!&ndash;<td>64</td>&ndash;&gt;-->
-            <!--</tr>-->
-            <!--<tr>-->
-            <!--<th>3</th>-->
-            <!--<td><a href="javascript: app.showTaskDetail(3)" data-rel="external">The Godfather</a></td>-->
-            <!--&lt;!&ndash;<td><button onclick="app.choiseFile()">Choise</button></td>&ndash;&gt;-->
-            <!--<td><button onclick="app.showTaskDetail(3)">Details</button></td>-->
-            <!--&lt;!&ndash;<td>87</td>&ndash;&gt;-->
-            <!--</tr>-->
-            <!--<tr>-->
-            <!--<th>4</th>-->
-            <!--<td><a href="javascript: app.showTaskDetail(4)" data-rel="external">Gone with the Wind</a></td>-->
-            <!--&lt;!&ndash;<td><button onclick="app.choiseFile()">Choise</button></td>&ndash;&gt;-->
-            <!--<td><button onclick="app.showTaskDetail(4)">Details</button></td>-->
-            <!--&lt;!&ndash;<td>87</td>&ndash;&gt;-->
-            <!--</tr>-->
-            <!--<tr>-->
-            <!--<th>5</th>-->
-            <!--<td><a href="javascript: app.showTaskDetail(5)" data-rel="external">Lawrence of Arabia</a></td>-->
-            <!--&lt;!&ndash;<td><button onclick="app.choiseFile()">Choise</button></td>&ndash;&gt;-->
-            <!--<td><button onclick="app.showTaskDetail(5)">Details</button></td>-->
-            <!--&lt;!&ndash;<td>87</td>&ndash;&gt;-->
-            <!--</tr>-->
-            <!--<tr>-->
-            <!--<th>6</th>-->
-            <!--<td><a href="javascript: app.showTaskDetail(6)" data-rel="external">Dr. Strangelove Or How I Learned to Stop Worrying and Love the Bomb</a></td>-->
-            <!--&lt;!&ndash;<td><button onclick="app.choiseFile()">Choise</button></td>&ndash;&gt;-->
-            <!--<td><button onclick="app.showTaskDetail(6)">Details</button></td>-->
-            <!--&lt;!&ndash;<td>74</td>&ndash;&gt;-->
-            <!--</tr>-->
-            <!--<tr>-->
-            <!--<th>7</th>-->
-            <!--<td><a href="javascript: app.showTaskDetail(7)" data-rel="external">The Graduate</a></td>-->
-            <!--&lt;!&ndash;<td><button onclick="app.choiseFile()">Choise</button></td>&ndash;&gt;-->
-            <!--<td><button onclick="app.showTaskDetail(7)">Details</button></td>-->
-            <!--&lt;!&ndash;<td>122</td>&ndash;&gt;-->
-            <!--</tr>-->
-            <!--<tr>-->
-            <!--<th>8</th>-->
-            <!--<td><a href="javascript: app.showTaskDetail(8)" data-rel="external">The Wizard of Oz</a></td>-->
-            <!--&lt;!&ndash;<td><button onclick="app.choiseFile()">Choise</button></td>&ndash;&gt;-->
-            <!--<td><button onclick="app.showTaskDetail(8)">Details</button></td>-->
-            <!--&lt;!&ndash;<td>72</td>&ndash;&gt;-->
-            <!--</tr>-->
-            <!--<tr>-->
-            <!--<th>9</th>-->
-            <!--<td><a href="javascript: app.showTaskDetail(9)" data-rel="external">Singin' in the Rain</a></td>-->
-            <!--&lt;!&ndash;<td><button onclick="app.choiseFile()">Choise</button></td>&ndash;&gt;-->
-            <!--<td><button onclick="app.showTaskDetail(9)">Details</button></td>-->
-            <!--&lt;!&ndash;<td>85</td>&ndash;&gt;-->
-            <!--</tr>-->
-            <!--<tr>-->
-            <!--<th>10</th>-->
-            <!--<td class="title"><a href="javascript: app.showTaskDetail(10)" data-rel="external">Inception</a></td>-->
-            <!--&lt;!&ndash;<td><button onclick="app.choiseFile()">Choise</button></td>&ndash;&gt;-->
-            <!--<td><button onclick="app.showTaskDetail(10)">Details</button></td>-->
-            <!--&lt;!&ndash;<td>78</td>&ndash;&gt;-->
-            <!--</tr>-->
             </tbody>
         </table>
     </div>
@@ -146,8 +79,9 @@
         <h2>Task details</h2>
     </div>
     <div role="main" class="ui-content" id="taskContent">
-        <h3>TASK DESCRIPTION</h3>
-        <p>task description --- tttttt</p>
+        <h3 id="taskName"></h3>
+
+        <p id="taskDescription"></p>
         <div id="photos"></div>
         <div id="barCodes"></div>
         <div id="files"></div>

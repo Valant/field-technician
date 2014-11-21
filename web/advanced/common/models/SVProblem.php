@@ -17,18 +17,21 @@
      * @property string $Is_Master
      * @property string $Use_SedonaWeb
      */
-    class SVProblem extends \yii\db\ActiveRecord {
+    class SVProblem extends \yii\db\ActiveRecord
+    {
         /**
          * @inheritdoc
          */
-        public static function tableName() {
+        public static function tableName()
+        {
             return 'SV_Problem';
         }
 
         /**
          * @inheritdoc
          */
-        public function rules() {
+        public function rules()
+        {
             return [
                 [ [ 'Problem_Code', 'Description', 'Inactive', 'Is_Master', 'Use_SedonaWeb' ], 'string' ],
                 [ [ 'Estimated_Time', 'Priority_Id', 'Expertise_Level' ], 'integer' ]
@@ -38,7 +41,8 @@
         /**
          * @inheritdoc
          */
-        public function attributeLabels() {
+        public function attributeLabels()
+        {
             return [
                 'Problem_Id'      => 'Problem  ID',
                 'Problem_Code'    => 'Problem  Code',

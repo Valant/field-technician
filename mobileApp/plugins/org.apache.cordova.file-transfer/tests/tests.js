@@ -1,23 +1,23 @@
 /*
-*
-* Licensed to the Apache Software Foundation (ASF) under one
-* or more contributor license agreements.  See the NOTICE file
-* distributed with this work for additional information
-* regarding copyright ownership.  The ASF licenses this file
-* to you under the Apache License, Version 2.0 (the
-* "License"); you may not use this file except in compliance
-* with the License.  You may obtain a copy of the License at
-*
-*   http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an
-* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-* KIND, either express or implied.  See the License for the
-* specific language governing permissions and limitations
-* under the License.
-*
-*/
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
 
 exports.defineAutoTests = function () {
 
@@ -62,21 +62,21 @@ exports.defineAutoTests = function () {
 
             var getTemp = function () {
                 window.requestFileSystem(LocalFileSystem.TEMPORARY, 0,
-                function (fileSystem) {
-                    console.log('File API test Init: Setting TEMPORARY FS.');
-                    temp_root = fileSystem.root; // set in file.tests.js
-                    done();
-                }, onError);
+                    function (fileSystem) {
+                        console.log('File API test Init: Setting TEMPORARY FS.');
+                        temp_root = fileSystem.root; // set in file.tests.js
+                        done();
+                    }, onError);
                 expect(true).toBe(true);
             };
 
             window.requestFileSystem(LocalFileSystem.PERSISTENT, 0,
-            function (fileSystem) {
-                console.log('File API test Init: Setting PERSISTENT FS.');
-                root = fileSystem.root; // set in file.tests.js
-                persistent_root = root;
-                getTemp();
-            }, onError);
+                function (fileSystem) {
+                    console.log('File API test Init: Setting PERSISTENT FS.');
+                    root = fileSystem.root; // set in file.tests.js
+                    persistent_root = root;
+                    getTemp();
+                }, onError);
         });
 
 
@@ -84,7 +84,7 @@ exports.defineAutoTests = function () {
         var writeFile = function (fileName, fileContent, success, error) {
 
             var callback = function () {
-                root.getFile(fileName, { create: true }, function (fileEntry) {
+                root.getFile(fileName, {create: true}, function (fileEntry) {
                     fileEntry.createWriter(function (writer) {
 
                         writer.onwrite = function (evt) {
@@ -132,7 +132,9 @@ exports.defineAutoTests = function () {
 
         // deletes file, if it exists
         var deleteFile = function (fileName, done) {
-            var callback = function () { done(); };
+            var callback = function () {
+                done();
+            };
             root.getFile(fileName, null,
                 // remove file system entry
                 function (entry) {
@@ -746,10 +748,10 @@ exports.defineAutoTests = function () {
                 };
 
                 /* This is an undocumented interface to File which exists only for testing
-                     * backwards compatibilty. By obtaining the raw filesystem path of the download
-                     * location, we can pass that to ft.download() to make sure that previously-stored
-                     * paths are still valid.
-                     */
+                 * backwards compatibilty. By obtaining the raw filesystem path of the download
+                 * location, we can pass that to ft.download() to make sure that previously-stored
+                 * paths are still valid.
+                 */
                 cordova.exec(function (localPath) {
                     var ft = new FileTransfer();
                     ft.onprogress = function (e) {
@@ -881,8 +883,11 @@ exports.defineManualTests = function (contentEl, createActionButton) {
                 console.log("Src URL is " + element.src);
                 console.log("Inserting element");
                 document.getElementById("info").appendChild(element);
-            }, function (e) { console.log("ERROR: ft.download " + e.code); });
+            }, function (e) {
+                console.log("ERROR: ft.download " + e.code);
+            });
         }
+
         console.log("Requesting filesystem");
         clearResults();
         requestFileSystem(TEMPORARY, 0, function (fileSystem) {
@@ -892,21 +897,27 @@ exports.defineManualTests = function (contentEl, createActionButton) {
                 fileSystem.root.getDirectory(directory, {}, function (dirEntry) {
                     dirEntry.removeRecursively(function () {
                         download(fileSystem);
-                    }, function (e) { console.log("ERROR: dirEntry.removeRecursively") });
+                    }, function (e) {
+                        console.log("ERROR: dirEntry.removeRecursively")
+                    });
                 }, function () {
                     download(fileSystem);
                 });
             } else {
-                fileSystem.root.getFile(filename, { create: false }, function (entry) {
+                fileSystem.root.getFile(filename, {create: false}, function (entry) {
                     console.log("Removing existing file");
                     entry.remove(function () {
                         download(fileSystem);
-                    }, function (e) { console.log("ERROR: entry.remove"); });
+                    }, function (e) {
+                        console.log("ERROR: entry.remove");
+                    });
                 }, function () {
                     download(fileSystem);
                 });
             }
-        }, function (e) { console.log("ERROR: requestFileSystem"); });
+        }, function (e) {
+            console.log("ERROR: requestFileSystem");
+        });
     }
 
     /******************************************************************************/
@@ -922,29 +933,39 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         '<div id="native_video"></div>';
 
     contentEl.innerHTML = '<div id="info"></div>' +
-        file_transfer_tests;
+    file_transfer_tests;
 
     createActionButton('Download and display img (cdvfile)', function () {
-        downloadImg(imageURL, function (entry) { return entry.toURL(); }, new Image());
+        downloadImg(imageURL, function (entry) {
+            return entry.toURL();
+        }, new Image());
     }, 'cdv_image');
 
     createActionButton('Download and display img (native)', function () {
-        downloadImg(imageURL, function (entry) { return entry.toNativeURL(); }, new Image);
+        downloadImg(imageURL, function (entry) {
+            return entry.toNativeURL();
+        }, new Image);
     }, 'native_image');
 
     createActionButton('Download to a non-existent dir (should work)', function () {
-        downloadImg(imageURL, function (entry) { return entry.toURL(); }, new Image, '/nonExistentDirTest/');
+        downloadImg(imageURL, function (entry) {
+            return entry.toURL();
+        }, new Image, '/nonExistentDirTest/');
     }, 'non-existent_dir');
 
     createActionButton('Download and play video (cdvfile)', function () {
         var videoElement = document.createElement('video');
         videoElement.controls = "controls";
-        downloadImg(videoURL, function (entry) { return entry.toURL(); }, videoElement);
+        downloadImg(videoURL, function (entry) {
+            return entry.toURL();
+        }, videoElement);
     }, 'cdv_video');
 
     createActionButton('Download and play video (native)', function () {
         var videoElement = document.createElement('video');
         videoElement.controls = "controls";
-        downloadImg(videoURL, function (entry) { return entry.toNativeURL(); }, videoElement)
+        downloadImg(videoURL, function (entry) {
+            return entry.toNativeURL();
+        }, videoElement)
     }, 'native_video');
 };

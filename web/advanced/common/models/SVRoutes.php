@@ -14,18 +14,21 @@
      * @property integer $Inspection_Route
      * @property integer $Service_Route
      */
-    class SVRoutes extends \yii\db\ActiveRecord {
+    class SVRoutes extends \yii\db\ActiveRecord
+    {
         /**
          * @inheritdoc
          */
-        public static function tableName() {
+        public static function tableName()
+        {
             return 'SV_Routes';
         }
 
         /**
          * @inheritdoc
          */
-        public function rules() {
+        public function rules()
+        {
             return [
                 [ [ 'Route_Code', 'Description', 'Inactive' ], 'string' ],
                 [ [ 'Inspection_Route', 'Service_Route' ], 'integer' ]
@@ -35,7 +38,8 @@
         /**
          * @inheritdoc
          */
-        public function attributeLabels() {
+        public function attributeLabels()
+        {
             return [
                 'Route_Id'         => 'Route  ID',
                 'Route_Code'       => 'Route  Code',

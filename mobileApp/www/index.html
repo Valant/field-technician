@@ -19,17 +19,17 @@
 -->
 <html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="format-detection" content="telephone=no" />
+    <meta charset="utf-8"/>
+    <meta name="format-detection" content="telephone=no"/>
     <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
     <!--<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />-->
     <meta name="viewport"
           content="width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 
-    <link rel="stylesheet" type="text/css" href="css/index.css" />
-    <link rel="stylesheet" type="text/css" href="css/jquery.mobile.css" />
+    <link rel="stylesheet" type="text/css" href="css/index.css"/>
+    <link rel="stylesheet" type="text/css" href="css/jquery.mobile.css"/>
 
-    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="msapplication-tap-highlight" content="no"/>
     <title>Hello World</title>
 </head>
 <body>
@@ -44,7 +44,7 @@
     app.initialize();
 </script>
 <div data-role="page" id="signin">
-    <div data-role="header" >
+    <div data-role="header">
         <h2>Test application</h2>
     </div>
     <div role="main" class="ui-content" id="signin_content">
@@ -53,14 +53,16 @@
         <input type="password" style="password" id="password" placeholder="Password"/>
         <button onclick="app.signin()">Sign In</button>
     </div>
-    <div data-role="footer"  position="fixed"><h3>&copy; Valant</h3></div>
+    <div data-role="footer" position="fixed"><h3>&copy; Valant</h3></div>
 </div>
 <div data-role="page" id="tasks">
-    <div data-role="header" >
+    <div data-role="header">
         <h2>Task list</h2>
     </div>
     <div role="main" class="ui-content" id="tasks_content">
-        <table data-role="table" id="table-custom-2" data-mode="columntoggle" class="ui-body-d ui-shadow table-stripe ui-responsive" data-column-btn-theme="b" data-column-btn-text="Columns to display..." data-column-popup-theme="a">
+        <table data-role="table" id="table-custom-2" data-mode="columntoggle"
+               class="ui-body-d ui-shadow table-stripe ui-responsive" data-column-btn-theme="b"
+               data-column-btn-text="Columns to display..." data-column-popup-theme="a">
             <thead>
             <tr class="ui-bar-d">
                 <th data-priority="6"><abbr title="Ticket ID">ID</abbr></th>
@@ -75,16 +77,17 @@
             </tbody>
         </table>
     </div>
-    <div data-role="footer"  position="fixed"><h3>&copy; Valant</h3></div>
+    <div data-role="footer" position="fixed"><h3>&copy; Valant</h3></div>
 </div>
 <div data-role="page" id="taskDetails">
-    <div data-role="header" >
+    <div data-role="header">
         <h2>Task details</h2>
     </div>
     <div role="main" class="ui-content" id="taskContent">
         <h3 id="taskName"></h3>
 
         <p id="taskDescription"></p>
+
         <div id="photos"></div>
         <div id="barCodes"></div>
         <div id="files"></div>
@@ -95,14 +98,15 @@
             <button onclick="app.uploadTaskData()">Save</button>
         </div>
     </div>
-    <div data-role="footer"  position="fixed"><h3>&copy; Valant</h3></div>
+    <div data-role="footer" position="fixed"><h3>&copy; Valant</h3></div>
 </div>
 <div data-role="page" id="progress">
-    <div data-role="header" >
+    <div data-role="header">
         <h2>Save data</h2>
     </div>
     <div role="main" class="ui-content" id="progressContent">
         <h3>Upload...</h3>
+
         <div id="progressBars"></div>
     </div>
     <div data-role="footer" position="fixed"><h3>&copy; Valant</h3></div>

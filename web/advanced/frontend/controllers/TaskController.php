@@ -13,7 +13,8 @@
     use yii\rest\ActiveController;
 
 
-    class TaskController extends ActiveController {
+    class TaskController extends ActiveController
+    {
         public $modelClass = 'common\models\Task';
 
     }

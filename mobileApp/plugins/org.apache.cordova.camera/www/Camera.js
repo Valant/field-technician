@@ -17,13 +17,13 @@
  * specific language governing permissions and limitations
  * under the License.
  *
-*/
+ */
 
 var argscheck = require('cordova/argscheck'),
     exec = require('cordova/exec'),
     Camera = require('./Camera');
-    // XXX: commented out
-    //CameraPopoverHandle = require('./CameraPopoverHandle');
+// XXX: commented out
+//CameraPopoverHandle = require('./CameraPopoverHandle');
 
 var cameraExport = {};
 
@@ -42,7 +42,7 @@ for (var key in Camera) {
  * @param {Function} errorCallback
  * @param {Object} options
  */
-cameraExport.getPicture = function(successCallback, errorCallback, options) {
+cameraExport.getPicture = function (successCallback, errorCallback, options) {
     argscheck.checkArgs('fFO', 'Camera.getPicture', arguments);
     options = options || {};
     var getValue = argscheck.getValue;
@@ -61,14 +61,14 @@ cameraExport.getPicture = function(successCallback, errorCallback, options) {
     var cameraDirection = getValue(options.cameraDirection, Camera.Direction.BACK);
 
     var args = [quality, destinationType, sourceType, targetWidth, targetHeight, encodingType,
-                mediaType, allowEdit, correctOrientation, saveToPhotoAlbum, popoverOptions, cameraDirection];
+        mediaType, allowEdit, correctOrientation, saveToPhotoAlbum, popoverOptions, cameraDirection];
 
     exec(successCallback, errorCallback, "Camera", "takePicture", args);
     // XXX: commented out
     //return new CameraPopoverHandle();
 };
 
-cameraExport.cleanup = function(successCallback, errorCallback) {
+cameraExport.cleanup = function (successCallback, errorCallback) {
     exec(successCallback, errorCallback, "Camera", "cleanup", []);
 };
 

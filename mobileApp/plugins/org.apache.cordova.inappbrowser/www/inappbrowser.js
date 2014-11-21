@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.
  *
-*/
+ */
 
 var exec = require('cordova/exec');
 var channel = require('cordova/channel');
@@ -25,12 +25,12 @@ var modulemapper = require('cordova/modulemapper');
 var urlutil = require('cordova/urlutil');
 
 function InAppBrowser() {
-   this.channels = {
+    this.channels = {
         'loadstart': channel.create('loadstart'),
-        'loadstop' : channel.create('loadstop'),
-        'loaderror' : channel.create('loaderror'),
-        'exit' : channel.create('exit')
-   };
+        'loadstop': channel.create('loadstop'),
+        'loaderror': channel.create('loaderror'),
+        'exit': channel.create('exit')
+    };
 }
 
 InAppBrowser.prototype = {
@@ -43,20 +43,20 @@ InAppBrowser.prototype = {
         exec(null, null, "InAppBrowser", "close", []);
     },
     show: function (eventname) {
-      exec(null, null, "InAppBrowser", "show", []);
+        exec(null, null, "InAppBrowser", "show", []);
     },
-    addEventListener: function (eventname,f) {
+    addEventListener: function (eventname, f) {
         if (eventname in this.channels) {
             this.channels[eventname].subscribe(f);
         }
     },
-    removeEventListener: function(eventname, f) {
+    removeEventListener: function (eventname, f) {
         if (eventname in this.channels) {
             this.channels[eventname].unsubscribe(f);
         }
     },
 
-    executeScript: function(injectDetails, cb) {
+    executeScript: function (injectDetails, cb) {
         if (injectDetails.code) {
             exec(cb, null, "InAppBrowser", "injectScriptCode", [injectDetails.code, !!cb]);
         } else if (injectDetails.file) {
@@ -66,7 +66,7 @@ InAppBrowser.prototype = {
         }
     },
 
-    insertCSS: function(injectDetails, cb) {
+    insertCSS: function (injectDetails, cb) {
         if (injectDetails.code) {
             exec(cb, null, "InAppBrowser", "injectStyleCode", [injectDetails.code, !!cb]);
         } else if (injectDetails.file) {
@@ -77,7 +77,7 @@ InAppBrowser.prototype = {
     }
 };
 
-module.exports = function(strUrl, strWindowName, strWindowFeatures) {
+module.exports = function (strUrl, strWindowName, strWindowFeatures) {
     // Don't catch calls that write to existing frames (e.g. named iframes).
     if (window.frames && window.frames[strWindowName]) {
         var origOpenFunc = modulemapper.getOriginalSymbol(window, 'open');
@@ -86,8 +86,8 @@ module.exports = function(strUrl, strWindowName, strWindowFeatures) {
 
     strUrl = urlutil.makeAbsolute(strUrl);
     var iab = new InAppBrowser();
-    var cb = function(eventname) {
-       iab._eventHandler(eventname);
+    var cb = function (eventname) {
+        iab._eventHandler(eventname);
     };
 
     strWindowFeatures = strWindowFeatures || "";

@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.
  *
-*/
+ */
 
 var argscheck = require('cordova/argscheck'),
     FileError = require('./FileError'),
@@ -32,9 +32,9 @@ var fileSystems = require('./fileSystems');
  * @param successCallback  invoked with a FileSystem object
  * @param errorCallback  invoked if error occurs retrieving file system
  */
-var requestFileSystem = function(type, size, successCallback, errorCallback) {
+var requestFileSystem = function (type, size, successCallback, errorCallback) {
     argscheck.checkArgs('nnFF', 'requestFileSystem', arguments);
-    var fail = function(code) {
+    var fail = function (code) {
         errorCallback && errorCallback(new FileError(code));
     };
 
@@ -42,10 +42,10 @@ var requestFileSystem = function(type, size, successCallback, errorCallback) {
         fail(FileError.SYNTAX_ERR);
     } else {
         // if successful, return a FileSystem object
-        var success = function(file_system) {
+        var success = function (file_system) {
             if (file_system) {
                 if (successCallback) {
-                    fileSystems.getFs(file_system.name, function(fs) {
+                    fileSystems.getFs(file_system.name, function (fs) {
                         if (!fs) {
                             fs = new FileSystem(file_system.name, file_system.root);
                         }

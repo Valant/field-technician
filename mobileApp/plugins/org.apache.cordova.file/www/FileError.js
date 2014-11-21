@@ -17,13 +17,13 @@
  * specific language governing permissions and limitations
  * under the License.
  *
-*/
+ */
 
 /**
  * FileError
  */
 function FileError(error) {
-  this.code = error || null;
+    this.code = error || null;
 }
 
 // File error codes
