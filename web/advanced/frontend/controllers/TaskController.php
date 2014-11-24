@@ -9,7 +9,6 @@
     namespace frontend\controllers;
 
     use Yii;
-    use common\models\Task;
     use yii\rest\ActiveController;
 
 
