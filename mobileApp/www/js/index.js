@@ -350,6 +350,7 @@ var app = {
         $('#' + id).slider("refresh");
     },
     setTaskStatus: function(status){
+        jQuery.blockUI({message: '<h1>Saving task status</h1>'});
         $.ajax({
             type:'POST',
             url: this.apiUrl+"taskhistory/create",
@@ -358,9 +359,23 @@ var app = {
                 tech_id: this.user_id,
                 status: status
             }
-        }).done(function(data){
-            console.log(data);
+        }).always(function(data){
+            jQuery.unblockUI();
         });
+    },
+    goBack: function(){
+        if($.mobile.activePage.is('#tasks')||$.mobile.activePage.is('#signin')){
+            if (navigator.app) {
+                navigator.app.exitApp();
+            }
+            else if (navigator.device) {
+                navigator.device.exitApp();
+            }
+        }
+        else {
+            $.mobile.back();
+            return false;
+        }
     }
 
 };
