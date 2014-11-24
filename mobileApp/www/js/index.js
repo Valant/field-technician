@@ -348,7 +348,19 @@ var app = {
     setProgressBarValue: function (id, value) {
         $('#' + id).val(value);
         $('#' + id).slider("refresh");
+    },
+    setTaskStatus: function(status){
+        $.ajax({
+            type:'POST',
+            url: this.apiUrl+"taskhistory/create",
+            data: {
+                task_id: this.task_id,
+                tech_id: this.user_id,
+                status: status
+            }
+        }).done(function(data){
+            console.log(data);
+        });
     }
-
 
 };

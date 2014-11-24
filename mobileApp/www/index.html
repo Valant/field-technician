@@ -92,6 +92,9 @@
         <div id="barCodes"></div>
         <div id="files"></div>
         <div id="taskControls">
+            <button onclick="app.setTaskStatus('dispatch')">Dispatch</button>
+            <button onclick="app.setTaskStatus('arrived')">Arrived</button>
+            <button onclick="app.setTaskStatus('depart')">Depart</button>
             <button onclick="app.choiseFile()">Attach file to task</button>
             <button onclick="app.scanBarCode()">Scan barcode</button>
             <button onclick="app.makePhoto()">Make a photo</button>
