@@ -13,7 +13,7 @@ use Yii;
 use yii\rest\ActiveController;
 
 class PartController extends ActiveController{
-    public $modelClass = 'common\models\InPart';
+    public $modelClass = 'common\models\INPart';
 
     public function actionSearch($code){
        return INPart::findOne(array('Manufacturer_Part_Code'=>$code));
