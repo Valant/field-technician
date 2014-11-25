@@ -18,7 +18,11 @@ class PartController extends ActiveController{
     public $modelClass = 'common\models\INPart';
 
     public function actionSearch($code){
-       return INPart::findOne(array('Manufacturer_Part_Code'=>$code));
+       if($part = INPart::findOne(array('Manufacturer_Part_Code'=>$code))){
+           return $part;
+       }else{
+           return ['status'=>'error'];
+       }
     }
 
 } 

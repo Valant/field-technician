@@ -21,8 +21,8 @@ var app = {
     task_id: false,
     uploaded: 0,
     needToUpload: 0,
-    //apiUrl: 'http://api.field-technician.loc/',
-    apiUrl: 'http://71.125.36.114/',
+    apiUrl: 'http://api.field-technician.loc/',
+    //apiUrl: 'http://71.125.36.114/',
     user_id: 0,
     task_data: [],
     // Application Constructor
@@ -104,24 +104,36 @@ var app = {
     },
     scanBarCode: function () {
         try {
-            window.plugins.barcodeScanner.scan(
-                function (result) {
-                    if (!result.cancelled) {
-                        $.getJSON(app.apiUrl+"part/search",{
-                            code: result.text
-                        },function(data){
-                            if(data) {
-                                jQuery("#barCodes").append("<p>Code: '" + result.response.part_code + "'. Detail: '" + result.response.Detail + "'. Description: '" + result.response.Description + "'</p>");
-                            }else{
-                                alert("Part was not founded");
-                            }
-                        });
-                    }
-                },
-                function (error) {
-                    alert("Scanning failed: " + error);
+
+            $.getJSON(app.apiUrl+"part/search",{
+                code: 'K84444A272A 01'
+            },function(data){
+                if("error" == data.status) {
+                    alert("Part was not founded");
+                }else{
+                    jQuery("#barCodes").append("<p>Code: '" + data.Part_Code + "'. Detail: '" + data.Detail + "'. Description: '" + data.Description + "'</p>");
+
                 }
-            );
+            });
+
+            //window.plugins.barcodeScanner.scan(
+            //    function (result) {
+            //        if (!result.cancelled) {
+            //            $.getJSON(app.apiUrl+"part/search",{
+            //                code: result.text
+            //            },function(data){
+            //                if(data) {
+            //                    jQuery("#barCodes").append("<p>Code: '" + result.response.part_code + "'. Detail: '" + result.response.Detail + "'. Description: '" + result.response.Description + "'</p>");
+            //                }else{
+            //                    alert("Part was not founded");
+            //                }
+            //            });
+            //        }
+            //    },
+            //    function (error) {
+            //        alert("Scanning failed: " + error);
+            //    }
+            //);
         } catch (e) {
             console.log(e);
         }
@@ -315,37 +327,37 @@ var app = {
         this.task_data[this.task_id] = data;
         var task = data;
         $("#taskName").text(task.ProblemDescription + ' - ' + task.Customer_Name);
-        $("<p><b>Customer</b></p>").appendTo("#taskDescription");
-        $("<p><span>" + task.business_name + "</span></p>").appendTo("#taskDescription");
-        $("<p><span>" + task.Customer_Name + "</span></p>").appendTo("#taskDescription");
-        $("<p><span>" + task.address_1 + "</span></p>").appendTo("#taskDescription");
-        $("<p><span>" + task.ge1_description + "</span></p>").appendTo("#taskDescription");
-        $("<p><span>" + task.ge2_short + "</span></p>").appendTo("#taskDescription");
-        $("<p><span>" + task.ge3_description + "</span></p>").appendTo("#taskDescription");
+        $("<h4>Customer</h4>").appendTo("#taskDescription");
+        $("<p><pre>" + task.business_name + "</pre></p>").appendTo("#taskDescription");
+        $("<p><pre>" + task.Customer_Name + "</pre></p>").appendTo("#taskDescription");
+        $("<p><pre>" + task.address_1 + "</pre></p>").appendTo("#taskDescription");
+        $("<p><pre>" + task.ge1_description + "</pre></p>").appendTo("#taskDescription");
+        $("<p><pre>" + task.ge2_short + "</pre></p>").appendTo("#taskDescription");
+        $("<p><pre>" + task.ge3_description + "</pre></p>").appendTo("#taskDescription");
 
-        $("<p><b>Site</b></p>").appendTo("#taskDescription");
-        $("<p><span>" + task.customer_number + "</span></p>").appendTo("#taskDescription");
-        $("<p><span>" + task.Customer_Site_Address + "</span></p>").appendTo("#taskDescription");
-        $("<p><span>" + task.Customer_Site_Ge1_Description + "</span></p>").appendTo("#taskDescription");
-        $("<p><span>" + task.Customer_Site_Ge2_Short + "</span></p>").appendTo("#taskDescription");
-        $("<p><span>" + task.Customer_Site_Ge3_Description + "</span></p>").appendTo("#taskDescription");
+        $("<h4>Site</h4>").appendTo("#taskDescription");
+        $("<p><pre>" + task.customer_number + "</pre></p>").appendTo("#taskDescription");
+        $("<p><pre>" + task.Customer_Site_Address + "</pre></p>").appendTo("#taskDescription");
+        $("<p><pre>" + task.Customer_Site_Ge1_Description + "</pre></p>").appendTo("#taskDescription");
+        $("<p><pre>" + task.Customer_Site_Ge2_Short + "</pre></p>").appendTo("#taskDescription");
+        $("<p><pre>" + task.Customer_Site_Ge3_Description + "</pre></p>").appendTo("#taskDescription");
 
-        $("<p><b>System Information</b></p>").appendTo("#taskDescription");
-        $("<p><span>System Account: " + task.alarm_account + "</span></p>").appendTo("#taskDescription");
-        $("<p><span>System Type: " + task.System_Description + "</span></p>").appendTo("#taskDescription");
-        $("<p><span>Panel Type: " + task.System_Panel_Description + "</span></p>").appendTo("#taskDescription");
-        $("<p><span>Site Phone: " + task.phone_1 + "</span></p>").appendTo("#taskDescription");
-        $("<p><span>Cross Street: " + task.cross_street + "</span></p>").appendTo("#taskDescription");
-        $("<p><span>System Comments: " + task.system_comments + "</span></p>").appendTo("#taskDescription");
+        $("<h4>System Information</h4>").appendTo("#taskDescription");
+        $("<p><pre>System Account: " + task.alarm_account + "</pre></p>").appendTo("#taskDescription");
+        $("<p><pre>System Type: " + task.System_Description + "</pre></p>").appendTo("#taskDescription");
+        $("<p><pre>Panel Type: " + task.System_Panel_Description + "</pre></p>").appendTo("#taskDescription");
+        $("<p><pre>Site Phone: " + task.phone_1 + "</pre></p>").appendTo("#taskDescription");
+        $("<p><pre>Cross Street: " + task.cross_street + "</pre></p>").appendTo("#taskDescription");
+        $("<p><pre>System Comments: " + task.system_comments + "</pre></p>").appendTo("#taskDescription");
 
-        $("<p><b>Ticket Information</b></p>").appendTo("#taskDescription");
-        $("<p><span>Status: " + task.ticket_status + "</span></p>").appendTo("#taskDescription");
-        $("<p><span>Created on: " + task.Creation_Date + "</span></p>").appendTo("#taskDescription");
-        $("<p><span>Created by: " + task.entered_by + "</span></p>").appendTo("#taskDescription");
-        $("<p><span>Contact: " + task.Requested_By + "</span></p>").appendTo("#taskDescription");
-        $("<p><span>Phone: " + task.requested_by_phone + "</span></p>").appendTo("#taskDescription");
-        $("<p><span>Problem: " + task.ProblemDescription + "</span></p>").appendTo("#taskDescription");
-        $("<p><span>Customer Comment : " + task.CustomerComments + "</span></p>").appendTo("#taskDescription");
+        $("<h4>Ticket Information</h4>").appendTo("#taskDescription");
+        $("<p><pre>Status: " + task.ticket_status + "</pre></p>").appendTo("#taskDescription");
+        $("<p><pre>Created on: " + task.Creation_Date + "</pre></p>").appendTo("#taskDescription");
+        $("<p><pre>Created by: " + task.entered_by + "</pre></p>").appendTo("#taskDescription");
+        $("<p><pre>Contact: " + task.Requested_By + "</pre></p>").appendTo("#taskDescription");
+        $("<p><pre>Phone: " + task.requested_by_phone + "</pre></p>").appendTo("#taskDescription");
+        $("<p><pre>Problem: " + task.ProblemDescription + "</pre></p>").appendTo("#taskDescription");
+        $("<p><pre>Customer Comment : " + task.CustomerComments + "</pre></p>").appendTo("#taskDescription");
     },
     clearTask: function () {
         jQuery("#taskName").empty();

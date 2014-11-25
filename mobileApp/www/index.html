@@ -45,20 +45,20 @@
 </script>
 <div data-role="page" id="signin">
     <div data-role="header">
-        <a onclick="app.goBack();">Back</a>
+        <button data-icon="power" data-iconpos="notext" onclick="app.goBack();"></button>
         <h2>Test application</h2>
     </div>
     <div role="main" class="ui-content" id="signin_content">
         <pre class="errors"></pre>
         <input style="text" id="login" placeholder="Login"/>
         <input type="password" style="password" id="password" placeholder="Password"/>
-        <button onclick="app.signin()">Sign In</button>
+        <button data-icon="home" onclick="app.signin()">Sign In</button>
     </div>
     <div data-role="footer" position="fixed"><h3>&copy; Valant</h3></div>
 </div>
 <div data-role="page" id="tasks">
     <div data-role="header">
-        <a onclick="app.goBack();">Back</a>
+        <button data-icon="back" data-iconpos="notext" onclick="app.goBack();"></button>
         <h2>Task list</h2>
     </div>
     <div role="main" class="ui-content" id="tasks_content">
@@ -83,25 +83,25 @@
 </div>
 <div data-role="page" id="taskDetails">
     <div data-role="header">
-        <a onclick="app.goBack();">Back</a>
+        <button data-icon="back" data-iconpos="notext" onclick="app.goBack();"></button>
         <h2>Task details</h2>
     </div>
     <div role="main" class="ui-content" id="taskContent">
         <h3 id="taskName"></h3>
 
-        <p id="taskDescription"></p>
+        <div id="taskDescription" data-theme="b" data-form="ui-body-b" class="ui-body ui-body-b ui-corner-all"></div>
 
-        <div id="photos"></div>
-        <div id="barCodes"></div>
-        <div id="files"></div>
+        <div id="photos"><h1>Photos</h1></div>
+        <div id="barCodes"><h1>Used details</h1></div>
+        <div id="files"><h1>Files</h1></div>
         <div id="taskControls">
-            <button onclick="app.setTaskStatus('dispatch')">Dispatch</button>
-            <button onclick="app.setTaskStatus('arrived')">Arrived</button>
-            <button onclick="app.setTaskStatus('depart')">Depart</button>
-            <button onclick="app.choiseFile()">Attach file to task</button>
-            <button onclick="app.scanBarCode()">Scan barcode</button>
-            <button onclick="app.makePhoto()">Make a photo</button>
-            <button onclick="app.uploadTaskData()">Save</button>
+            <button data-icon="navigation" onclick="app.setTaskStatus('dispatch')">Dispatch</button>
+            <button data-icon="user" onclick="app.setTaskStatus('arrived')">Arrived</button>
+            <button data-icon="tag" onclick="app.setTaskStatus('depart')">Depart</button>
+            <button data-icon="eye" onclick="app.choiseFile()">Attach file to task</button>
+            <button data-icon="bars" onclick="app.scanBarCode()">Scan barcode</button>
+            <button data-icon="camera"  onclick="app.makePhoto()">Make a photo</button>
+            <button data-icon="action" onclick="app.uploadTaskData()">Save</button>
         </div>
     </div>
     <div data-role="footer" position="fixed"><h3>&copy; Valant</h3></div>
