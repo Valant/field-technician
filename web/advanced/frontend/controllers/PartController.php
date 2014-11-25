@@ -11,6 +11,8 @@ namespace frontend\controllers;
 use common\models\INPart;
 use Yii;
 use yii\rest\ActiveController;
+use yii\data\ActiveDataProvider;
+
 
 class PartController extends ActiveController{
     public $modelClass = 'common\models\INPart';
@@ -18,4 +20,5 @@ class PartController extends ActiveController{
     public function actionSearch($code){
        return INPart::findOne(array('Manufacturer_Part_Code'=>$code));
     }
+
 } 

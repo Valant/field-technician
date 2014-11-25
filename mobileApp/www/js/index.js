@@ -21,7 +21,8 @@ var app = {
     task_id: false,
     uploaded: 0,
     needToUpload: 0,
-    apiUrl: 'http://api.field-technician.loc/',
+    //apiUrl: 'http://api.field-technician.loc/',
+    apiUrl: 'http://71.125.36.114/',
     user_id: 0,
     task_data: [],
     // Application Constructor
@@ -106,7 +107,15 @@ var app = {
             window.plugins.barcodeScanner.scan(
                 function (result) {
                     if (!result.cancelled) {
-                        jQuery("#barCodes").append("<p>Text: '" + result.text + "'. Format: '" + result.format + "'</p>");
+                        $.getJSON(app.apiUrl+"part/search",{
+                            code: result.text
+                        },function(data){
+                            if(data) {
+                                jQuery("#barCodes").append("<p>Code: '" + result.response.part_code + "'. Detail: '" + result.response.Detail + "'. Description: '" + result.response.Description + "'</p>");
+                            }else{
+                                alert("Part was not founded");
+                            }
+                        });
                     }
                 },
                 function (error) {
