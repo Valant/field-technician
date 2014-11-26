@@ -25,7 +25,7 @@ var app = {
     //apiUrl: 'http://71.125.36.114/',
     user_id: 0,
     task_data: [],
-    usedParts:[],
+    usedParts:{},
     // Application Constructor
     initialize: function () {
         this.bindEvents();
@@ -114,9 +114,15 @@ var app = {
                     jQuery.unblockUI();
                     alert("Part was not founded");
                 } else {
-                    jQuery('<li data-icon="delete" id="part' + data.Part_Id + '"><a onclick="app.removePart(' + data.Part_Id + ')">' + data.Part_Code + ' ' + data.Detail + ' ' + data.Description + '</a></li>').appendTo("#parts");
-                    app.usedParts.push(data.Part_Id);
+                    if(app.usedParts[data.Part_Id]){
+                        app.usedParts[data.Part_Id]++;
+                        jQuery("#part"+data.Part_Id+" .ui-li-count").text(app.usedParts[data.Part_Id]);
+                    }else {
+                        jQuery('<li data-icon="delete" id="part' + data.Part_Id + '"><a onclick="app.removePart(' + data.Part_Id + ')">' + data.Part_Code + ' ' + data.Detail + ' ' + data.Description + '<span class="ui-li-count">1</span></a></li>').appendTo("#parts");
+                        app.usedParts[data.Part_Id] = 1;
+                    }
                     $('#parts').listview('refresh');
+                    jQuery.unblockUI();
                 }
             });
 
@@ -138,7 +144,7 @@ var app = {
             //        alert("Scanning failed: " + error);
             //    }
             //);
-            jQuery.unblockUI();
+
         } catch (e) {
             console.log(e);
         }
@@ -411,7 +417,7 @@ var app = {
     },
 
     removePart: function(part_id){
-        this.usedParts.splice(this.usedParts.indexOf(part_id), 1);
+        delete this.usedParts[part_id];
         jQuery("#part"+part_id).remove();
     }
 };
