@@ -13,7 +13,7 @@
     use yii\rest\ActiveController;
 
 
-    class TaskAttachmentController extends ActiveController
+    class TaskattachmentController extends ActiveController
     {
         public $modelClass = 'common\models\TaskAttachment';
 
