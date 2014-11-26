@@ -28,6 +28,21 @@
             'errorHandler' => [
                 'errorAction' => 'site/error',
             ],
+            'request'    => [
+                // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
+                'cookieValidationKey' => 'y66p--lh5kuVhVbWG8Na0UD6tTK2toqP',
+            ],
+            'urlManager' => [
+                'enablePrettyUrl'     => true,
+                'enableStrictParsing' => false,
+                'showScriptName'      => false,
+                'rules'               => [
+                    [
+                        'class'      => 'yii\rest\UrlRule',
+                        'controller' => [ 'taskattachment' => 'taskattachment', 'task' => 'task', 'taskhistory' =>'taskhistory']
+                    ],
+                ],
+            ]
         ],
         'params'              => $params,
     ];
