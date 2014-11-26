@@ -90,9 +90,12 @@
         <h3 id="taskName"></h3>
 
         <div id="taskDescription" data-theme="b" data-form="ui-body-b" class="ui-body ui-body-b ui-corner-all"></div>
-
+        <div id="partList">
+            <h4>Used parts</h4>
+            <ul id="parts" data-role="listview" data-inset="true" data-count-theme="c" data-split-icon="delete">
+            </ul>
+        </div>
         <div id="photos"><h1>Photos</h1></div>
-        <div id="barCodes"><h1>Used details</h1></div>
         <div id="files"><h1>Files</h1></div>
         <div id="taskControls">
             <button data-icon="navigation" onclick="app.setTaskStatus('dispatch')">Dispatch</button>
@@ -100,7 +103,7 @@
             <button data-icon="tag" onclick="app.setTaskStatus('depart')">Depart</button>
             <button data-icon="eye" onclick="app.choiseFile()">Attach file to task</button>
             <button data-icon="bars" onclick="app.scanBarCode()">Scan barcode</button>
-            <button data-icon="camera"  onclick="app.makePhoto()">Make a photo</button>
+            <button data-icon="camera" onclick="app.makePhoto()">Make a photo</button>
             <button data-icon="action" onclick="app.uploadTaskData()">Save</button>
         </div>
     </div>
@@ -109,6 +112,7 @@
 <div data-role="page" id="progress">
     <div data-role="header">
         <a onclick="app.goBack();">Back</a>
+
         <h2>Save data</h2>
     </div>
     <div role="main" class="ui-content" id="progressContent">

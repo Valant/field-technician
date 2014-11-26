@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.
  *
- */
+*/
 
 var argscheck = require('cordova/argscheck'),
     channel = require('cordova/channel'),
@@ -44,8 +44,8 @@ function Device() {
 
     var me = this;
 
-    channel.onCordovaReady.subscribe(function () {
-        me.getInfo(function (info) {
+    channel.onCordovaReady.subscribe(function() {
+        me.getInfo(function(info) {
             //ignoring info.cordova returning from native, we should use value from cordova.version defined in cordova.js
             //TODO: CB-5105 native implementations should not return info.cordova
             var buildLabel = cordova.version;
@@ -56,7 +56,7 @@ function Device() {
             me.cordova = buildLabel;
             me.model = info.model;
             channel.onCordovaInfoReady.fire();
-        }, function (e) {
+        },function(e) {
             me.available = false;
             utils.alert("[ERROR] Error initializing Cordova: " + e);
         });
@@ -69,7 +69,7 @@ function Device() {
  * @param {Function} successCallback The function to call when the heading data is available
  * @param {Function} errorCallback The function to call when there is an error getting the heading data. (OPTIONAL)
  */
-Device.prototype.getInfo = function (successCallback, errorCallback) {
+Device.prototype.getInfo = function(successCallback, errorCallback) {
     argscheck.checkArgs('fF', 'Device.getInfo', arguments);
     exec(successCallback, errorCallback, "Device", "getDeviceInfo", []);
 };

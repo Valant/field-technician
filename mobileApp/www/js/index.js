@@ -25,6 +25,7 @@ var app = {
     //apiUrl: 'http://71.125.36.114/',
     user_id: 0,
     task_data: [],
+    usedParts:[],
     // Application Constructor
     initialize: function () {
         this.bindEvents();
@@ -96,7 +97,7 @@ var app = {
             '<td>' + value.Customer_Name + '</td>' +
             '<td>' + value.City + '</td>' +
             '<td>' + value.Ticket_Status + '</td>' +
-            '<td><button onclick="app.showTaskDetail(' + value.Service_Ticket_Id + ')">Details</button></td>' +
+            '<td><button data-icon="info" onclick="app.showTaskDetail(' + value.Service_Ticket_Id + ')">Details</button></td>' +
             '</tr>').appendTo("#tasks #tasks_content table tbody")
         });
         jQuery.unblockUI();
@@ -104,15 +105,18 @@ var app = {
     },
     scanBarCode: function () {
         try {
-
-            $.getJSON(app.apiUrl+"part/search",{
+            jQuery.blockUI({message: '<h1>Searching part</h1>'});
+            $.getJSON(app.apiUrl + "part/search", {
                 code: 'K84444A272A 01'
-            },function(data){
-                if("error" == data.status) {
+            }, function (data) {
+                console.log(data);
+                if ("error" == data.status) {
+                    jQuery.unblockUI();
                     alert("Part was not founded");
-                }else{
-                    jQuery("#barCodes").append("<p>Code: '" + data.Part_Code + "'. Detail: '" + data.Detail + "'. Description: '" + data.Description + "'</p>");
-
+                } else {
+                    jQuery('<li data-icon="delete" id="part' + data.Part_Id + '"><a onclick="app.removePart(' + data.Part_Id + ')">' + data.Part_Code + ' ' + data.Detail + ' ' + data.Description + '</a></li>').appendTo("#parts");
+                    app.usedParts.push(data.Part_Id);
+                    $('#parts').listview('refresh');
                 }
             });
 
@@ -134,6 +138,7 @@ var app = {
             //        alert("Scanning failed: " + error);
             //    }
             //);
+            jQuery.unblockUI();
         } catch (e) {
             console.log(e);
         }
@@ -282,18 +287,24 @@ var app = {
         });
         this.setProgressBarValue(0);
         $("#progressBars").empty();
-        $.mobile.navigate("#progress");
-        this.needToUpload = filesList.length;
-        this.uploaded = 0;
-        $.each(filesList, function (key, val) {
-            self.uploadPhoto(val, key);
-        });
+        if (this.needToUpload) {
+            $.mobile.navigate("#progress");
+            this.needToUpload = filesList.length;
+            this.uploaded = 0;
+            $.each(filesList, function (key, val) {
+                self.uploadPhoto(val, key);
+            });
+        } else {
+            $.mobile.navigate("#tasks");
+        }
+
 
     },
     showTaskDetail: function (task_id, data) {
         jQuery.blockUI({message: '<h1>Loading task data</h1>'});
         this.clearTask();
         var task = this.task_data[task_id];
+        this.usedParts = [];
         console.log(task);
         this.task_id = task_id;
         this.db.transaction(this.getTaskData.bind(this), this.dbError.bind(this));
@@ -364,28 +375,28 @@ var app = {
         jQuery("#taskDescription").empty();
         jQuery("#photos").empty();
         jQuery("#files").empty();
-        jQuery("#barCodes").empty();
+        jQuery("#parts").empty();
     },
     setProgressBarValue: function (id, value) {
         $('#' + id).val(value);
         $('#' + id).slider("refresh");
     },
-    setTaskStatus: function(status){
+    setTaskStatus: function (status) {
         jQuery.blockUI({message: '<h1>Saving task status</h1>'});
         $.ajax({
-            type:'POST',
-            url: this.apiUrl+"taskhistory/create",
+            type: 'POST',
+            url: this.apiUrl + "taskhistory/create",
             data: {
                 task_id: this.task_id,
                 tech_id: this.user_id,
                 status: status
             }
-        }).always(function(data){
+        }).always(function (data) {
             jQuery.unblockUI();
         });
     },
-    goBack: function(){
-        if($.mobile.activePage.is('#tasks')||$.mobile.activePage.is('#signin')){
+    goBack: function () {
+        if ($.mobile.activePage.is('#tasks') || $.mobile.activePage.is('#signin')) {
             if (navigator.app) {
                 navigator.app.exitApp();
             }
@@ -397,6 +408,10 @@ var app = {
             $.mobile.back();
             return false;
         }
-    }
+    },
 
+    removePart: function(part_id){
+        this.usedParts.splice(this.usedParts.indexOf(part_id), 1);
+        jQuery("#part"+part_id).remove();
+    }
 };
