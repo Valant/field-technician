@@ -25,7 +25,7 @@ var app = {
     //apiUrl: 'http://71.125.36.114/',
     user_id: 0,
     task_data: [],
-    usedParts:{},
+    usedParts: {},
     // Application Constructor
     initialize: function () {
         this.bindEvents();
@@ -114,10 +114,10 @@ var app = {
                     jQuery.unblockUI();
                     alert("Part was not founded");
                 } else {
-                    if(app.usedParts[data.Part_Id]){
+                    if (app.usedParts[data.Part_Id]) {
                         app.usedParts[data.Part_Id]++;
-                        jQuery("#part"+data.Part_Id+" .ui-li-count").text(app.usedParts[data.Part_Id]);
-                    }else {
+                        jQuery("#part" + data.Part_Id + " .ui-li-count").text(app.usedParts[data.Part_Id]);
+                    } else {
                         jQuery('<li data-icon="delete" id="part' + data.Part_Id + '"><a onclick="app.removePart(' + data.Part_Id + ')">' + data.Part_Code + ' ' + data.Detail + ' ' + data.Description + '<span class="ui-li-count">1</span></a></li>').appendTo("#parts");
                         app.usedParts[data.Part_Id] = 1;
                     }
@@ -162,7 +162,8 @@ var app = {
         );
     },
     onSuccessChoiseFile: function (imageURI) {
-        jQuery("#files").append("<img class='photoPreview'  src='" + imageURI + "'/>");
+        jQuery("#files").append("<div class='newImage'><img class='photoPreview'  src='" + imageURI + "'/><button data-icon='delete' data-iconpos='notext' onclick='app.removeImage(this);'></button></div>");
+        jQuery("#files").trigger("create");
     },
     uploadPhoto: function (imageURI, id) {
         var options = new FileUploadOptions();
@@ -255,42 +256,15 @@ var app = {
     saveTaskData: function (tx) {
         var self = this;
 
-        this.db.transaction(function (tx) {
-            console.log("start clear task");
-            console.log('SELECT * FROM taskAttachment WHERE task_id = ' + app.task_id);
-            tx.executeSql('SELECT * FROM taskAttachment WHERE task_id = ' + app.task_id, [], function (tx, results) {
-                console.log("rows LENGTH: " + results.rows.length);
-                for (var i = 0; i < results.rows.length; i++) {
-                    console.log("TRY DELETE task attahcment: " + results.rows.item(i).attachment_id);
-                    jQuery.ajax({
-                        type: 'DELETE',
-                        url: app.apiUrl + "taskAttachment/" + results.rows.item(i).attachment_id,
-                        success: function () {
-                            tx.executeSql("DELETE FROM taskAttachment WHERE attachment_id = ?", [results.rows.item(i).attachment_id]);
-                        }
-                    });
-                }
-            });
-        }, this.dbError.bind(this));
-
-
         var filesList = [];
 
-        tx.executeSql("DELETE FROM taskData WHERE task_id = " + this.task_id);
-        tx.executeSql("DELETE FROM taskAttachment WHERE task_id = " + this.task_id);
-
-        jQuery("#photos > img").each(function () {
-            tx.executeSql("INSERT INTO taskData (task_id, type, data) VALUES (?, ?, ?)", [self.task_id, 'photos', jQuery(this).attr('src')]);
+        jQuery("#photos > div > img:not([data-on-server])").each(function () {
             filesList.push(jQuery(this).attr('src'));
         });
-        jQuery("#files > img").each(function () {
-            tx.executeSql("INSERT INTO taskData (task_id, type, data) VALUES (?, ?, ?)", [self.task_id, 'files', jQuery(this).attr('src')]);
+        jQuery("#files > div > img:not([data-on-server])").each(function () {
             filesList.push(jQuery(this).attr('src'));
         });
 
-        jQuery("#barCodes > p").each(function () {
-            tx.executeSql("INSERT INTO taskData (task_id, type, data) VALUES (?, ?, ?)", [self.task_id, 'barCodes', jQuery(this).text()]);
-        });
         this.setProgressBarValue(0);
         $("#progressBars").empty();
         this.needToUpload = filesList.length;
@@ -330,14 +304,15 @@ var app = {
         tx.executeSql('SELECT * FROM taskAttachment WHERE task_id = ?', [this.task_id], this.getTaskDataSuccess.bind(this), this.dbError.bind(this));
     },
     getTaskDataSuccess: function (tx, results) {
-        for (var i = 0; i < results.rows.length; i++) {
-            if (('photos' == results.rows.item(i).type) || ('files' == results.rows.item(i).type)) {
-                jQuery("#" + results.rows.item(i).type).append("<img class='photoPreview' src='" + results.rows.item(i).data + "'/>");
+        jQuery.getJSON(this.apiUrl + '/taskattachment/search', {task_id: this.task_id}, function (data) {
+            console.log(data);
+            if(data){
+                for(var i in data){
+                    jQuery("#photos").append("<img class='photoPreview' data-on-server='true' src='"+app.apiUrl+'/uploads/'+data[i].task_id+'/' + data[i].path + "'/>");
+                }
             }
-            if ('barCodes' == results.rows.item(i).type) {
-                jQuery("#" + results.rows.item(i).type).append("<p>" + results.rows.item(i).data + "</p>");
-            }
-        }
+
+        });
     },
     drawTaskDetails: function (data) {
         data = data.shift();
@@ -416,8 +391,11 @@ var app = {
             return false;
         }
     },
-    removePart: function(part_id){
+    removePart: function (part_id) {
         delete this.usedParts[part_id];
-        jQuery("#part"+part_id).remove();
+        jQuery("#part" + part_id).remove();
+    },
+    removeImage: function(obj){
+        jQuery(obj).closest("div").remove();
     }
 };

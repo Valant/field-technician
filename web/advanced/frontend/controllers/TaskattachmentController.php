@@ -43,4 +43,7 @@
             }
 
         }
+        public function actionSearch($task_id){
+            return TaskAttachment::findAll(['task_id'=>$task_id]);
+        }
     }

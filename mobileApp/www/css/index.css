@@ -129,7 +129,7 @@ h1 {
 .photoPreview {
     width: 100%;
     height: auto;
-    display: block;
+    /*display: block;*/
 }
 
 .errors {
@@ -138,4 +138,21 @@ h1 {
 
 .content-primary {
     margin-top: 20px;
+}
+
+.newImage {
+    margin: 4px;
+    position: relative;
+}
+
+.newImage img{
+    display: inline;
+}
+
+.newImage a,.newImage button{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    overflow: hidden;
+    display: inline;
 }
