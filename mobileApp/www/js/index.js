@@ -293,9 +293,10 @@ var app = {
         });
         this.setProgressBarValue(0);
         $("#progressBars").empty();
+        this.needToUpload = filesList.length;
         if (this.needToUpload) {
             $.mobile.navigate("#progress");
-            this.needToUpload = filesList.length;
+            //this.needToUpload = filesList.length;
             this.uploaded = 0;
             $.each(filesList, function (key, val) {
                 self.uploadPhoto(val, key);
@@ -415,7 +416,6 @@ var app = {
             return false;
         }
     },
-
     removePart: function(part_id){
         delete this.usedParts[part_id];
         jQuery("#part"+part_id).remove();
