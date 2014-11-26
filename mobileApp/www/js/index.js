@@ -26,6 +26,7 @@ var app = {
     user_id: 0,
     task_data: [],
     usedParts: {},
+    attachmentToDelete: [],
     // Application Constructor
     initialize: function () {
         this.bindEvents();
@@ -265,6 +266,15 @@ var app = {
             filesList.push(jQuery(this).attr('src'));
         });
 
+        if(this.attachmentToDelete){
+            for(var i in this.attachmentToDelete){
+                jQuery.ajax({
+                    type:'DELETE',
+                    url: this.apiUrl+'taskattachment/'+this.attachmentToDelete[i]
+                });
+            }
+        }
+
         this.setProgressBarValue(0);
         $("#progressBars").empty();
         this.needToUpload = filesList.length;
@@ -286,6 +296,7 @@ var app = {
         this.clearTask();
         var task = this.task_data[task_id];
         this.usedParts = [];
+        this.attachmentToDelete = [];
         console.log(task);
         this.task_id = task_id;
         this.db.transaction(this.getTaskData.bind(this), this.dbError.bind(this));
@@ -308,7 +319,8 @@ var app = {
             console.log(data);
             if(data){
                 for(var i in data){
-                    jQuery("#photos").append("<img class='photoPreview' data-on-server='true' src='"+app.apiUrl+'/uploads/'+data[i].task_id+'/' + data[i].path + "'/>");
+                    jQuery("#photos").append("<div class='newImage' data-attachment-id='"+data[i].id+"'><img class='photoPreview' data-on-server='true' src='"+app.apiUrl+'/uploads/'+data[i].task_id+'/' + data[i].path + "'/><button data-icon='delete' data-iconpos='notext' onclick='app.removeImage(this);'></button></div>");
+                    jQuery("#photos").trigger("create");
                 }
             }
 
@@ -396,6 +408,10 @@ var app = {
         jQuery("#part" + part_id).remove();
     },
     removeImage: function(obj){
-        jQuery(obj).closest("div").remove();
+        var cont = jQuery(obj).closest("div");
+        if(cont.data("attachment-id")){
+            this.attachmentToDelete.push(cont.data("attachment-id"));
+        }
+        cont.remove();
     }
 };
