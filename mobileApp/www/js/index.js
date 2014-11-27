@@ -275,6 +275,21 @@ var app = {
             }
         }
 
+        if(this.usedParts){
+            for(var part_code in this.usedParts){
+                jQuery.ajax({
+                    type: 'POST',
+                    url: this.apiUrl+'taskpart/create',
+                    data:{
+                        tech_id: this.user_id,
+                        task_id: this.task_id,
+                        part_id: part_code,
+                        count: this.usedParts[part_code]
+                    }
+                });
+            }
+        }
+
         this.setProgressBarValue(0);
         $("#progressBars").empty();
         this.needToUpload = filesList.length;
@@ -324,6 +339,16 @@ var app = {
                 }
             }
 
+        });
+
+        jQuery.getJSON(this.apiUrl+'/taskpart/search',{task_id: this.task_id, expand: 'part'}, function (data) {
+            console.log(data);
+            if(data){
+                for(var i in data){
+                    jQuery("#parts").append('<li data-icon="delete" id="part' + data[i].part.Part_Id + '"><a onclick="app.removePart(' + data[i].part.Part_Id + ')">' + data[i].part.Part_Code + ' ' + data[i].part.Detail + ' ' + data[i].part.Description + '<span class="ui-li-count">'+data[i].count+'</span></a></li>');
+                }
+                $('#parts').listview('refresh');
+            }
         });
     },
     drawTaskDetails: function (data) {

@@ -60,4 +60,13 @@ class TaskPart extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
         ];
     }
+
+    public function getPart(){
+        return $this->hasOne( INPart::className(), [ 'Part_Id' => 'part_id' ] );
+    }
+
+    public function extraFields()
+    {
+        return ['part'];
+    }
 }
