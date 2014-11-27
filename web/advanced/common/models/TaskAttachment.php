@@ -54,4 +54,18 @@
         {
             return \Yii::$app->db_mysql;
         }
+
+        public function beforeDelete()
+        {
+            if (parent::beforeDelete()) {
+                $fileUrl  = "/web/uploads/" . $this->task_id . "/";
+                $filePath = Yii::getAlias( Yii::$app->params['filePath'] ) . $fileUrl . $this->path;
+                if(file_exists($filePath)){
+                    unlink($filePath);
+                }
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
