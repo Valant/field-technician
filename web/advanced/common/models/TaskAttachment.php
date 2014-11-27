@@ -68,4 +68,8 @@
                 return false;
             }
         }
+
+        public function getTask(){
+            return $this->hasOne( SVServiceTicket::className(), [ 'Service_Ticket_Id' => 'task_id' ] );
+        }
     }

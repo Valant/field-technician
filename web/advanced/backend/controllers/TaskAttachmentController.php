@@ -10,9 +10,9 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * TaskAttachmentController implements the CRUD actions for TaskAttachment model.
+ * TaskattachmentController implements the CRUD actions for TaskAttachment model.
  */
-class TaskAttachmentController extends Controller
+class TaskattachmentController extends Controller
 {
     public function behaviors()
     {
