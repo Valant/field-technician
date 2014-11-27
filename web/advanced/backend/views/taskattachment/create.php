@@ -4,13 +4,13 @@ use yii\helpers\Html;
 
 
 /* @var $this yii\web\View */
-/* @var $model common\models\User */
+/* @var $model common\models\TaskAttachment */
 
-$this->title = 'Create User';
-$this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
+$this->title = 'Create Task Attachment';
+$this->params['breadcrumbs'][] = ['label' => 'Task Attachments', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="user-create">
+<div class="task-attachment-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
