@@ -133,4 +133,16 @@
                 'Picture'                    => 'Picture',
             ];
         }
+
+        public function fields()
+        {
+            $fields = parent::fields();
+
+
+            $fields['fullname'] = function(){
+                return $this->First_Name . ' ' . $this->Last_Name;
+            };
+
+            return $fields;
+        }
     }

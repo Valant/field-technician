@@ -7,6 +7,7 @@
     use yii\behaviors\TimestampBehavior;
     use yii\db\ActiveRecord;
     use yii\web\IdentityInterface;
+    use yii\db\Expression;
 
     /**
      * This is the model class for table "user".
@@ -53,7 +54,12 @@
         public function behaviors()
         {
             return [
-                TimestampBehavior::className(),
+                [
+                    'class'              => TimestampBehavior::className(),
+                    'createdAtAttribute' => 'created_at',
+                    'updatedAtAttribute' => 'updated_at',
+                    'value'              => new Expression( 'NOW()' )
+                ]
             ];
         }
 
@@ -209,4 +215,11 @@
             $this->password_reset_token = null;
         }
 
+        public function beforeSave($insert){
+            if($insert) {
+                $this->setPassword( $this->password_hash );
+                $this->generateAuthKey();
+            }
+            return parent::beforeSave($insert);
+        }
     }

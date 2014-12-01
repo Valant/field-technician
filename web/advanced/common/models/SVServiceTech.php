@@ -123,4 +123,23 @@
                 'rowguid'              => 'Rowguid',
             ];
         }
+
+        public function getEmployee(){
+            return $this->hasOne( SYEmployee::className(), [ 'Employee_Id' => 'Employee_Id' ] );
+        }
+        public function fields()
+        {
+            $fields = parent::fields();
+
+
+            $fields['techname'] = function(){
+                return $this->employee->fullname;
+            };
+
+            return $fields;
+        }
+//        public function getTechname(){
+////            return $this->employee->First_name;
+//            return "DDD";
+//        }
     }
