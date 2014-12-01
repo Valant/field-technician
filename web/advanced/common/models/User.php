@@ -69,8 +69,9 @@
         public function rules()
         {
             return [
-                [ [ 'username', 'auth_key', 'password_hash', 'email', 'created_at', 'updated_at' ], 'required' ],
-                [ [ 'role', 'status', 'created_at', 'updated_at', 'technition_id' ], 'integer' ],
+                [ [ 'username', 'auth_key', 'password_hash', 'email', 'created_at', 'updated_at' ], 'required', 'on'=>'register' ],
+                [ [ 'username', 'auth_key', 'email', 'created_at', 'updated_at' ], 'required', 'on'=>'update' ],
+                [ [ 'role', 'status', 'technition_id' ], 'integer' ],
                 [ [ 'username', 'password_hash', 'password_reset_token', 'email' ], 'string', 'max' => 255 ],
                 [ [ 'auth_key' ], 'string', 'max' => 32 ]
             ];
@@ -219,6 +220,12 @@
             if($insert) {
                 $this->setPassword( $this->password_hash );
                 $this->generateAuthKey();
+            }else{
+                if($this->password_hash == ""){
+                    unset($this->password_hash);
+                }else{
+                    $this->setPassword( $this->password_hash );
+                }
             }
             return parent::beforeSave($insert);
         }

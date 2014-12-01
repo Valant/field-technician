@@ -15,8 +15,7 @@
 
     <?php echo $form->errorSummary($model); ?>
 
-    <?= $form->field($model, 'created_at')->hiddenInput(['value'=>time(), 'enableLabel'=>false])->label(""); ?>
-    <?= $form->field($model, 'updated_at')->hiddenInput(['value'=>time(), 'enableLabel'=>false])->label(""); ?>
+
 
 
     <?= $form->field( $model, 'username' )->textInput( [ 'maxlength' => 255 ] ) ?>
@@ -30,7 +29,7 @@
         } ),['value'=>$model->technition_id]
     )->label( "Technition" ) ?>
 
-    <?= $form->field( $model, 'password_hash' )->textInput( [ 'maxlength' => 255] )->label( "Password" ) ?>
+    <?= $form->field( $model, 'password_hash' )->textInput( [ 'maxlength' => 255, 'value'=>""] )->label( "Password" ) ?>
 
     <div class="form-group">
         <?= Html::submitButton( $model->isNewRecord ? 'Create' : 'Update',
