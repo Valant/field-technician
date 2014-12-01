@@ -61,16 +61,12 @@ class UserController extends Controller
     public function actionCreate()
     {
         $model = new User();
+        $model->scenario = 'create';
 
-        if ($model->load(Yii::$app->request->post())) {
+        if ($model->load(Yii::$app->request->post())&&$model->save()) {
 
-            if($model->save()) {
                 return $this->redirect( [ 'view', 'id' => $model->id ] );
-            }else{
-                return $this->render('create', [
-                    'model' => $model,
-                ]);
-            }
+
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -87,6 +83,7 @@ class UserController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $model->scenario = 'update';
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
 

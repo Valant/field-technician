@@ -15,9 +15,6 @@
 
     <?php echo $form->errorSummary($model); ?>
 
-
-
-
     <?= $form->field( $model, 'username' )->textInput( [ 'maxlength' => 255 ] ) ?>
 
     <?= $form->field( $model, 'email' )->textInput( [ 'maxlength' => 255 ] ) ?>

@@ -69,7 +69,7 @@
         public function rules()
         {
             return [
-                [ [ 'username', 'auth_key', 'password_hash', 'email', 'created_at', 'updated_at' ], 'required', 'on'=>'register' ],
+                [ [ 'username', 'auth_key', 'password_hash', 'email', 'created_at', 'updated_at' ], 'required', 'on'=>'create' ],
                 [ [ 'username', 'auth_key', 'email', 'created_at', 'updated_at' ], 'required', 'on'=>'update' ],
                 [ [ 'role', 'status', 'technition_id' ], 'integer' ],
                 [ [ 'username', 'password_hash', 'password_reset_token', 'email' ], 'string', 'max' => 255 ],
