@@ -15,7 +15,6 @@
 
     <?php echo $form->errorSummary($model); ?>
 
-    <?= $form->field($model, 'auth_key')->hiddenInput(['value'=>1, 'enableLabel'=>false])->label("") ?>
     <?= $form->field($model, 'created_at')->hiddenInput(['value'=>time(), 'enableLabel'=>false])->label(""); ?>
     <?= $form->field($model, 'updated_at')->hiddenInput(['value'=>time(), 'enableLabel'=>false])->label(""); ?>
 

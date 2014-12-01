@@ -222,4 +222,12 @@
             }
             return parent::beforeSave($insert);
         }
+
+        public function getTechnition(){
+            return $this->hasOne( SVServiceTech::className(), [ 'Service_Tech_ID' => 'technition_id'  ] );
+        }
+
+        public function getTechnitionName(){
+            return $this->technition->employee->First_Name." ".$this->technition->employee->Last_Name;
+        }
     }
