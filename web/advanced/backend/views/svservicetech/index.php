@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $searchModel backend\models\SVServiceTechSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Svservice Teches';
+$this->title = 'Service Tech';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="svservice-tech-index">

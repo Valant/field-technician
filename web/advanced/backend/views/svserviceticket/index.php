@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $searchModel backend\models\SVServiceTicketSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Svservice Tickets';
+$this->title = 'Service Tickets';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="svservice-ticket-index">
@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a('Create Svservice Ticket', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create Service Ticket', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= GridView::widget([

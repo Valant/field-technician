@@ -21,8 +21,8 @@ var app = {
     task_id: false,
     uploaded: 0,
     needToUpload: 0,
-    apiUrl: 'http://api.field-technician.loc/',
-    //apiUrl: 'http://71.125.36.114/',
+    //apiUrl: 'http://api.field-technician.loc/',
+    apiUrl: 'http://71.125.36.114/',
     user_id: 0,
     task_data: [],
     usedParts: {},
@@ -106,45 +106,56 @@ var app = {
     },
     scanBarCode: function () {
         try {
-            jQuery.blockUI({message: '<h1>Searching part</h1>'});
-            $.getJSON(app.apiUrl + "part/search", {
-                code: 'K84444A272A 01'
-            }, function (data) {
-                console.log(data);
-                if ("error" == data.status) {
-                    jQuery.unblockUI();
-                    alert("Part was not founded");
-                } else {
-                    if (app.usedParts[data.Part_Id]) {
-                        app.usedParts[data.Part_Id]++;
-                        jQuery("#part" + data.Part_Id + " .ui-li-count").text(app.usedParts[data.Part_Id]);
-                    } else {
-                        jQuery('<li data-icon="delete" id="part' + data.Part_Id + '"><a onclick="app.removePart(' + data.Part_Id + ')">' + data.Part_Code + ' ' + data.Detail + ' ' + data.Description + '<span class="ui-li-count">1</span></a></li>').appendTo("#parts");
-                        app.usedParts[data.Part_Id] = 1;
-                    }
-                    $('#parts').listview('refresh');
-                    jQuery.unblockUI();
-                }
-            });
-
-            //window.plugins.barcodeScanner.scan(
-            //    function (result) {
-            //        if (!result.cancelled) {
-            //            $.getJSON(app.apiUrl+"part/search",{
-            //                code: result.text
-            //            },function(data){
-            //                if(data) {
-            //                    jQuery("#barCodes").append("<p>Code: '" + result.response.part_code + "'. Detail: '" + result.response.Detail + "'. Description: '" + result.response.Description + "'</p>");
-            //                }else{
-            //                    alert("Part was not founded");
-            //                }
-            //            });
+            //jQuery.blockUI({message: '<h1>Searching part</h1>'});
+            //$.getJSON(app.apiUrl + "part/search", {
+            //    code: 'K84444A272A 01'
+            //}, function (data) {
+            //    console.log(data);
+            //    if ("error" == data.status) {
+            //        jQuery.unblockUI();
+            //        alert("Part was not founded");
+            //    } else {
+            //        if (app.usedParts[data.Part_Id]) {
+            //            app.usedParts[data.Part_Id]++;
+            //            jQuery("#part" + data.Part_Id + " .ui-li-count").text(app.usedParts[data.Part_Id]);
+            //        } else {
+            //            jQuery('<li data-icon="delete" id="part' + data.Part_Id + '"><a onclick="app.removePart(' + data.Part_Id + ')">' + data.Part_Code + ' ' + data.Detail + ' ' + data.Description + '<span class="ui-li-count">1</span></a></li>').appendTo("#parts");
+            //            app.usedParts[data.Part_Id] = 1;
             //        }
-            //    },
-            //    function (error) {
-            //        alert("Scanning failed: " + error);
+            //        $('#parts').listview('refresh');
+            //        jQuery.unblockUI();
             //    }
-            //);
+            //});
+
+            window.plugins.barcodeScanner.scan(
+                function (result) {
+                    if (!result.cancelled) {
+                        jQuery.blockUI({message: '<h1>Searching part</h1>'});
+                        $.getJSON(app.apiUrl + "part/search", {
+                            code: result.text
+                        }, function (data) {
+                            console.log(data);
+                            if ("error" == data.status) {
+                                jQuery.unblockUI();
+                                alert("Part was not founded");
+                            } else {
+                                if (app.usedParts[data.Part_Id]) {
+                                    app.usedParts[data.Part_Id]++;
+                                    jQuery("#part" + data.Part_Id + " .ui-li-count").text(app.usedParts[data.Part_Id]);
+                                } else {
+                                    jQuery('<li data-icon="delete" id="part' + data.Part_Id + '"><a onclick="app.removePart(' + data.Part_Id + ')">' + data.Part_Code + ' ' + data.Detail + ' ' + data.Description + '<span class="ui-li-count">1</span></a></li>').appendTo("#parts");
+                                    app.usedParts[data.Part_Id] = 1;
+                                }
+                                $('#parts').listview('refresh');
+                                jQuery.unblockUI();
+                            }
+                        });
+                    }
+                },
+                function (error) {
+                    alert("Scanning failed: " + error);
+                }
+            );
 
         } catch (e) {
             console.log(e);
@@ -438,5 +449,8 @@ var app = {
             this.attachmentToDelete.push(cont.data("attachment-id"));
         }
         cont.remove();
+    },
+    settings: function(){
+
     }
 };

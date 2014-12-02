@@ -7,7 +7,7 @@ use yii\widgets\DetailView;
 /* @var $model common\models\SVServiceTicket */
 
 $this->title = $model->Service_Ticket_Id;
-$this->params['breadcrumbs'][] = ['label' => 'Svservice Tickets', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Service Tickets', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="svservice-ticket-view">
