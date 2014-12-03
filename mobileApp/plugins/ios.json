@@ -105,6 +105,18 @@
                         {
                             "xml": "<feature name=\"InAppBrowser\"><param name=\"ios-package\" value=\"CDVInAppBrowser\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"StatusBar\"><param name=\"ios-package\" onload=\"true\" value=\"CDVStatusBar\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<preference name=\"StatusBarOverlaysWebView\" value=\"true\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<preference name=\"StatusBarStyle\" value=\"lightcontent\" />",
+                            "count": 1
                         }
                     ]
                 }
@@ -113,25 +125,28 @@
     },
     "installed_plugins": {
         "com.phonegap.plugins.barcodescanner": {
-            "PACKAGE_NAME": "com.field.technician.app"
+            "PACKAGE_NAME": "com.fieldtechnician.app"
         },
         "org.apache.cordova.camera": {
-            "PACKAGE_NAME": "com.field.technician.app"
+            "PACKAGE_NAME": "com.fieldtechnician.app"
         },
         "org.apache.cordova.console": {
-            "PACKAGE_NAME": "com.field.technician.app"
+            "PACKAGE_NAME": "com.fieldtechnician.app"
         },
         "org.apache.cordova.device": {
-            "PACKAGE_NAME": "com.field.technician.app"
+            "PACKAGE_NAME": "com.fieldtechnician.app"
         },
         "org.apache.cordova.file": {
-            "PACKAGE_NAME": "com.field.technician.app"
+            "PACKAGE_NAME": "com.fieldtechnician.app"
         },
         "org.apache.cordova.file-transfer": {
-            "PACKAGE_NAME": "com.field.technician.app"
+            "PACKAGE_NAME": "com.fieldtechnician.app"
         },
         "org.apache.cordova.inappbrowser": {
-            "PACKAGE_NAME": "com.field.technician.app"
+            "PACKAGE_NAME": "com.fieldtechnician.app"
+        },
+        "org.apache.cordova.statusbar": {
+            "PACKAGE_NAME": "com.fieldtechnician.app"
         }
     },
     "dependent_plugins": {}

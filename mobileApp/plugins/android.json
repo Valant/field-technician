@@ -31,6 +31,10 @@
                         {
                             "xml": "<feature name=\"FileTransfer\"><param name=\"android-package\" value=\"org.apache.cordova.filetransfer.FileTransfer\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"StatusBar\"><param name=\"android-package\" onload=\"true\" value=\"org.apache.cordova.statusbar.StatusBar\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -574,6 +578,9 @@
             "PACKAGE_NAME": "com.example.hello"
         },
         "org.apache.cordova.file-transfer": {
+            "PACKAGE_NAME": "com.example.hello"
+        },
+        "org.apache.cordova.statusbar": {
             "PACKAGE_NAME": "com.example.hello"
         }
     },

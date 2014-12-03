@@ -21,8 +21,8 @@ var app = {
     task_id: false,
     uploaded: 0,
     needToUpload: 0,
-    apiUrl: 'http://api.field-technician.loc/',
-    //apiUrl: 'http://71.125.36.114/',
+    //apiUrl: 'http://api.field-technician.loc/',
+    apiUrl: 'http://71.125.36.114/',
     user_id: 0,
     user_data: {},
     task_data: [],
@@ -31,6 +31,7 @@ var app = {
     // Application Constructor
     initialize: function () {
         this.bindEvents();
+
     },
     // Bind Event Listeners
     //
@@ -50,6 +51,7 @@ var app = {
     // Update DOM on a Received Event
     receivedEvent: function (id) {
         if ('deviceready' == id) {
+            StatusBar.overlaysWebView(false);
             this.prepareDB();
         }
         console.log('Received Event: ' + id);
@@ -107,27 +109,6 @@ var app = {
     },
     scanBarCode: function () {
         try {
-            //jQuery.blockUI({message: '<h1>Searching part</h1>'});
-            //$.getJSON(app.apiUrl + "part/search", {
-            //    code: 'K84444A272A 01'
-            //}, function (data) {
-            //    console.log(data);
-            //    if ("error" == data.status) {
-            //        jQuery.unblockUI();
-            //        alert("Part was not founded");
-            //    } else {
-            //        if (app.usedParts[data.Part_Id]) {
-            //            app.usedParts[data.Part_Id]++;
-            //            jQuery("#part" + data.Part_Id + " .ui-li-count").text(app.usedParts[data.Part_Id]);
-            //        } else {
-            //            jQuery('<li data-icon="delete" id="part' + data.Part_Id + '"><a onclick="app.removePart(' + data.Part_Id + ')">' + data.Part_Code + ' ' + data.Detail + ' ' + data.Description + '<span class="ui-li-count">1</span></a></li>').appendTo("#parts");
-            //            app.usedParts[data.Part_Id] = 1;
-            //        }
-            //        $('#parts').listview('refresh');
-            //        jQuery.unblockUI();
-            //    }
-            //});
-
             window.plugins.barcodeScanner.scan(
                 function (result) {
                     if (!result.cancelled) {
@@ -258,7 +239,8 @@ var app = {
         });
     },
     onSuccessMakePhoto: function (imageURI) {
-        jQuery("#photos").append("<img class='photoPreview'  src='" + imageURI + "'/>");
+        jQuery("#files").append("<div class='newImage'><img class='photoPreview'  src='" + imageURI + "'/><button data-icon='delete' data-iconpos='notext' onclick='app.removeImage(this);'></button></div>");
+        jQuery("#files").trigger("create");
     },
     onFailMakePhoto: function (message) {
         alert('Failed because: ' + message);
