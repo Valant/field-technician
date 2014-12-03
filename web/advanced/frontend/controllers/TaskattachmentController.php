@@ -10,6 +10,7 @@
 
     use Yii;
     use common\models\TaskAttachment;
+    use yii\log\Logger;
     use yii\rest\ActiveController;
 
 
@@ -19,6 +20,8 @@
 
         public function actionUpload()
         {
+            Yii::getLogger()->log(print_r($_FILES, true),Logger::LEVEL_INFO);
+
             foreach ($_FILES as $file) {
                 $fileName = mt_rand( 0, PHP_INT_MAX ) . "_" . $file['name'];
                 $fileUrl  = "/web/uploads/" . $_REQUEST['task_id'] . "/";
