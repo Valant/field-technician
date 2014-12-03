@@ -39,7 +39,7 @@
                 'rules'               => [
                     [
                         'class'      => 'yii\rest\UrlRule',
-                        'controller' => [ 'taskattachment' => 'taskattachment', 'task' => 'task', 'taskhistory' =>'taskhistory']
+                        'controller' => [ 'taskattachment' => 'taskattachment', 'task' => 'task', 'taskhistory' =>'taskhistory', 'user' => 'user']
                     ],
                 ],
             ]

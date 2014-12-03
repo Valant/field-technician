@@ -21,9 +21,10 @@ var app = {
     task_id: false,
     uploaded: 0,
     needToUpload: 0,
-    //apiUrl: 'http://api.field-technician.loc/',
-    apiUrl: 'http://71.125.36.114/',
+    apiUrl: 'http://api.field-technician.loc/',
+    //apiUrl: 'http://71.125.36.114/',
     user_id: 0,
+    user_data: {},
     task_data: [],
     usedParts: {},
     attachmentToDelete: [],
@@ -70,8 +71,8 @@ var app = {
             'LoginForm[username]': $("#login").val(),
             'LoginForm[password]': $("#password").val()
         }, function (data) {
-            console.log(data);
             if (data.id) {
+                app.user_data = data;
                 $("#signin .errors").text("");
                 app.user_id = data.technition_id;
                 app.loadTask();
@@ -451,6 +452,20 @@ var app = {
         cont.remove();
     },
     settings: function(){
-
+        $("#username").val(this.user_data.username);
+        $("#email").val(this.user_data.email);
+        $.mobile.navigate("#profile");
+    },
+    saveProfile:function(){
+        jQuery.ajax({
+            type: 'POST',
+            url: this.apiUrl + "user/"+this.user_data.id,
+            data: {
+                username: $("#username").val(),
+                email: $("#email").val()
+            }
+        }).always(function (data) {
+            console.log(data);
+        });
     }
 };

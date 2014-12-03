@@ -46,7 +46,7 @@
 <div data-role="page" id="signin">
     <div data-role="header">
         <button data-icon="power" data-iconpos="notext" onclick="app.goBack();"></button>
-        <h2>Test application</h2>
+        <h2>Field Technician</h2>
     </div>
     <div role="main" class="ui-content" id="signin_content">
         <pre class="errors"></pre>
@@ -54,7 +54,7 @@
         <input type="password" style="password" id="password" placeholder="Password"/>
         <button data-icon="home" onclick="app.signin()">Sign In</button>
     </div>
-    <div data-role="footer" position="fixed"><h3>&copy; Company</h3></div>
+    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective System</h3></div>
 </div>
 <div data-role="page" id="tasks">
     <div data-role="header">
@@ -80,7 +80,7 @@
             </tbody>
         </table>
     </div>
-    <div data-role="footer" position="fixed"><h3>&copy; Company</h3></div>
+    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective System</h3></div>
 </div>
 <div data-role="page" id="taskDetails">
     <div data-role="header">
@@ -110,7 +110,7 @@
             <button data-icon="action" onclick="app.uploadTaskData()">Save</button>
         </div>
     </div>
-    <div data-role="footer" position="fixed"><h3>&copy; Company</h3></div>
+    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective System</h3></div>
 </div>
 <div data-role="page" id="progress">
     <div data-role="header">
@@ -123,7 +123,22 @@
 
         <div id="progressBars"></div>
     </div>
-    <div data-role="footer" position="fixed"><h3>&copy; Company</h3></div>
+    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective System</h3></div>
+</div>
+<div data-role="page" id="profile">
+    <div data-role="header">
+        <button data-icon="back" data-iconpos="notext" onclick="app.goBack();"></button>
+        <h2>Profile</h2>
+    </div>
+    <div role="main" class="ui-content" id="profile_content">
+        <pre class="errors"></pre>
+        <input style="text" id="username" placeholder="Login"/>
+        <input style="text" id="email" placeholder="email@domain.zone"/>
+        <input style="text" id="password" placeholder=""/>
+
+        <button data-icon="check" onclick="app.saveProfile()">Save</button>
+    </div>
+    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective System</h3></div>
 </div>
 </body>
 </html>
