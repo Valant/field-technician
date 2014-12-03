@@ -224,7 +224,9 @@
                 if($this->password_hash == ""){
                     unset($this->password_hash);
                 }else{
-                    $this->setPassword( $this->password_hash );
+                    if($this->password_hash != $this->getOldAttribute('password_hash')) {
+                        $this->setPassword( $this->password_hash );
+                    }
                 }
             }
             return parent::beforeSave($insert);

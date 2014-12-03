@@ -454,18 +454,27 @@ var app = {
     settings: function(){
         $("#username").val(this.user_data.username);
         $("#email").val(this.user_data.email);
+        $("#newpassword").val("");
         $.mobile.navigate("#profile");
     },
     saveProfile:function(){
+        var data = {};
+        if($("#username").val()){
+            data.username = $("#username").val();
+        }
+        if($("#email").val()){
+            data.email = $("#email").val();
+        }
+        if($("#newpassword").val()){
+            data.password_hash = $("#newpassword").val();
+        }
         jQuery.ajax({
-            type: 'POST',
+            type: 'PUT',
             url: this.apiUrl + "user/"+this.user_data.id,
-            data: {
-                username: $("#username").val(),
-                email: $("#email").val()
-            }
+            data: data
         }).always(function (data) {
-            console.log(data);
+            app.user_data = data;
+            $.mobile.navigate("#tasks");
         });
     }
 };
