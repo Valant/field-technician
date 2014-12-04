@@ -29,6 +29,12 @@
             'errorHandler' => [
                 'errorAction' => 'site/error',
             ],
+            'urlManager' => [
+                'enablePrettyUrl'     => true,
+                'enableStrictParsing' => false,
+                'showScriptName'      => false,
+                'rules'=>['class' => 'yii\web\UrlRule']
+            ]
         ],
         'params'              => $params,
     ];
