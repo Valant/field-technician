@@ -20,7 +20,7 @@
 
         public function actionUpload()
         {
-            Yii::getLogger()->log(print_r($_FILES, true),Logger::LEVEL_INFO);
+            Yii::getLogger()->log(print_r($_FILES, true),Logger::LEVEL_WARNING);
 
             foreach ($_FILES as $file) {
                 $fileName = mt_rand( 0, PHP_INT_MAX ) . "_" . $file['name'];
