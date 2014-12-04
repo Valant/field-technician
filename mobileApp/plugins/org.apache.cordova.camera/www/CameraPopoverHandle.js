@@ -17,15 +17,15 @@
  * specific language governing permissions and limitations
  * under the License.
  *
- */
+*/
 
 var exec = require('cordova/exec');
 
 /**
  * A handle to an image picker popover.
  */
-var CameraPopoverHandle = function () {
-    this.setPosition = function (popoverOptions) {
+var CameraPopoverHandle = function() {
+    this.setPosition = function(popoverOptions) {
         console.log('CameraPopoverHandle.setPosition is only supported on iOS.');
     };
 };

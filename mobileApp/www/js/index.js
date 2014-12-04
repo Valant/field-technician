@@ -22,7 +22,7 @@ var app = {
     uploaded: 0,
     needToUpload: 0,
     //apiUrl: 'http://api.field-technician.loc/',
-    apiUrl: 'http://71.125.36.114/',
+    apiUrl: 'http://api.afa.valant.com.ua/',
     user_id: 0,
     user_data: {},
     task_data: [],
@@ -164,6 +164,7 @@ var app = {
         options.fileKey = "path";
         options.fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1);
         options.mimeType = "image/jpeg";
+        options.chunkedMode = false;
 
         var params = {};
         params.task_id = app.task_id;
@@ -214,9 +215,9 @@ var app = {
         console.log("Code = " + r.responseCode);
         console.log("Response = " + r.response);
         console.log("Sent = " + r.bytesSent);
-        this.db.transaction(function (tx) {
-            tx.executeSql("INSERT INTO taskAttachment (task_id, type, data, attachment_id) VALUES (?, ?, ?, ?)", [data.task_id, 'photos', data.path, data.id]);
-        });
+        //this.db.transaction(function (tx) {
+        //    tx.executeSql("INSERT INTO taskAttachment (task_id, type, data, attachment_id) VALUES (?, ?, ?, ?)", [data.task_id, 'photos', data.path, data.id]);
+        //});
         this.checkUploadFinish();
     },
     uploadPhotoFail: function (error) {
@@ -235,7 +236,11 @@ var app = {
     makePhoto: function () {
         navigator.camera.getPicture(this.onSuccessMakePhoto, this.onFailMakePhoto, {
             quality: 50,
-            destinationType: Camera.DestinationType.FILE_URI
+            destinationType: navigator.camera.DestinationType.FILE_URI,
+            encodingType: navigator.camera.EncodingType.JPEG,
+            sourceType: navigator.camera.PictureSourceType.CAMERA,
+            saveToPhotoAlbum: true
+
         });
     },
     onSuccessMakePhoto: function (imageURI) {
@@ -321,9 +326,6 @@ var app = {
         alert(err.code + "\n" + err.message);
     },
     getTaskData: function (tx) {
-        tx.executeSql('SELECT * FROM taskAttachment WHERE task_id = ?', [this.task_id], this.getTaskDataSuccess.bind(this), this.dbError.bind(this));
-    },
-    getTaskDataSuccess: function (tx, results) {
         jQuery.getJSON(this.apiUrl + '/taskattachment/search', {task_id: this.task_id}, function (data) {
             console.log(data);
             if(data){
@@ -345,6 +347,7 @@ var app = {
             }
         });
     },
+
     drawTaskDetails: function (data) {
         data = data.shift();
         console.log(data);

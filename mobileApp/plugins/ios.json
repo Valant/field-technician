@@ -83,10 +83,6 @@
                             "count": 1
                         },
                         {
-                            "xml": "<feature name=\"Camera\"><param name=\"ios-package\" value=\"CDVCamera\" /></feature>",
-                            "count": 1
-                        },
-                        {
                             "xml": "<feature name=\"Console\"><param name=\"ios-package\" value=\"CDVLogger\" /></feature>",
                             "count": 1
                         },
@@ -117,6 +113,24 @@
                         {
                             "xml": "<preference name=\"StatusBarStyle\" value=\"lightcontent\" />",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Camera\"><param name=\"ios-package\" value=\"CDVCamera\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<preference name=\"CameraUsesGeolocation\" value=\"false\" />",
+                            "count": 1
+                        }
+                    ]
+                }
+            },
+            "*-Info.plist": {
+                "parents": {
+                    "NSLocationWhenInUseUsageDescription": [
+                        {
+                            "xml": "<string />",
+                            "count": 1
                         }
                     ]
                 }
@@ -125,9 +139,6 @@
     },
     "installed_plugins": {
         "com.phonegap.plugins.barcodescanner": {
-            "PACKAGE_NAME": "com.fieldtechnician.app"
-        },
-        "org.apache.cordova.camera": {
             "PACKAGE_NAME": "com.fieldtechnician.app"
         },
         "org.apache.cordova.console": {
@@ -146,6 +157,9 @@
             "PACKAGE_NAME": "com.fieldtechnician.app"
         },
         "org.apache.cordova.statusbar": {
+            "PACKAGE_NAME": "com.fieldtechnician.app"
+        },
+        "org.apache.cordova.camera": {
             "PACKAGE_NAME": "com.fieldtechnician.app"
         }
     },
