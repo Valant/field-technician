@@ -160,6 +160,7 @@ var app = {
         jQuery("#files").trigger("create");
     },
     uploadPhoto: function (imageURI, id) {
+
         var options = new FileUploadOptions();
         options.fileKey = "path";
         options.fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1);
@@ -239,11 +240,13 @@ var app = {
             destinationType: navigator.camera.DestinationType.FILE_URI,
             encodingType: navigator.camera.EncodingType.JPEG,
             sourceType: navigator.camera.PictureSourceType.CAMERA,
-            saveToPhotoAlbum: true
+            saveToPhotoAlbum: true,
+            allowEdit:true
 
         });
     },
     onSuccessMakePhoto: function (imageURI) {
+        //new Parse.File("myfile.txt", { base64: imageURI });
         jQuery("#files").append("<div class='newImage'><img class='photoPreview'  src='" + imageURI + "'/><button data-icon='delete' data-iconpos='notext' onclick='app.removeImage(this);'></button></div>");
         jQuery("#files").trigger("create");
     },
