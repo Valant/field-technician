@@ -23,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'method' => 'post',
             ],
         ]) ?>
-        <?= Html::a('View tickets', ['/svserviceticket', 'SVServiceTicketSearch[Service_Tech_ID]' => $model->technition_id], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('View tickets', ['/svserviceticket/userticket/', "tech_id"=>$model->technition_id], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= DetailView::widget([

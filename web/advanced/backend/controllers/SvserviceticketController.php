@@ -118,4 +118,10 @@ class SvserviceticketController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
+    public function actionUserticket($tech_id){
+        return $this->render('userTicket', [
+            'dataProvider' => SVServiceTicket::getList($tech_id),
+        ]);
+    }
 }

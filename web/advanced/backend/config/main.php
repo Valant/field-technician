@@ -29,11 +29,14 @@
             'errorHandler' => [
                 'errorAction' => 'site/error',
             ],
-            'urlManager' => [
+            'urlManager'   => [
                 'enablePrettyUrl'     => true,
                 'enableStrictParsing' => false,
                 'showScriptName'      => false,
-                'rules'=>['class' => 'yii\web\UrlRule','' => 'user/index',]
+                'rules'               => [
+                    'class' => 'yii\web\UrlRule',
+                    '' => 'user/index',
+                ]
             ]
         ],
         'params'              => $params,
