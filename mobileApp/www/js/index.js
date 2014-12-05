@@ -59,6 +59,17 @@ var app = {
     prepareDB: function () {
         this.db = window.openDatabase("hello_app_db6.sqlite", "1.0", "Hello app db", 100000);
         this.db.transaction(this.populateDB.bind(this), this.dbError.bind(this));
+
+        if(window.localStorage.getItem('tech_id')){
+            jQuery.blockUI({message: '<h1>Loading data</h1>'});
+            this.user_id =  window.localStorage.getItem('tech_id');
+            jQuery.getJSON(this.apiUrl+"user/"+window.localStorage.getItem('user_id'),{},function(data){
+               if(data){
+                   app.user_data = data;
+                   app.loadTask();
+               }
+            });
+        }
     },
     populateDB: function (tx) {
         console.log("POPULATE DB");
@@ -75,6 +86,8 @@ var app = {
         }, function (data) {
             if (data.id) {
                 app.user_data = data;
+                window.localStorage.setItem('tech_id',data.technition_id);
+                window.localStorage.setItem('user_id',data.id);
                 $("#signin .errors").text("");
                 app.user_id = data.technition_id;
                 app.loadTask();
@@ -421,6 +434,9 @@ var app = {
             }
             else if (navigator.device) {
                 navigator.device.exitApp();
+            }else{
+                window.localStorage.clear();
+                $.mobile.navigate("#signin");
             }
         }
         else {
