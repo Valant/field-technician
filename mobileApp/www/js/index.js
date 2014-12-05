@@ -380,7 +380,7 @@ var app = {
                     app.usedParts[data[i].part.Part_Id] = data[i].count;
                     jQuery("#parts").append('<li data-icon="delete" id="part' + data[i].part.Part_Id + '"><a onclick="app.removePart(' + data[i].part.Part_Id + ')">' + data[i].part.Part_Code + ' ' + data[i].part.Detail + ' ' + data[i].part.Description + '<span class="ui-li-count">'+data[i].count+'</span></a></li>');
                 }
-                //$('#parts').listview('refresh');
+                $('#parts').listview('refresh');
             }
         });
     },
