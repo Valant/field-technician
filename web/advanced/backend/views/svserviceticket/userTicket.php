@@ -36,7 +36,7 @@
                 'label'=>'View attachment',
                 'format'=>'raw',
                 'value'=>function($data){
-                    return "link to attachment";
+                    return Html::a("Attachments", ['taskattachment/index', 'TaskAttachmentSearch[task_id]'=>$data['Service_Ticket_Id']]);
                 }
             ]
 

@@ -27,7 +27,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'task_id',
-            'path',
+//            'path',
+            [
+                'label'=>'Image',
+                'format' => 'raw',
+                'value'=>function ($data) {
+
+                    return Html::img( Yii::$app->urlManagerFrontend->createUrl("/uploads/".$data['task_id']."/".$data['path']),["width"=>"100px"]);
+                },
+            ],
             'name',
 
             ['class' => 'yii\grid\ActionColumn'],
