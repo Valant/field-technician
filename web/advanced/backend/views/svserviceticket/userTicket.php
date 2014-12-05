@@ -19,15 +19,15 @@
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-//            [
-//                'label'=>'Service Ticket Id',
-//                'format' => 'raw',
-//                'value'=>function ($data) {
-//
-//                    return Html::a($data['Service_Ticket_Id'], ['/svserviceticket/view', 'id'=>$data['Service_Ticket_Id']]);
-//                },
-//            ],
-            'Service_Ticket_Id',
+            [
+                'label'=>'Service Ticket Id',
+                'format' => 'raw',
+                'value'=>function ($data) {
+
+                    return Html::a($data['Service_Ticket_Id'], ['/svserviceticket/view', 'id'=>$data['Service_Ticket_Id']]);
+                },
+            ],
+//            'Service_Ticket_Id',
             'ProblemDescription',
             'Customer_Name',
             'City',
