@@ -151,6 +151,7 @@ var app = {
                                 }
                                 $('#parts').listview('refresh');
                                 jQuery.unblockUI();
+                                $.mobile.silentScroll($("#parts").offset().top);
                             }
                         });
                     }
