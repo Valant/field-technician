@@ -28,6 +28,8 @@ var app = {
     task_data: [],
     usedParts: {},
     attachmentToDelete: [],
+    part_to_delete: 0,
+    image_to_remove: false,
     // Application Constructor
     initialize: function () {
         this.bindEvents();
@@ -119,6 +121,7 @@ var app = {
         });
         jQuery.unblockUI();
         $.mobile.navigate("#tasks");
+        navigator.notification.vibrate(1000);
     },
     scanBarCode: function () {
         try {
@@ -132,7 +135,12 @@ var app = {
                             console.log(data);
                             if ("error" == data.status) {
                                 jQuery.unblockUI();
-                                alert("Part was not founded");
+                                navigator.notification.alert(
+                                    'Part search',  // message
+                                    false,         // callback
+                                    'Part was not fouded',            // title
+                                    'OK'                  // buttonName
+                                );
                             } else {
                                 if (app.usedParts[data.Part_Id]) {
                                     app.usedParts[data.Part_Id]++;
@@ -148,7 +156,12 @@ var app = {
                     }
                 },
                 function (error) {
-                    alert("Scanning failed: " + error);
+                    navigator.notification.alert(
+                        'Scanning',  // message
+                        false,         // callback
+                        'Scanning failed',            // title
+                        'OK'                  // buttonName
+                    );
                 }
             );
 
@@ -159,7 +172,7 @@ var app = {
     choiseFile: function () {
         navigator.camera.getPicture(this.onSuccessChoiseFile,
             function (message) {
-                alert('get picture failed');
+                //alert('get picture failed');
             },
             {
                 quality: 50,
@@ -235,7 +248,13 @@ var app = {
         this.checkUploadFinish();
     },
     uploadPhotoFail: function (error) {
-        alert("An error has occurred: Code = " + error.code);
+        navigator.notification.alert(
+            'Upload error',  // message
+            false,         // callback
+            "An error has occurred: Code = " + error.code,            // title
+            'OK'                  // buttonName
+        );
+        //alert("An error has occurred: Code = " + error.code);
         console.log(error);
         console.log("upload error source " + error.source);
         console.log("upload error target " + error.target);
@@ -264,7 +283,7 @@ var app = {
         jQuery("#files").trigger("create");
     },
     onFailMakePhoto: function (message) {
-        alert('Failed because: ' + message);
+        //alert('Failed because: ' + message);
     },
     uploadTaskData: function () {
         this.db.transaction(this.saveTaskData.bind(this), this.dbError.bind(this));
@@ -363,7 +382,6 @@ var app = {
             }
         });
     },
-
     drawTaskDetails: function (data) {
         data = data.shift();
         console.log(data);
@@ -425,6 +443,12 @@ var app = {
             }
         }).always(function (data) {
             jQuery.unblockUI();
+            navigator.notification.alert(
+                'Time was saved',  // message
+                false,         // callback
+                'Time',            // title
+                'OK'                  // buttonName
+            );
         });
     },
     goBack: function () {
@@ -445,15 +469,39 @@ var app = {
         }
     },
     removePart: function (part_id) {
-        delete this.usedParts[part_id];
-        jQuery("#part" + part_id).remove();
+        this.part_to_delete = part_id;
+        navigator.notification.confirm(
+            'Remove part from list', // message
+            function(index){
+                if(1 == index){
+                    delete app.usedParts[app.part_to_delete];
+                    jQuery("#part" + app.part_to_delete).remove();
+                }
+            },            // callback to invoke with index of button pressed
+            'Part removing',           // title
+            ['Yes','No']         // buttonLabels
+        );
+
     },
     removeImage: function(obj){
-        var cont = jQuery(obj).closest("div");
-        if(cont.data("attachment-id")){
-            this.attachmentToDelete.push(cont.data("attachment-id"));
-        }
-        cont.remove();
+        this.image_to_remove = obj;
+        navigator.notification.confirm(
+            'Remove photo from task', // message
+            function(index){
+                if(1 == index){
+                    var obj = app.image_to_remove;
+                    var cont = jQuery(obj).closest("div");
+                    if(cont.data("attachment-id")){
+                        app.attachmentToDelete.push(cont.data("attachment-id"));
+                    }
+                    cont.remove();
+                }
+            },            // callback to invoke with index of button pressed
+            'Photo removing',           // title
+            ['Yes','No']         // buttonLabels
+        );
+
+
     },
     settings: function(){
         $("#username").val(this.user_data.username);
@@ -479,6 +527,12 @@ var app = {
         }).always(function (data) {
             app.user_data = data;
             $.mobile.navigate("#tasks");
+            navigator.notification.alert(
+                'Profile was saved',  // message
+                false,         // callback
+                'Profile',            // title
+                'OK'                  // buttonName
+            );
         });
     }
 };

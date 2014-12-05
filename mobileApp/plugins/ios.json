@@ -53,6 +53,10 @@
                         {
                             "xml": "false",
                             "count": 1
+                        },
+                        {
+                            "xml": "true",
+                            "count": 2
                         }
                     ],
                     "ImageIO.framework": [
@@ -121,6 +125,14 @@
                         {
                             "xml": "<preference name=\"CameraUsesGeolocation\" value=\"false\" />",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Notification\"><param name=\"ios-package\" value=\"CDVNotification\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Vibration\"><param name=\"ios-package\" value=\"CDVVibration\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -160,6 +172,12 @@
             "PACKAGE_NAME": "com.fieldtechnician.app"
         },
         "org.apache.cordova.camera": {
+            "PACKAGE_NAME": "com.fieldtechnician.app"
+        },
+        "org.apache.cordova.dialogs": {
+            "PACKAGE_NAME": "com.fieldtechnician.app"
+        },
+        "org.apache.cordova.vibration": {
             "PACKAGE_NAME": "com.fieldtechnician.app"
         }
     },
