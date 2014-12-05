@@ -280,6 +280,7 @@
 
         public static function find()
         {
+//            return parent::find()->where( [ 'Ticket_Status' => 'OP' ] )->orderBy( [ 'Service_Ticket_Id' => SORT_DESC ] )->limit( 100 );
             return parent::find()->where( [ 'Ticket_Status' => 'OP' ] )->orderBy( [ 'Service_Ticket_Id' => SORT_DESC ] )->limit( 100 );
         }
 
