@@ -57,9 +57,8 @@
 </div>
 <div data-role="page" id="tasks">
     <div data-role="header">
-        <button data-icon="back" data-iconpos="notext" onclick="app.goBack();"></button>
         <h2>Task list</h2>
-        <button data-icon="gear" data-iconpos="notext" onclick="app.settings();"></button>
+        <a data-icon="gear" data-role="button" data-theme="a" data-iconpos="notext" onclick="app.settings();" class="ui-btn-right ui-btn-a"></a>
     </div>
     <div role="main" class="ui-content" id="tasks_content">
         <table data-role="table" id="table-custom-2" data-mode="columntoggle"
@@ -132,9 +131,10 @@
         <pre class="errors"></pre>
         <input style="text" id="username" placeholder="Login"/>
         <input style="text" id="email" placeholder="email@domain.zone"/>
-        <input style="text" id="newpassword" placeholder=""/>
+        <input style="text" id="newpassword" placeholder="Password"/>
 
         <button data-icon="check" onclick="app.saveProfile()">Save</button>
+        <button data-icon="action" onclick="app.logoute()">Logoute</button>
     </div>
     <div data-role="footer" position="fixed"><h3>&copy; AFA Protective System</h3></div>
 </div>

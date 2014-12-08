@@ -63,7 +63,7 @@ var app = {
         this.db.transaction(this.populateDB.bind(this), this.dbError.bind(this));
 
         if(window.localStorage.getItem('tech_id')){
-            jQuery.blockUI({message: '<h1>Loading data</h1>'});
+            app.showLoader("Load user data")
             this.user_id =  window.localStorage.getItem('tech_id');
             jQuery.getJSON(this.apiUrl+"user/"+window.localStorage.getItem('user_id'),{},function(data){
                if(data){
@@ -81,7 +81,8 @@ var app = {
     signin: function () {
         console.log("User login: " + $("#login").val());
         console.log("User password: " + $("#password").val());
-        jQuery.blockUI({message: '<h1>Authorizing</h1>'});
+
+        app.showLoader("Authorize")
         jQuery.post(this.apiUrl + "/user/login", {
             'LoginForm[username]': $("#login").val(),
             'LoginForm[password]': $("#password").val()
@@ -96,12 +97,18 @@ var app = {
             } else {
                 console.log(data.message.password[0]);
                 $("#signin .errors").text(data.message.password[0]);
-                jQuery.unblockUI();
+                $.mobile.loading( "hide" );
             }
         });
     },
     loadTask: function () {
-        jQuery.blockUI({message: '<h1>Load task</h1>'});
+        //jQuery.blockUI({message: '<h1>Load task</h1>'});
+        //$.mobile.loading( "show", {
+        //    text: "Load task",
+        //    textVisible: true,
+        //    theme: "b",
+        //    html: ""
+        //});
         $.getJSON(this.apiUrl + "/ticket/list", {
             'Ticket_Status': 'OP',
             'Service_Tech_Id': this.user_id
@@ -117,9 +124,10 @@ var app = {
             '<td>' + value.City + '</td>' +
             '<td>' + value.Ticket_Status + '</td>' +
             '<td><button data-icon="info" onclick="app.showTaskDetail(' + value.Service_Ticket_Id + ')">Details</button></td>' +
-            '</tr>').appendTo("#tasks #tasks_content table tbody")
+            '</tr>').appendTo("#tasks #tasks_content table tbody").closest( "table#table-reflow" ).table( "refresh" ).trigger( "create" );
         });
-        jQuery.unblockUI();
+        $.mobile.loading( "hide" );
+        $("#table-custom-2").table();
         $.mobile.navigate("#tasks");
         navigator.notification.vibrate(1000);
     },
@@ -128,13 +136,15 @@ var app = {
             window.plugins.barcodeScanner.scan(
                 function (result) {
                     if (!result.cancelled) {
-                        jQuery.blockUI({message: '<h1>Searching part</h1>'});
+
+                        app.showLoader("Searching part")
+
                         $.getJSON(app.apiUrl + "part/search", {
                             code: result.text
                         }, function (data) {
                             console.log(data);
                             if ("error" == data.status) {
-                                jQuery.unblockUI();
+                                $.mobile.loading( "hide" );
                                 navigator.notification.alert(
                                     'Part search',  // message
                                     false,         // callback
@@ -150,7 +160,7 @@ var app = {
                                     app.usedParts[data.Part_Id] = 1;
                                 }
                                 $('#parts').listview('refresh');
-                                jQuery.unblockUI();
+                                $.mobile.loading( "hide" );
                                 $.mobile.silentScroll($("#parts").offset().top);
                             }
                         });
@@ -342,7 +352,7 @@ var app = {
 
     },
     showTaskDetail: function (task_id, data) {
-        jQuery.blockUI({message: '<h1>Loading task data</h1>'});
+        app.showLoader("Loading task data")
         this.clearTask();
         var task = this.task_data[task_id];
         this.usedParts = [];
@@ -353,7 +363,7 @@ var app = {
         $.when($.getJSON(this.apiUrl + "/ticket/find", {
             'id': this.task_id
         }, this.drawTaskDetails.bind(this))).then(function () {
-            jQuery.unblockUI();
+            $.mobile.loading( "hide" );
             $.mobile.navigate("#taskDetails");
         })
 
@@ -434,7 +444,8 @@ var app = {
         $('#' + id).slider("refresh");
     },
     setTaskStatus: function (status) {
-        jQuery.blockUI({message: '<h1>Saving task status</h1>'});
+
+        app.showLoader("Save task status");
         $.ajax({
             type: 'POST',
             url: this.apiUrl + "taskhistory/create",
@@ -444,7 +455,7 @@ var app = {
                 status: status
             }
         }).always(function (data) {
-            jQuery.unblockUI();
+            $.mobile.loading( "hide" );
             navigator.notification.alert(
                 'Time was saved',  // message
                 false,         // callback
@@ -535,6 +546,25 @@ var app = {
                 'Profile',            // title
                 'OK'                  // buttonName
             );
+        });
+    },
+    logoute: function(){
+        window.localStorage.clear();
+        $("#login").val("");
+        $("#password").val("");
+        $("#tasks #tasks_content table tbody").empty();
+        jQuery("#table-custom-2").table("refresh");
+        $.mobile.navigate("#signin");
+    },
+
+    showLoader: function(message){
+        $.mobile.loading( "show", {
+            text: message,
+            textVisible: true,
+            textOnly: false,
+            inline: true,
+            theme: "b",
+            html: ""
         });
     }
 };
