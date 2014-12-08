@@ -98,9 +98,9 @@
         </div>
         <div id="files"><h1>Files</h1></div>
         <div id="taskControls">
-            <button data-icon="navigation" onclick="app.setTaskStatus('dispatch')">Dispatch</button>
-            <button data-icon="user" onclick="app.setTaskStatus('arrived')">Arrived</button>
-            <button data-icon="tag" onclick="app.setTaskStatus('depart')">Depart</button>
+            <button id="status_dispatch" data-icon="navigation" onclick="app.setTaskStatus('dispatch')">Dispatch</button>
+            <button id="status_arrived" data-icon="user" onclick="app.setTaskStatus('arrived')">Arrived</button>
+            <button id="status_depart" data-icon="tag" onclick="app.setTaskStatus('depart')">Depart</button>
             <button data-icon="eye" onclick="app.choiseFile()">Attach file to task</button>
             <button data-icon="bars" onclick="app.scanBarCode()">Scan barcode</button>
             <button data-icon="camera" onclick="app.makePhoto()">Make a photo</button>
@@ -134,7 +134,7 @@
         <input style="text" id="newpassword" placeholder="Password"/>
 
         <button data-icon="check" onclick="app.saveProfile()">Save</button>
-        <button data-icon="action" onclick="app.logoute()">Logoute</button>
+        <button data-icon="action" onclick="app.logout()">Logout</button>
     </div>
     <div data-role="footer" position="fixed"><h3>&copy; AFA Protective System</h3></div>
 </div>

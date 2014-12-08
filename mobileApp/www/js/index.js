@@ -21,8 +21,8 @@ var app = {
     task_id: false,
     uploaded: 0,
     needToUpload: 0,
-    //apiUrl: 'http://api.field-technician.loc/',
-    apiUrl: 'http://api.afa.valant.com.ua/',
+    apiUrl: 'http://api.field-technician.loc/',
+    //apiUrl: 'http://api.afa.valant.com.ua/',
     user_id: 0,
     user_data: {},
     task_data: [],
@@ -359,6 +359,9 @@ var app = {
         this.attachmentToDelete = [];
         console.log(task);
         this.task_id = task_id;
+
+
+
         this.db.transaction(this.getTaskData.bind(this), this.dbError.bind(this));
         $.when($.getJSON(this.apiUrl + "/ticket/find", {
             'id': this.task_id
@@ -391,6 +394,36 @@ var app = {
                     jQuery("#parts").append('<li data-icon="delete" id="part' + data[i].part.Part_Id + '"><a onclick="app.removePart(' + data[i].part.Part_Id + ')">' + data[i].part.Part_Code + ' ' + data[i].part.Detail + ' ' + data[i].part.Description + '<span class="ui-li-count">'+data[i].count+'</span></a></li>');
                 }
                 $('#parts').listview('refresh');
+            }
+        });
+
+        jQuery.getJSON(this.apiUrl+'/taskhistory/search',{
+            task_id: this.task_id,
+            tech_id: this.user_data.technition_id,
+            status: 'dispatch'
+        },function(data){
+            if(typeof data.id != 'undefined'){
+                $("#status_dispatch").addClass('ui-disabled');
+            }
+        });
+
+        jQuery.getJSON(this.apiUrl+'/taskhistory/search',{
+            task_id: this.task_id,
+            tech_id: this.user_data.technition_id,
+            status: 'arrived'
+        },function(data){
+            if(typeof data.id != 'undefined'){
+                $("#status_arrived").addClass('ui-disabled');
+            }
+        });
+
+        jQuery.getJSON(this.apiUrl+'/taskhistory/search',{
+            task_id: this.task_id,
+            tech_id: this.user_data.technition_id,
+            status: 'depart'
+        },function(data){
+            if(typeof data.id != 'undefined'){
+                $("#status_depart").addClass('ui-disabled');
             }
         });
     },
@@ -455,6 +488,10 @@ var app = {
                 status: status
             }
         }).always(function (data) {
+            if(typeof data.id != 'undefined'){
+
+                $("#status_"+data.status).addClass('ui-disabled');
+            }
             $.mobile.loading( "hide" );
             navigator.notification.alert(
                 'Time was saved',  // message
@@ -548,7 +585,7 @@ var app = {
             );
         });
     },
-    logoute: function(){
+    logout: function(){
         window.localStorage.clear();
         $("#login").val("");
         $("#password").val("");
