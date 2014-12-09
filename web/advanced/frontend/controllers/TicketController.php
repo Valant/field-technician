@@ -37,20 +37,4 @@
                 return [ "status" => "error", "message" => "ID params is required" ];
             }
         }
-        public function behaviors(){
-            return  ArrayHelper::merge([[
-                'class' => \yii\filters\Cors::className(),
-                'cors' => [
-                    // restrict access to
-                    'Origin' => ['*'],
-                    'Access-Control-Request-Method' => ['POST', 'PUT','GET','DELETE'],
-                    // Allow only POST and PUT methods
-                    'Access-Control-Request-Headers' => ['X-Wsse'],
-                    // Allow only headers 'X-Wsse'
-                    'Access-Control-Allow-Credentials' => true,
-                    // Allow OPTIONS caching
-                    'Access-Control-Max-Age' => 3600,
-                ],
-            ]],parent::behaviors());
-        }
     }

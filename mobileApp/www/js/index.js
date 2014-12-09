@@ -21,8 +21,8 @@ var app = {
     task_id: false,
     uploaded: 0,
     needToUpload: 0,
-    //apiUrl: 'http://api.field-technician.loc/',
-    apiUrl: 'http://api.afa.valant.com.ua/',
+    apiUrl: 'http://api.field-technician.loc/',
+    //apiUrl: 'http://api.afa.valant.com.ua/',
     user_id: 0,
     user_data: {},
     task_data: [],
@@ -117,7 +117,7 @@ var app = {
     drawTask: function (data) {
         $.each(data, function (index, value) {
             app.task_data[value.Service_Ticket_Id] = value;
-            $('<tr>' +
+            $('<tr id="task'+value.Service_Ticket_Id+'">' +
             '<td>' + value.Service_Ticket_Id + '</td>' +
             '<td><a href="javascript: app.showTaskDetail(' + value.Service_Ticket_Id + ')" data-rel="external">' + value.ProblemDescription + '</a></td>' +
             '<td>' + value.Customer_Name + '</td>' +
@@ -404,6 +404,9 @@ var app = {
         },function(data){
             if(typeof data.id != 'undefined'){
                 $("#status_dispatch").addClass('ui-disabled');
+            }else{
+                $("#status_dispatch").removeClass('ui-disabled');
+
             }
         });
 
@@ -414,6 +417,8 @@ var app = {
         },function(data){
             if(typeof data.id != 'undefined'){
                 $("#status_arrived").addClass('ui-disabled');
+            }else{
+                $("#status_arrived").removeClass('ui-disabled');
             }
         });
 
@@ -424,6 +429,9 @@ var app = {
         },function(data){
             if(typeof data.id != 'undefined'){
                 $("#status_depart").addClass('ui-disabled');
+            }else{
+                $("#status_depart").removeClass('ui-disabled');
+
             }
         });
     },
@@ -488,17 +496,89 @@ var app = {
                 status: status
             }
         }).always(function (data) {
-            if(typeof data.id != 'undefined'){
-
-                $("#status_"+data.status).addClass('ui-disabled');
-            }
             $.mobile.loading( "hide" );
-            navigator.notification.alert(
-                'Time was saved',  // message
-                false,         // callback
-                'Time',            // title
-                'OK'                  // buttonName
-            );
+            if(typeof data.id != 'undefined'){
+                $("#status_"+data.status).addClass('ui-disabled');
+                if('depart' == data.status){
+                    navigator.notification.confirm("Select depart type", function(button){
+                        app.showLoader("Save task status");
+                        var status = false;
+                        switch(button){
+                            case 1:
+                                    status = 'GB';
+                                break;
+                            case 2:
+                                    status = 'DP';
+                                break;
+                            case 3:
+                                    status = 'RS';
+                                break;
+                        }
+                        if(status){
+                            jQuery.ajax({
+                                type: 'PUT',
+                                url: app.apiUrl+'ticket/'+app.task_id,
+                                data: {
+                                    Ticket_Status: status
+                                }
+                            }).always(function(data){
+                                $("#task"+data.Service_Ticket_Id).remove();
+                                $.mobile.loading( "hide" );
+                                console.log(data);
+                                navigator.notification.alert(
+                                    'Time was saved',  // message
+                                    function(){
+                                        $.mobile.navigate("#tasks");
+                                    },         // callback
+                                    'Time',            // title
+                                    'OK'                  // buttonName
+                                );
+
+                            });
+                        }
+                    }, "Depart type", ["Go back","Depart","Resolved"])
+                }
+
+                if("arrived" == data.status){
+                    app.showLoader("Save task status");
+                    jQuery.ajax({
+                        type: 'PUT',
+                        url: app.apiUrl+'ticket/'+app.task_id,
+                        data: {
+                            Ticket_Status: 'IP'
+                        }
+                    }).always(function(data){
+                        $.mobile.loading( "hide" );
+                        console.log(data);
+
+                    });
+                }
+
+                switch(data.status){
+                    case "dispatch":
+                            $("#status_dispatch").addClass('ui-disabled');
+                            $("#status_arrived").removeClass('ui-disabled');
+                            $("#status_depart").removeClass('ui-disabled');
+                        break;
+                    case "arrived":
+                            $("#status_dispatch").addClass('ui-disabled');
+                            $("#status_arrived").addClass('ui-disabled');
+                            $("#status_depart").removeClass('ui-disabled');
+                        break;
+                    case "depart":
+                        $("#status_dispatch").addClass('ui-disabled');
+                        $("#status_arrived").addClass('ui-disabled');
+                        $("#status_depart").addClass('ui-disabled');
+                        break;
+                }
+            }else{
+                navigator.notification.alert(
+                    'Time was saved',  // message
+                    false,         // callback
+                    'Time',            // title
+                    'OK'                  // buttonName
+                );
+            }
         });
     },
     goBack: function () {

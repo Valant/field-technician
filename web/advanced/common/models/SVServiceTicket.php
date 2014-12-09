@@ -306,7 +306,7 @@
                                  ->innerJoin( 'AR_Customer', 'AR_Customer.Customer_Id = SV_Service_Ticket.Customer_Id' )
                                  ->innerJoin( 'AR_Customer_Site',
                                      'AR_Customer_Site.Customer_Site_Id = SV_Service_Ticket.Customer_Site_Id' )
-                                 ->where( "SV_Service_Ticket.Ticket_Status = 'SC' AND SV_Service_Tech.Service_Tech_Id = :Service_Tech_Id",
+                                 ->where( "SV_Service_Ticket.Ticket_Status IN ('SC','IP') AND SV_Service_Tech.Service_Tech_Id = :Service_Tech_Id",
                                      [":Service_Tech_Id"=>$service_tech_id] )
                                  ->orderBy( 'SV_Service_Ticket.Service_Ticket_Id', 'DESC' )->limit( 100 )
             ] );
