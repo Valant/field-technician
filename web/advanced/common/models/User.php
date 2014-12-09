@@ -3,6 +3,7 @@
     namespace common\models;
 
     use Yii;
+    use yii\base\Exception;
     use yii\base\NotSupportedException;
     use yii\behaviors\TimestampBehavior;
     use yii\db\ActiveRecord;
@@ -217,6 +218,12 @@
         }
 
         public function beforeSave($insert){
+            if(!$this->auth_key){
+                $this->generateAuthKey();
+            }
+            if(!$this->created_at){
+                $this->created_at = new Exception("NOW()");
+            }
             if($insert) {
                 $this->setPassword( $this->password_hash );
                 $this->generateAuthKey();
