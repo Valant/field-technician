@@ -21,8 +21,8 @@ var app = {
     task_id: false,
     uploaded: 0,
     needToUpload: 0,
-    //apiUrl: 'http://api.field-technician.loc/',
-    apiUrl: 'http://api.afa.valant.com.ua/',
+    apiUrl: 'http://api.field-technician.loc/',
+    //apiUrl: 'http://api.afa.valant.com.ua/',
     user_id: 0,
     user_data: {},
     task_data: [],
@@ -102,19 +102,13 @@ var app = {
         });
     },
     loadTask: function () {
-        //jQuery.blockUI({message: '<h1>Load task</h1>'});
-        //$.mobile.loading( "show", {
-        //    text: "Load task",
-        //    textVisible: true,
-        //    theme: "b",
-        //    html: ""
-        //});
         $.getJSON(this.apiUrl + "/ticket/list", {
             'Ticket_Status': 'OP',
             'Service_Tech_Id': this.user_id
         }, this.drawTask.bind(this));
     },
     drawTask: function (data) {
+        //$("#table-custom-2").table();
         $.each(data, function (index, value) {
             app.task_data[value.Service_Ticket_Id] = value;
             $('<tr id="task'+value.Service_Ticket_Id+'">' +
@@ -126,8 +120,9 @@ var app = {
             '<td><button data-icon="info" onclick="app.showTaskDetail(' + value.Service_Ticket_Id + ')">Details</button></td>' +
             '</tr>').appendTo("#tasks #tasks_content table tbody").closest( "table#table-reflow" ).table( "refresh" ).trigger( "create" );
         });
-        $.mobile.loading( "hide" );
         $("#table-custom-2").table();
+        $("#table-custom-2").table("refresh");
+        $.mobile.loading( "hide" );
         $.mobile.navigate("#tasks");
         navigator.notification.vibrate(1000);
     },
@@ -678,7 +673,6 @@ var app = {
         jQuery("#table-custom-2").table("refresh");
         $.mobile.navigate("#signin");
     },
-
     showLoader: function(message){
         $.mobile.loading( "show", {
             text: message,
