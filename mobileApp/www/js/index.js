@@ -21,8 +21,8 @@ var app = {
     task_id: false,
     uploaded: 0,
     needToUpload: 0,
-    apiUrl: 'http://api.field-technician.loc/',
-    //apiUrl: 'http://api.afa.valant.com.ua/',
+    //apiUrl: 'http://api.field-technician.loc/',
+    apiUrl: 'http://api.afa.valant.com.ua/',
     user_id: 0,
     user_data: {},
     task_data: [],
@@ -30,6 +30,7 @@ var app = {
     attachmentToDelete: [],
     part_to_delete: 0,
     image_to_remove: false,
+    access_token: false,
     // Application Constructor
     initialize: function () {
         this.bindEvents();
@@ -62,21 +63,22 @@ var app = {
         this.db = window.openDatabase("hello_app_db6.sqlite", "1.0", "Hello app db", 100000);
         this.db.transaction(this.populateDB.bind(this), this.dbError.bind(this));
 
-        if(window.localStorage.getItem('tech_id')){
+        if(window.localStorage.getItem('tech_id')&&window.localStorage.getItem('access_token')){
             app.showLoader("Load user data")
             this.user_id =  window.localStorage.getItem('tech_id');
-            jQuery.getJSON(this.apiUrl+"user/"+window.localStorage.getItem('user_id'),{},function(data){
+            jQuery.getJSON(this.apiUrl+"user/"+window.localStorage.getItem('user_id'),{'access-token':window.localStorage.getItem('access_token')},function(data){
                if(data){
                    app.user_data = data;
+                   app.access_token = data.auth_key;
                    app.loadTask();
                }
             });
         }
     },
     populateDB: function (tx) {
-        console.log("POPULATE DB");
-        tx.executeSql('CREATE TABLE IF NOT EXISTS taskData(task_id INTEGER, type VARCHAR(50), data TEXT)');
-        tx.executeSql('CREATE TABLE IF NOT EXISTS taskAttachment(task_id INTEGER, type VARCHAR(50), data TEXT, attachment_id INTEGER)');
+        //console.log("POPULATE DB");
+        //tx.executeSql('CREATE TABLE IF NOT EXISTS taskData(task_id INTEGER, type VARCHAR(50), data TEXT)');
+        //tx.executeSql('CREATE TABLE IF NOT EXISTS taskAttachment(task_id INTEGER, type VARCHAR(50), data TEXT, attachment_id INTEGER)');
     },
     signin: function () {
         console.log("User login: " + $("#login").val());
@@ -91,8 +93,10 @@ var app = {
                 app.user_data = data;
                 window.localStorage.setItem('tech_id',data.technition_id);
                 window.localStorage.setItem('user_id',data.id);
+                window.localStorage.setItem('access_token',data.auth_key);
                 $("#signin .errors").text("");
                 app.user_id = data.technition_id;
+                app.access_token = data.auth_key;
                 app.loadTask();
             } else {
                 console.log(data.message.password[0]);
@@ -104,7 +108,8 @@ var app = {
     loadTask: function () {
         $.getJSON(this.apiUrl + "/ticket/list", {
             'Ticket_Status': 'OP',
-            'Service_Tech_Id': this.user_id
+            'Service_Tech_Id': this.user_id,
+            'access-token':this.access_token
         }, this.drawTask.bind(this));
     },
     drawTask: function (data) {
@@ -135,7 +140,8 @@ var app = {
                         app.showLoader("Searching part")
 
                         $.getJSON(app.apiUrl + "part/search", {
-                            code: result.text
+                            code: result.text,
+                            'access-token':app.access_token
                         }, function (data) {
                             console.log(data);
                             if ("error" == data.status) {
@@ -202,7 +208,7 @@ var app = {
         var params = {};
         params.task_id = app.task_id;
         params.name = options.fileName;
-
+        params['access-token'] = app.access_token;
 
         options.params = params;
         console.log("options");
@@ -219,7 +225,7 @@ var app = {
                 self.setProgressBarValue("slider_" + id, perc);
             }
         };
-        ft.upload(imageURI, encodeURI(this.apiUrl + "taskattachment/upload"), this.uploadPhotoWin.bind(this), this.uploadPhotoFail.bind(this), options);
+        ft.upload(imageURI, encodeURI(this.apiUrl + "taskattachment/upload?access-token="+app.access_token), this.uploadPhotoWin.bind(this), this.uploadPhotoFail.bind(this), options);
     },
     createProgressBar: function (id, text) {
         var cont = $("<div>");
@@ -310,7 +316,7 @@ var app = {
             for(var i in this.attachmentToDelete){
                 jQuery.ajax({
                     type:'DELETE',
-                    url: this.apiUrl+'taskattachment/'+this.attachmentToDelete[i]
+                    url: this.apiUrl+'taskattachment/'+this.attachmentToDelete[i]+'?access-token='+app.access_token
                 });
             }
         }
@@ -319,7 +325,7 @@ var app = {
             for(var part_code in this.usedParts){
                 jQuery.ajax({
                     type: 'POST',
-                    url: this.apiUrl+'taskpart/create',
+                    url: this.apiUrl+'taskpart/create?access-token='+app.access_token,
                     data:{
                         tech_id: this.user_id,
                         task_id: this.task_id,
@@ -359,7 +365,8 @@ var app = {
 
         this.db.transaction(this.getTaskData.bind(this), this.dbError.bind(this));
         $.when($.getJSON(this.apiUrl + "/ticket/find", {
-            'id': this.task_id
+            'id': this.task_id,
+            'access-token':this.access_token
         }, this.drawTaskDetails.bind(this))).then(function () {
             $.mobile.loading( "hide" );
             $.mobile.navigate("#taskDetails");
@@ -370,7 +377,7 @@ var app = {
         alert(err.code + "\n" + err.message);
     },
     getTaskData: function (tx) {
-        jQuery.getJSON(this.apiUrl + '/taskattachment/search', {task_id: this.task_id}, function (data) {
+        jQuery.getJSON(this.apiUrl + '/taskattachment/search', {task_id: this.task_id,'access-token':this.access_token}, function (data) {
             console.log(data);
             if(data){
                 for(var i in data){
@@ -381,7 +388,7 @@ var app = {
 
         });
 
-        jQuery.getJSON(this.apiUrl+'/taskpart/search',{task_id: this.task_id, expand: 'part'}, function (data) {
+        jQuery.getJSON(this.apiUrl+'/taskpart/search',{task_id: this.task_id, expand: 'part','access-token':this.access_token}, function (data) {
             console.log(data);
             if(data){
                 for(var i in data){
@@ -395,21 +402,24 @@ var app = {
         jQuery.getJSON(this.apiUrl+'/taskhistory/search',{
             task_id: this.task_id,
             tech_id: this.user_data.technition_id,
-            status: 'dispatch'
+            status: 'dispatch',
+            'access-token':this.access_token
         },function(data){
             if(typeof data.id != 'undefined'){
                 $("#status_dispatch").addClass('ui-disabled');
                 jQuery.getJSON(app.apiUrl+'/taskhistory/search',{
                     task_id: app.task_id,
                     tech_id: app.user_data.technition_id,
-                    status: 'arrived'
+                    status: 'arrived',
+                    'access-token':app.access_token
                 },function(data){
                     if(typeof data.id != 'undefined'){
                         $("#status_arrived").addClass('ui-disabled');
                         jQuery.getJSON(app.apiUrl+'/taskhistory/search',{
                             task_id: app.task_id,
                             tech_id: app.user_data.technition_id,
-                            status: 'depart'
+                            status: 'depart',
+                            'access-token':app.access_token
                         },function(data){
                             if(typeof data.id != 'undefined'){
                                 $("#status_depart").addClass('ui-disabled');
@@ -489,7 +499,7 @@ var app = {
         app.showLoader("Save task status");
         $.ajax({
             type: 'POST',
-            url: this.apiUrl + "taskhistory/create",
+            url: this.apiUrl + "taskhistory/create?access-token="+app.access_token,
             data: {
                 task_id: this.task_id,
                 tech_id: this.user_id,
@@ -517,7 +527,7 @@ var app = {
                         if(status){
                             jQuery.ajax({
                                 type: 'PUT',
-                                url: app.apiUrl+'ticket/'+app.task_id,
+                                url: app.apiUrl+'ticket/'+app.task_id+"?access-token="+app.access_token,
                                 data: {
                                     Ticket_Status: status
                                 }
@@ -543,7 +553,7 @@ var app = {
                     app.showLoader("Save task status");
                     jQuery.ajax({
                         type: 'PUT',
-                        url: app.apiUrl+'ticket/'+app.task_id,
+                        url: app.apiUrl+'ticket/'+app.task_id+'?access-token='+app.access_token,
                         data: {
                             Ticket_Status: 'IP'
                         }
@@ -652,7 +662,7 @@ var app = {
         }
         jQuery.ajax({
             type: 'PUT',
-            url: this.apiUrl + "user/"+this.user_data.id,
+            url: this.apiUrl + "user/"+this.user_data.id+'?access-token='+app.access_token,
             data: data
         }).always(function (data) {
             app.user_data = data;

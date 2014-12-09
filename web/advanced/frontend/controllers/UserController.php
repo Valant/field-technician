@@ -9,8 +9,10 @@
     namespace frontend\controllers;
 
     use Yii;
+    use yii\filters\auth\QueryParamAuth;
     use yii\rest\ActiveController;
     use common\models\LoginForm;
+
 
 
 
@@ -29,4 +31,13 @@
             }
         }
 
+        public function behaviors()
+        {
+            $behaviors = parent::behaviors();
+            $behaviors['authenticator'] = [
+                'class' => QueryParamAuth::className(),
+                'except'=>['login']
+            ];
+            return $behaviors;
+        }
     }

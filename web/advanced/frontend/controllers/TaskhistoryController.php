@@ -3,6 +3,8 @@
     namespace frontend\controllers;
 
     use common\models\TaskHistory;
+    use yii\filters\auth\QueryParamAuth;
+
 
     class TaskhistoryController extends \yii\rest\ActiveController
     {
@@ -20,5 +22,13 @@
             } else {
                 return [ 'status' => 'error' ];
             }
+        }
+        public function behaviors()
+        {
+            $behaviors = parent::behaviors();
+            $behaviors['authenticator'] = [
+                'class' => QueryParamAuth::className(),
+            ];
+            return $behaviors;
         }
     }

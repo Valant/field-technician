@@ -12,6 +12,8 @@
     use common\models\TaskAttachment;
     use yii\log\Logger;
     use yii\rest\ActiveController;
+    use yii\filters\auth\QueryParamAuth;
+
 
 
     class TaskattachmentController extends ActiveController
@@ -48,5 +50,13 @@
         }
         public function actionSearch($task_id){
             return TaskAttachment::findAll(['task_id'=>$task_id]);
+        }
+        public function behaviors()
+        {
+            $behaviors = parent::behaviors();
+            $behaviors['authenticator'] = [
+                'class' => QueryParamAuth::className(),
+            ];
+            return $behaviors;
         }
     }

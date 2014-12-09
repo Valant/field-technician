@@ -10,6 +10,8 @@ namespace frontend\controllers;
 
 
 use common\models\TaskPart;
+use yii\filters\auth\QueryParamAuth;
+
 
 class TaskpartController extends \yii\rest\ActiveController {
     public $modelClass = 'common\models\TaskPart';
@@ -39,5 +41,13 @@ class TaskpartController extends \yii\rest\ActiveController {
             'search'   => ['GET']
         ];
         return array_merge(parent::verbs(), $verbs);
+    }
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+        $behaviors['authenticator'] = [
+            'class' => QueryParamAuth::className(),
+        ];
+        return $behaviors;
     }
 } 

@@ -12,7 +12,7 @@
     use common\models\SVServiceTicket;
     use Yii;
     use yii\rest\ActiveController;
-    use yii\filters\Cors;
+    use yii\filters\auth\QueryParamAuth;
     use yii\helpers\ArrayHelper;
 
 
@@ -36,5 +36,14 @@
             } else {
                 return [ "status" => "error", "message" => "ID params is required" ];
             }
+        }
+
+        public function behaviors()
+        {
+            $behaviors = parent::behaviors();
+            $behaviors['authenticator'] = [
+                'class' => QueryParamAuth::className(),
+            ];
+            return $behaviors;
         }
     }
