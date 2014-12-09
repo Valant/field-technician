@@ -218,16 +218,17 @@
         }
 
         public function beforeSave($insert){
-            if(!$this->auth_key){
-                $this->generateAuthKey();
-            }
-            if(!$this->created_at){
-                $this->created_at = new Exception("NOW()");
-            }
+
             if($insert) {
                 $this->setPassword( $this->password_hash );
                 $this->generateAuthKey();
             }else{
+                if($this->auth_key == ""){
+                    $this->generateAuthKey();
+                }
+                if($this->created_at == ""){
+                    $this->created_at = new Exception("NOW()");
+                }
                 if($this->password_hash == ""){
                     unset($this->password_hash);
                 }else{
