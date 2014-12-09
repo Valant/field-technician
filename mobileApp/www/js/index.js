@@ -21,8 +21,8 @@ var app = {
     task_id: false,
     uploaded: 0,
     needToUpload: 0,
-    apiUrl: 'http://api.field-technician.loc/',
-    //apiUrl: 'http://api.afa.valant.com.ua/',
+    //apiUrl: 'http://api.field-technician.loc/',
+    apiUrl: 'http://api.afa.valant.com.ua/',
     user_id: 0,
     user_data: {},
     task_data: [],
@@ -404,36 +404,38 @@ var app = {
         },function(data){
             if(typeof data.id != 'undefined'){
                 $("#status_dispatch").addClass('ui-disabled');
+                jQuery.getJSON(app.apiUrl+'/taskhistory/search',{
+                    task_id: app.task_id,
+                    tech_id: app.user_data.technition_id,
+                    status: 'arrived'
+                },function(data){
+                    if(typeof data.id != 'undefined'){
+                        $("#status_arrived").addClass('ui-disabled');
+                        jQuery.getJSON(app.apiUrl+'/taskhistory/search',{
+                            task_id: app.task_id,
+                            tech_id: app.user_data.technition_id,
+                            status: 'depart'
+                        },function(data){
+                            if(typeof data.id != 'undefined'){
+                                $("#status_depart").addClass('ui-disabled');
+                            }else{
+                                $("#status_depart").removeClass('ui-disabled');
+
+                            }
+                        });
+                    }else{
+                        $("#status_arrived").removeClass('ui-disabled');
+                    }
+                });
             }else{
                 $("#status_dispatch").removeClass('ui-disabled');
 
             }
         });
 
-        jQuery.getJSON(this.apiUrl+'/taskhistory/search',{
-            task_id: this.task_id,
-            tech_id: this.user_data.technition_id,
-            status: 'arrived'
-        },function(data){
-            if(typeof data.id != 'undefined'){
-                $("#status_arrived").addClass('ui-disabled');
-            }else{
-                $("#status_arrived").removeClass('ui-disabled');
-            }
-        });
 
-        jQuery.getJSON(this.apiUrl+'/taskhistory/search',{
-            task_id: this.task_id,
-            tech_id: this.user_data.technition_id,
-            status: 'depart'
-        },function(data){
-            if(typeof data.id != 'undefined'){
-                $("#status_depart").addClass('ui-disabled');
-            }else{
-                $("#status_depart").removeClass('ui-disabled');
 
-            }
-        });
+
     },
     drawTaskDetails: function (data) {
         data = data.shift();
@@ -479,6 +481,9 @@ var app = {
         jQuery("#photos").empty();
         jQuery("#files").empty();
         jQuery("#parts").empty();
+        $("#status_dispatch").addClass('ui-disabled');
+        $("#status_arrived").addClass('ui-disabled');
+        $("#status_depart").addClass('ui-disabled');
     },
     setProgressBarValue: function (id, value) {
         $('#' + id).val(value);
@@ -558,7 +563,7 @@ var app = {
                     case "dispatch":
                             $("#status_dispatch").addClass('ui-disabled');
                             $("#status_arrived").removeClass('ui-disabled');
-                            $("#status_depart").removeClass('ui-disabled');
+                            $("#status_depart").addClass('ui-disabled');
                         break;
                     case "arrived":
                             $("#status_dispatch").addClass('ui-disabled');
