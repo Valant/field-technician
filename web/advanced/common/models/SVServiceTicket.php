@@ -289,7 +289,18 @@
             return $this->hasMany( 'SVProblem', [ 'problem_id' => 'problem_id' ] );
         }
 
-        public static function getList($service_tech_id){
+        public static function getList($service_tech_id, $ticketStatus = ['SC', 'IN']){
+
+            $dispatchList = SVServiceTicketDispatch::find()->select('SV_Service_Ticket_Dispatch.Service_Ticket_Id, max(SV_Service_Ticket_Dispatch.Dispatch_Id) as dispatch')
+                ->innerJoin('SV_Service_Ticket', 'SV_Service_Ticket.Service_Ticket_Id = SV_Service_Ticket_Dispatch.Service_Ticket_Id')
+                ->where( ["SV_Service_Ticket.Ticket_Status" => $ticketStatus, "SV_Service_Ticket_Dispatch.Service_Tech_Id" => $service_tech_id])
+                ->groupBy('SV_Service_Ticket_Dispatch.Service_Ticket_Id')
+                ->orderBy('SV_Service_Ticket_Dispatch.Service_Ticket_Id', SORT_DESC)->all();
+            $ticketIds = [];
+            foreach($dispatchList as $dp){
+                $ticketIds[] = $dp->Service_Ticket_Id;
+            }
+
             $query = new Query;
 
             return new ActiveDataProvider( [
@@ -298,16 +309,11 @@
                     AR_Customer.Customer_Name, ar_customer_site.ge1_description as  City,
                     SV_Service_Ticket.Ticket_Status
                 ' )->from( 'SV_Service_Ticket' )
-                                 ->innerJoin( 'SV_Service_Ticket_Dispatch',
-                                     'SV_Service_Ticket_Dispatch.Service_Ticket_Id = SV_Service_Ticket.Service_Ticket_Id' )
-                                 ->innerJoin( 'SV_Service_Tech',
-                                     'SV_Service_Tech.Service_Tech_Id = SV_Service_Ticket_Dispatch.Service_Tech_Id' )
                                  ->innerJoin( 'SV_Problem', 'SV_Problem.Problem_Id = SV_Service_Ticket.Problem_Id' )
                                  ->innerJoin( 'AR_Customer', 'AR_Customer.Customer_Id = SV_Service_Ticket.Customer_Id' )
                                  ->innerJoin( 'AR_Customer_Site',
                                      'AR_Customer_Site.Customer_Site_Id = SV_Service_Ticket.Customer_Site_Id' )
-                                 ->where( "SV_Service_Ticket.Ticket_Status IN ('SC','IP') AND SV_Service_Tech.Service_Tech_Id = :Service_Tech_Id",
-                                     [":Service_Tech_Id"=>$service_tech_id] )
+                                 ->where(["SV_Service_Ticket.Service_Ticket_Id" => $ticketIds])
                                  ->orderBy( 'SV_Service_Ticket.Service_Ticket_Id', 'DESC' )->limit( 100 )
             ] );
 
