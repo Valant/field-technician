@@ -21,8 +21,8 @@ var app = {
     task_id: false,
     uploaded: 0,
     needToUpload: 0,
-    //apiUrl: 'http://api.field-technician.loc/',
-    apiUrl: 'http://api.afa.valant.com.ua/',
+    apiUrl: 'http://api.field-technician.loc/',
+    //apiUrl: 'http://api.afa.valant.com.ua/',
     user_id: 0,
     user_data: {},
     task_data: [],
@@ -64,13 +64,17 @@ var app = {
         this.db.transaction(this.populateDB.bind(this), this.dbError.bind(this));
 
         if(window.localStorage.getItem('tech_id')&&window.localStorage.getItem('access_token')){
-            app.showLoader("Load user data")
+            app.showLoader("Load user data");
             this.user_id =  window.localStorage.getItem('tech_id');
             jQuery.getJSON(this.apiUrl+"user/"+window.localStorage.getItem('user_id'),{'access-token':window.localStorage.getItem('access_token')},function(data){
                if(data){
-                   app.user_data = data;
-                   app.access_token = data.auth_key;
-                   app.loadTask();
+                   if(typeof data.id != 'undefined') {
+                       app.user_data = data;
+                       app.access_token = data.auth_key;
+                       app.loadTask();
+                   }else{
+                       app.logout();
+                   }
                }
             });
         }
@@ -106,6 +110,7 @@ var app = {
         });
     },
     loadTask: function () {
+        app.showLoader("Load tasks")
         $.getJSON(this.apiUrl + "/ticket/list", {
             'Ticket_Status': 'OP',
             'Service_Tech_Id': this.user_id,
@@ -113,7 +118,10 @@ var app = {
         }, this.drawTask.bind(this));
     },
     drawTask: function (data) {
-        //$("#table-custom-2").table();
+        if($("#tasks #tasks_content table")) {
+            $("#tasks #tasks_content table").table();
+        }
+        $("#tasks #tasks_content table tbody").empty();
         $.each(data, function (index, value) {
             app.task_data[value.Service_Ticket_Id] = value;
             $('<tr id="task'+value.Service_Ticket_Id+'">' +
@@ -123,10 +131,9 @@ var app = {
             '<td>' + value.City + '</td>' +
             '<td>' + value.Ticket_Status + '</td>' +
             '<td><button data-icon="info" onclick="app.showTaskDetail(' + value.Service_Ticket_Id + ')">Details</button></td>' +
-            '</tr>').appendTo("#tasks #tasks_content table tbody").closest( "table#table-reflow" ).table( "refresh" ).trigger( "create" );
+            '</tr>').appendTo("#tasks #tasks_content table tbody").closest( "table#table-custom-2" ).table( "refresh" ).trigger( "create" );
         });
-        $("#table-custom-2").table();
-        $("#table-custom-2").table("refresh");
+        $("#tasks #tasks_content table").table("refresh");
         $.mobile.loading( "hide" );
         $.mobile.navigate("#tasks");
         navigator.notification.vibrate(1000);
