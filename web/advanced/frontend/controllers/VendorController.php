@@ -16,4 +16,18 @@
     {
         public $modelClass = 'common\models\Vendor';
 
+        public function actions() {
+
+            $actions = [
+                'search' => [
+                    'class'       => 'frontend\controllers\Vendor\SearchAction',
+                    'modelClass'  => $this->modelClass,
+                    'checkAccess' => [$this, 'checkAccess'],
+                    'params'      => \Yii::$app->request->get()
+                ],
+            ];
+
+            return array_merge(parent::actions(), $actions);
+        }
+
     }
