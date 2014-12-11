@@ -6,6 +6,7 @@ use Yii;
 use common\models\TaskAttachment;
 use backend\models\TaskAttachmentSearch;
 use yii\web\Controller;
+use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -17,6 +18,17 @@ class TaskattachmentController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+
+                    [
+                        'actions' => [ 'index','view','create','update','delete'  ],
+                        'allow'   => true,
+                        'roles'   => [ '@' ],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [

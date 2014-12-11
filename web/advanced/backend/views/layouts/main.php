@@ -64,7 +64,7 @@ AppAsset::register($this);
     <footer class="footer">
         <div class="container">
         <p class="pull-left">&copy; AFA Protective System, Inc <?= date('Y') ?></p>
-        <p class="pull-right">Created by <a href="http://valant.com.ua" target="_blank">Valant</a></p>
+        <p class="pull-right"></p>
         </div>
     </footer>
 
