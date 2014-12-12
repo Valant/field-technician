@@ -133,7 +133,7 @@ class SvserviceticketController extends Controller
 
     public function actionUserticket($tech_id){
         return $this->render('userTicket', [
-            'dataProvider' => SVServiceTicket::getList($tech_id),
+            'dataProvider' => SVServiceTicket::getList($tech_id, ['SC', 'IP', 'DP', 'GB','RS']),
         ]);
     }
 }
