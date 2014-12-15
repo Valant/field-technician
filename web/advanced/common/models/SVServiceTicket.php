@@ -289,7 +289,7 @@
             return $this->hasMany( 'SVProblem', [ 'problem_id' => 'problem_id' ] );
         }
 
-        public static function getList($service_tech_id, $ticketStatus = ['SC', 'IN']){
+        public static function getList($service_tech_id, $ticketStatus = ['SC', 'IP']){
 
             $dispatchList = SVServiceTicketDispatch::find()->select('SV_Service_Ticket_Dispatch.Service_Ticket_Id, max(SV_Service_Ticket_Dispatch.Dispatch_Id) as dispatch')
                 ->innerJoin('SV_Service_Ticket', 'SV_Service_Ticket.Service_Ticket_Id = SV_Service_Ticket_Dispatch.Service_Ticket_Id')

@@ -413,20 +413,24 @@ var app = {
             console.info("Dispatch data");
             console.log(data);
             app.task_data[data.Service_Ticket_Id]['dispatch_id'] = data.Dispatch_Id;
+
+
+
             console.log("Dispatch timetamp: "+moment(data.Dispatch_Time, "MMM DD YYYY HH:mm:ss0A").unix());
-            console.log("Arrigal timetamp: "+moment(data.Arrival_Time, "MMM DD YYYY HH:mm:ss0A").unix());
-            console.log("Depart timetamp: "+moment(data.Depart_Time, "MMM DD YYYY HH:mm:ss0A").unix());
             if(moment(data.Dispatch_Time, "MMM DD YYYY HH:mm:ss0A").unix() > 0){
                 $("#status_dispatch").addClass('ui-disabled');
+                console.log("Arrigal timetamp: "+moment(data.Arrival_Time, "MMM DD YYYY HH:mm:ss0A").unix());
                 if(moment(data.Arrival_Time, "MMM DD YYYY HH:mm:ss0A").unix() > 0){
-                    $("#status_arrival").addClass('ui-disabled');
+                    $("#status_arrived").addClass('ui-disabled');
+                    console.log("Depart timetamp: "+moment(data.Depart_Time, "MMM DD YYYY HH:mm:ss0A").unix());
                     if(moment(data.Depart_Time, "MMM DD YYYY HH:mm:ss0A").unix() > 0){
                         $("#status_depart").addClass('ui-disabled');
                     }else{
                         $("#status_depart").removeClass('ui-disabled');
                     }
                 }else{
-                    $("#status_arrival").removeClass('ui-disabled');
+                    console.log("remove class for arrival");
+                    $("#status_arrived").removeClass('ui-disabled');
                 }
             }else{
                 $("#status_dispatch").removeClass('ui-disabled');
@@ -496,7 +500,7 @@ var app = {
             case 'dispatch':
                     data.Dispatch_Time = moment().format("MMM DD YYYY HH:mm:ss A");
                 break;
-            case 'arrival':
+            case 'arrived':
                     data.Arrival_Time = moment().format("MMM DD YYYY HH:mm:ss A");
                 break;
             case 'depart':
