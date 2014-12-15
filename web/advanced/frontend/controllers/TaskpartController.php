@@ -14,12 +14,8 @@ use yii\filters\auth\QueryParamAuth;
 
 
 class TaskpartController extends \yii\rest\ActiveController {
-    public $modelClass = 'common\models\TaskPart';
+    public $modelClass = 'common\models\SVServiceTicketParts';
 
-//    public function actionSearch($task_id){
-//        $taskParts = TaskPart::findAll(['task_id'=>$task_id]);
-//        return $taskParts;
-//    }
 
     public function actions() {
 

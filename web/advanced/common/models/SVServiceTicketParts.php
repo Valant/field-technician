@@ -87,4 +87,13 @@
                 'Warehouse_Id'             => 'Warehouse  ID',
             ];
         }
+
+        public function getPart(){
+            return $this->hasOne( INPart::className(), [ 'Part_Id' => 'Part_Id' ] );
+        }
+
+        public function extraFields()
+        {
+            return ['part'];
+        }
     }
