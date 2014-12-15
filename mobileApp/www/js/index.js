@@ -112,8 +112,6 @@ var app = {
     loadTask: function () {
         app.showLoader("Load tasks")
         $.getJSON(this.apiUrl + "/ticket/list", {
-            'Ticket_Status': 'OP',
-            'Service_Tech_Id': this.user_id,
             'access-token':this.access_token
         }, this.drawTask.bind(this));
     },
@@ -371,10 +369,11 @@ var app = {
 
 
         this.db.transaction(this.getTaskData.bind(this), this.dbError.bind(this));
+
         $.when($.getJSON(this.apiUrl + "/ticket/find", {
             'id': this.task_id,
             'access-token':this.access_token
-        }, this.drawTaskDetails.bind(this))).then(function () {
+        }, this.drawTaskDetails.bind(this))).done(function () {
             $.mobile.loading( "hide" );
             $.mobile.navigate("#taskDetails");
         })
@@ -384,6 +383,7 @@ var app = {
         alert(err.code + "\n" + err.message);
     },
     getTaskData: function (tx) {
+
         jQuery.getJSON(this.apiUrl + '/taskattachment/search', {task_id: this.task_id,'access-token':this.access_token}, function (data) {
             console.log(data);
             if(data){
@@ -406,47 +406,33 @@ var app = {
             }
         });
 
-        jQuery.getJSON(this.apiUrl+'/taskhistory/search',{
+        jQuery.getJSON(this.apiUrl+'ticket/getdispatch',{
             task_id: this.task_id,
-            tech_id: this.user_data.technition_id,
-            status: 'dispatch',
             'access-token':this.access_token
         },function(data){
-            if(typeof data.id != 'undefined'){
+            console.info("Dispatch data");
+            console.log(data);
+            app.task_data[data.Service_Ticket_Id]['dispatch_id'] = data.Dispatch_Id;
+            console.log("Dispatch timetamp: "+moment(data.Dispatch_Time, "MMM DD YYYY HH:mm:ss0A").unix());
+            console.log("Arrigal timetamp: "+moment(data.Arrival_Time, "MMM DD YYYY HH:mm:ss0A").unix());
+            console.log("Depart timetamp: "+moment(data.Depart_Time, "MMM DD YYYY HH:mm:ss0A").unix());
+            if(moment(data.Dispatch_Time, "MMM DD YYYY HH:mm:ss0A").unix() > 0){
                 $("#status_dispatch").addClass('ui-disabled');
-                jQuery.getJSON(app.apiUrl+'/taskhistory/search',{
-                    task_id: app.task_id,
-                    tech_id: app.user_data.technition_id,
-                    status: 'arrived',
-                    'access-token':app.access_token
-                },function(data){
-                    if(typeof data.id != 'undefined'){
-                        $("#status_arrived").addClass('ui-disabled');
-                        jQuery.getJSON(app.apiUrl+'/taskhistory/search',{
-                            task_id: app.task_id,
-                            tech_id: app.user_data.technition_id,
-                            status: 'depart',
-                            'access-token':app.access_token
-                        },function(data){
-                            if(typeof data.id != 'undefined'){
-                                $("#status_depart").addClass('ui-disabled');
-                            }else{
-                                $("#status_depart").removeClass('ui-disabled');
-
-                            }
-                        });
+                if(moment(data.Arrival_Time, "MMM DD YYYY HH:mm:ss0A").unix() > 0){
+                    $("#status_arrival").addClass('ui-disabled');
+                    if(moment(data.Depart_Time, "MMM DD YYYY HH:mm:ss0A").unix() > 0){
+                        $("#status_depart").addClass('ui-disabled');
                     }else{
-                        $("#status_arrived").removeClass('ui-disabled');
+                        $("#status_depart").removeClass('ui-disabled');
                     }
-                });
+                }else{
+                    $("#status_arrival").removeClass('ui-disabled');
+                }
             }else{
                 $("#status_dispatch").removeClass('ui-disabled');
-
             }
+
         });
-
-
-
 
     },
     drawTaskDetails: function (data) {
@@ -504,6 +490,27 @@ var app = {
     setTaskStatus: function (status) {
 
         app.showLoader("Save task status");
+        console.log(this.task_data);
+        var data = {};
+        switch(status){
+            case 'dispatch':
+                    data.Dispatch_Time = moment().format("MMM DD YYYY HH:mm:ss A");
+                break;
+            case 'arrival':
+                    data.Arrival_Time = moment().format("MMM DD YYYY HH:mm:ss A");
+                break;
+            case 'depart':
+                data.Depart_Time = moment().format("MMM DD YYYY HH:mm:ss A");
+                break;
+        }
+        $.ajax({
+            type: 'PUT',
+            url: this.apiUrl+'dispatch/'+this.task_data[this.task_id].dispatch_id+','+this.task_id+"?access-token="+app.access_token,
+            data: data
+        }).always(function(data){
+            console.log(data);
+        });
+
         $.ajax({
             type: 'POST',
             url: this.apiUrl + "taskhistory/create?access-token="+app.access_token,

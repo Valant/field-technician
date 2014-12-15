@@ -10,6 +10,7 @@
 
     use common\models\SVServiceTech;
     use common\models\SVServiceTicket;
+    use common\models\SVServiceTicketDispatch;
     use Yii;
     use yii\rest\ActiveController;
     use yii\filters\auth\QueryParamAuth;
@@ -22,20 +23,12 @@
 
         public function actionList()
         {
-            if (isset( $_REQUEST['Service_Tech_Id'] )) {
-                return SVServiceTicket::getList( (int) $_REQUEST['Service_Tech_Id'] );
-            } else {
-                return [ "status" => "error", "message" => "Service_Tech_Id params is required" ];
-            }
+            return SVServiceTicket::getList( Yii::$app->user->getIdentity()->technition_id );
         }
 
-        public function actionFind()
+        public function actionFind($id)
         {
-            if (isset( $_REQUEST['id'] )) {
-                return SVServiceTicket::getSingleInfo( $_REQUEST['id'] );
-            } else {
-                return [ "status" => "error", "message" => "ID params is required" ];
-            }
+            return SVServiceTicket::getSingleInfo( $id );
         }
 
         public function behaviors()
@@ -45,5 +38,9 @@
                 'class' => QueryParamAuth::className(),
             ];
             return $behaviors;
+        }
+
+        public function actionGetdispatch($task_id){
+            return SVServiceTicketDispatch::find()->where(['Service_Ticket_Id'=>$task_id, 'Service_Tech_Id'=>Yii::$app->user->getIdentity()->technition_id])->orderBy(['Dispatch_Id'=>SORT_DESC])->one();
         }
     }
