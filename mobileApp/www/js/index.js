@@ -21,8 +21,8 @@ var app = {
     task_id: false,
     uploaded: 0,
     needToUpload: 0,
-    apiUrl: 'http://api.field-technician.loc/',
-    //apiUrl: 'http://api.afa.valant.com.ua/',
+    //apiUrl: 'http://api.field-technician.loc/',
+    apiUrl: 'http://api.afa.valant.com.ua/',
     user_id: 0,
     user_data: {},
     task_data: [],
@@ -327,15 +327,23 @@ var app = {
         }
 
         if(this.usedParts){
-            for(var part_code in this.usedParts){
+            jQuery.ajax({
+                type: 'GET',
+                url: this.apiUrl+'taskpart/empty',
+                data: {
+                    'access-token': app.access_token,
+                    Service_Ticket_Id: this.task_id
+                }
+            })
+            for(var part_id in this.usedParts){
                 jQuery.ajax({
                     type: 'POST',
                     url: this.apiUrl+'taskpart/create?access-token='+app.access_token,
                     data:{
-                        tech_id: this.user_id,
-                        task_id: this.task_id,
-                        part_id: part_code,
-                        count: this.usedParts[part_code]
+                        Service_Tech_ID: this.user_id,
+                        Service_Ticket_Id: this.task_id,
+                        Part_Id: part_id,
+                        Quantity: this.usedParts[part_id]
                     }
                 });
             }

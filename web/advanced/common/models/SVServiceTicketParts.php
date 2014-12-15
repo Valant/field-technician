@@ -96,4 +96,20 @@
         {
             return ['part'];
         }
+
+        public function beforeSave($insert){
+            if($insert){
+                if($part = INPart::findOne($this->Part_Id)){
+                    $this->Rate = $part->Standard_Cost * 3.5;
+                }
+                $this->COGS_Register_Id = 1;
+                $this->Issue_From_Stock = 'Y';
+                $this->InterCompany_Register_Id = 1;
+                $this->Customer_Equipment_ID = 1;
+                if($tech = SVServiceTech::findOne($this->Service_Tech_Id)){
+                    $this->Warehouse_Id = $tech->Warehouse_Id;
+                }
+            }
+            return parent::beforeSave($insert);
+        }
     }

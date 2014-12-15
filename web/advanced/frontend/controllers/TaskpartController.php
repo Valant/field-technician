@@ -9,6 +9,7 @@
 namespace frontend\controllers;
 
 
+use common\models\SVServiceTicketParts;
 use common\models\TaskPart;
 use yii\filters\auth\QueryParamAuth;
 
@@ -25,7 +26,7 @@ class TaskpartController extends \yii\rest\ActiveController {
                 'modelClass'  => $this->modelClass,
                 'checkAccess' => [$this, 'checkAccess'],
                 'params'      => \Yii::$app->request->get()
-            ],
+            ]
         ];
 
         return array_merge(parent::actions(), $actions);
@@ -34,7 +35,8 @@ class TaskpartController extends \yii\rest\ActiveController {
     public function verbs() {
 
         $verbs = [
-            'search'   => ['GET']
+            'search'   => ['GET'],
+            'empty'   => ['GET']
         ];
         return array_merge(parent::verbs(), $verbs);
     }
@@ -45,5 +47,9 @@ class TaskpartController extends \yii\rest\ActiveController {
             'class' => QueryParamAuth::className(),
         ];
         return $behaviors;
+    }
+
+    public function actionEmpty($Service_Ticket_Id){
+        return ["deleted"=>SVServiceTicketParts::deleteAll(['Service_Ticket_Id'=>$Service_Ticket_Id])];
     }
 } 
