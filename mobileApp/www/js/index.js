@@ -327,26 +327,28 @@ var app = {
         }
 
         if(this.usedParts){
-            jQuery.ajax({
+            $.when(jQuery.ajax({
                 type: 'GET',
                 url: this.apiUrl+'taskpart/empty',
                 data: {
                     'access-token': app.access_token,
                     Service_Ticket_Id: this.task_id
                 }
-            })
-            for(var part_id in this.usedParts){
-                jQuery.ajax({
-                    type: 'POST',
-                    url: this.apiUrl+'taskpart/create?access-token='+app.access_token,
-                    data:{
-                        Service_Tech_ID: this.user_id,
-                        Service_Ticket_Id: this.task_id,
-                        Part_Id: part_id,
-                        Quantity: this.usedParts[part_id]
-                    }
-                });
-            }
+            })).done(function(){
+                for(var part_id in app.usedParts){
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: app.apiUrl+'taskpart/create?access-token='+app.access_token,
+                        data:{
+                            Service_Tech_ID: app.user_id,
+                            Service_Ticket_Id: app.task_id,
+                            Part_Id: part_id,
+                            Quantity: app.usedParts[part_id]
+                        }
+                    });
+                }
+            });
+
         }
 
         this.setProgressBarValue(0);
@@ -407,7 +409,7 @@ var app = {
             console.log(data);
             if(data){
                 for(var i in data){
-                    app.usedParts[data[i].part.Part_Id] = data[i].count;
+                    app.usedParts[data[i].part.Part_Id] = data[i].Quantity;
                     jQuery("#parts").append('<li data-icon="delete" id="part' + data[i].part.Part_Id + '"><a onclick="app.removePart(' + data[i].part.Part_Id + ')">' + data[i].part.Part_Code + ' ' + data[i].part.Detail + ' ' + data[i].part.Description + '<span class="ui-li-count">'+data[i].Quantity+'</span></a></li>');
                 }
                 $('#parts').listview('refresh');
