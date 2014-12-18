@@ -31,12 +31,18 @@ AppAsset::register($this);
                     'class' => 'navbar-inverse navbar-fixed-top',
                 ],
             ]);
-            $menuItems = [
-                [ 'label' => 'Users', 'url' => [ '/user/index' ] ],
-                [ 'label' => 'Task Attachment', 'url' => [ '/taskattachment/index' ] ],
-                [ 'label' => 'Service Tech', 'url' => [ '/svservicetech/index' ] ],
-                [ 'label' => 'Tickets', 'url' => [ '/svserviceticket/index' ] ],
-            ];
+            
+            $menuItems = [];
+            
+            if (!\Yii::$app->user->isGuest) {
+                $menuItems = array_merge($menuItems, [
+                    [ 'label' => 'Users', 'url' => [ '/user/index' ] ],
+                    [ 'label' => 'Task Attachment', 'url' => [ '/taskattachment/index' ] ],
+                    [ 'label' => 'Service Tech', 'url' => [ '/svservicetech/index' ] ],
+                    [ 'label' => 'Tickets', 'url' => [ '/svserviceticket/index' ] ],
+                ]);
+            }
+            
             if (Yii::$app->user->isGuest) {
                 $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
             } else {
