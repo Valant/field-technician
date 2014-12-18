@@ -1,4 +1,5 @@
 <?php
+use Yii;
 use backend\assets\AppAsset;
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
@@ -34,7 +35,7 @@ AppAsset::register($this);
             
             $menuItems = [];
             
-            if (!\Yii::$app->user->isGuest) {
+            if (!Yii::$app->user->isGuest) {
                 $menuItems = array_merge($menuItems, [
                     [ 'label' => 'Users', 'url' => [ '/user/index' ] ],
                     [ 'label' => 'Task Attachment', 'url' => [ '/taskattachment/index' ] ],
