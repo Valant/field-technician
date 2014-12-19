@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use common\models\User;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\UserSearch */
@@ -35,7 +36,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'role',
                 'value' => function ($model, $key, $index, $column) {
                     return $model::$roleLabels[$model->role];
-                }
+                },
+                'filter' => User::$roleLabels
             ],
             // 'status',
             'created_at',
