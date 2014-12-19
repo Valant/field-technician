@@ -30,13 +30,17 @@ $this->params['breadcrumbs'][] = $this->title;
 //            'auth_key',
 //            'password_hash',
 //            'password_reset_token',
-             'email:email',
-            // 'role',
+            'email:email',
+            'role' => [
+                'attribute' => 'role',
+                'value' => function ($model, $key, $index, $column) {
+                    return $model::$roleLabels[$model->role];
+                }
+            ],
             // 'status',
-             'created_at',
+            'created_at',
             // 'updated_at',
-             'technitionName',
-
+            'technitionName',
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
