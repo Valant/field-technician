@@ -41,7 +41,7 @@
         {
             if ( ! $this->hasErrors()) {
                 $user = $this->getUser();
-                if ( ! $user || ! $user->validatePassword( $this->password )) {
+                if ( ! $user || ! $user->validatePassword( $this->password ) || ! $user->validateRole() ) {
                     $this->addError( $attribute, 'Incorrect username or password.' );
                 }
             }

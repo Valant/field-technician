@@ -18,6 +18,8 @@
     <?= $form->field( $model, 'username' )->textInput( [ 'maxlength' => 255 ] ) ?>
 
     <?= $form->field( $model, 'email' )->textInput( [ 'maxlength' => 255 ] ) ?>
+    
+    <?= $form->field($model, 'role')->dropDownList($model::$roleLabels); ?>
 
     <?= $form->field( $model, 'technition_id' )->dropDownList(
         ArrayHelper::map( \common\models\SVServiceTech::find()->with('employee')->asArray()->all(), 'Service_Tech_Id', function($element){

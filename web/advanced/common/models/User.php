@@ -31,7 +31,24 @@
 
         const STATUS_DELETED = 0;
         const STATUS_ACTIVE = 10;
+        
         const ROLE_USER = 10;
+        const ROLE_ADMIN = 20;
+        
+        public static $roleLabels = [
+            self::ROLE_USER => 'User',
+            self::ROLE_ADMIN => 'Admin'
+        ];
+        
+        public static $roleAccess = [
+            'app-frontend' => self::ROLE_USER,
+            'app-backend' => self::ROLE_ADMIN
+        ];
+        
+        public function validateRole() 
+        {
+            return self::$roleAccess[Yii::$app->id] === $this->role;
+        }
 
         /**
          * @inheritdoc
@@ -70,7 +87,7 @@
         public function rules()
         {
             return [
-                [ [ 'username',  'password_hash', 'email'], 'required', 'on'=>'create' ],
+                [ [ 'username',  'password_hash', 'email' ], 'required', 'on'=>'create' ],
                 [ [ 'username',  'email' ], 'required', 'on'=>'update' ],
                 [ [ 'role', 'status', 'technition_id' ], 'integer' ],
                 [ [ 'username', 'password_hash', 'password_reset_token', 'email' ], 'string', 'max' => 255 ],
