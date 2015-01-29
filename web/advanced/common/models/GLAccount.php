@@ -32,7 +32,7 @@
         public function rules()
         {
             return [
-                [ [ 'Account_Code', 'Description', 'Inactive' ], 'string' ],
+                [ [ 'Account_Code', 'Description', 'Inactive', 'q' ], 'string' ],
                 [ [ 'Account_Type_Id', 'Vendor_Id' ], 'integer' ],
                 [ [ 'Current_Balance', 'Last_Ending_Balance' ], 'number' ]
             ];
