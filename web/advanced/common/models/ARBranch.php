@@ -32,7 +32,7 @@
         public function rules()
         {
             return [
-                [ [ 'Branch_Code', 'Description', 'Inactive', 'GL_Code', 'ACH_Direct_MerchantId' ], 'string' ],
+                [ [ 'Branch_Code', 'Description', 'Inactive', 'GL_Code', 'ACH_Direct_MerchantId', 'q' ], 'string' ],
                 [ [ 'Last_Cycle_Id', 'AlternateAddress_Id' ], 'integer' ]
             ];
         }
