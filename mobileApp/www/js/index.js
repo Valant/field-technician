@@ -485,7 +485,7 @@ var app = {
         $("<p><pre>Contact: " + task.Requested_By + "</pre></p>").appendTo("#taskDescription");
         $("<p><pre>Phone: " + task.requested_by_phone + "</pre></p>").appendTo("#taskDescription");
         $("<p><pre>Problem: " + task.ProblemDescription + "</pre></p>").appendTo("#taskDescription");
-        $("<p><pre>Customer Comment : " + task.CustomerComments + "</pre></p>").appendTo("#taskDescription");
+        $( "<p><pre>Customer Comment : </pre>" + task.CustomerComments + "</p>" ).appendTo( "#taskDescription" );
     },
     clearTask: function () {
         jQuery("#taskName").empty();
