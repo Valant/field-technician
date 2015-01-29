@@ -21,8 +21,8 @@ var app = {
     task_id: false,
     uploaded: 0,
     needToUpload: 0,
-    //apiUrl: 'http://api.field-technician.loc/',
-    apiUrl: 'http://api.afa.valant.com.ua/',
+    apiUrl: 'http://api.field-technician.loc/',
+//    apiUrl: 'http://api.afa.valant.com.ua/',
     user_id: 0,
     user_data: {},
     task_data: [],
@@ -123,7 +123,7 @@ var app = {
         $.each(data, function (index, value) {
             app.task_data[value.Service_Ticket_Id] = value;
             $('<tr id="task'+value.Service_Ticket_Id+'">' +
-            '<td>' + value.Service_Ticket_Id + '</td>' +
+                                                          '<td>' + value.Ticket_Number + '</td>' +
             '<td><a href="javascript: app.showTaskDetail(' + value.Service_Ticket_Id + ')" data-rel="external">' + value.ProblemDescription + '</a></td>' +
             '<td>' + value.Customer_Name + '</td>' +
             '<td>' + value.City + '</td>' +
