@@ -61,7 +61,7 @@
             $query = $modelClass::find();
             if (isset( $params['q'] )) {
                 $query->where( "Branch_Code LIKE :q OR Description LIKE :q" );
-                $query->addParams( [ ':q' => "%" . $params['q'] . "%" ] );
+                $query->addParams( [ ':q' => $params['q'] . "%" ] );
                 $query->addOrderBy( [ 'Branch_Code' => SORT_ASC ] );
                 unset( $params['q'] );
             }

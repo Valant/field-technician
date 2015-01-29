@@ -62,7 +62,7 @@
             $query = $modelClass::find();
             if (isset( $params['Category_Code'] )) {
                 $query->where( "Category_Code LIKE :Category_Code" );
-                $query->addParams( [ ':Category_Code' => "%" . $params['Category_Code'] . "%" ] );
+                $query->addParams( [ ':Category_Code' => $params['Category_Code'] . "%" ] );
                 $query->addOrderBy( [ 'Category_Code' => SORT_ASC ] );
                 unset( $params['Category_Code'] );
             }
