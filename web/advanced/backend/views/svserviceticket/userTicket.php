@@ -20,11 +20,12 @@
             ['class' => 'yii\grid\SerialColumn'],
 
             [
-                'label'=>'Service Ticket Id',
+                'label' => 'Ticket Number',
                 'format' => 'raw',
                 'value'=>function ($data) {
 
-                    return Html::a($data['Service_Ticket_Id'], ['/svserviceticket/view', 'id'=>$data['Service_Ticket_Id']]);
+                    return Html::a( $data['Ticket_Number'],
+                        [ '/svserviceticket/view', 'id' => $data['Service_Ticket_Id'] ] );
                 },
             ],
 //            'Service_Ticket_Id',

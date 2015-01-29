@@ -305,7 +305,7 @@
 
             return new ActiveDataProvider( [
                 'query' => $query->select( '
-                    SV_Service_Ticket.Service_Ticket_Id, SV_Problem.Description AS ProblemDescription,
+                    SV_Service_Ticket.Service_Ticket_Id, SV_Service_Ticket.Ticket_Number, SV_Problem.Description AS ProblemDescription,
                     AR_Customer.Customer_Name, ar_customer_site.ge1_description as  City,
                     SV_Service_Ticket.Ticket_Status
                 ' )->from( 'SV_Service_Ticket' )
