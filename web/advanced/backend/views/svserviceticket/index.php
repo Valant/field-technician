@@ -90,7 +90,7 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'Service_Ticket_Group_Id',
             // 'Service_Coordinator_Employee_Id',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            [ 'class' => 'yii\grid\ActionColumn', 'template' => '{view}' ],
         ],
     ]); ?>
 
