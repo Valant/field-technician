@@ -12,22 +12,23 @@
     use yii\rest\ActiveController;
 
 
-    class VendorController extends ActiveController
+    class CategoryController extends ActiveController
     {
-        public $modelClass = 'common\models\Vendo';
+        public $modelClass = 'common\models\ARCategory';
 
-        public function actions() {
+        public function actions()
+        {
 
             $actions = [
                 'search' => [
-                    'class'       => 'frontend\controllers\Vendor\SearchAction',
+                    'class'       => 'frontend\controllers\Category\SearchAction',
                     'modelClass'  => $this->modelClass,
-                    'checkAccess' => [$this, 'checkAccess'],
+                    'checkAccess' => [ $this, 'checkAccess' ],
                     'params'      => \Yii::$app->request->get()
                 ],
             ];
 
-            return array_merge(parent::actions(), $actions);
+            return array_merge( parent::actions(), $actions );
         }
 
     }
