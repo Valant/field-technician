@@ -479,6 +479,7 @@ var app = {
         $("<p><pre>System Comments: " + task.system_comments + "</pre></p>").appendTo("#taskDescription");
 
         $("<h4>Ticket Information</h4>").appendTo("#taskDescription");
+        $( "<p><pre>Ticket number: " + task.Ticket_Number + "</pre></p>" ).appendTo( "#taskDescription" );
         $("<p><pre>Status: " + task.ticket_status + "</pre></p>").appendTo("#taskDescription");
         $("<p><pre>Created on: " + task.Creation_Date + "</pre></p>").appendTo("#taskDescription");
         $("<p><pre>Created by: " + task.entered_by + "</pre></p>").appendTo("#taskDescription");
