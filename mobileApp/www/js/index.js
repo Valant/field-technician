@@ -134,13 +134,14 @@ var app = {
         $("#tasks #tasks_content table").table("refresh");
         $.mobile.loading( "hide" );
         $.mobile.navigate("#tasks");
-        navigator.notification.vibrate(1000);
+        navigator.notification && navigator.notification.vibrate(1000);
     },
     scanBarCode: function () {
         try {
             window.plugins.barcodeScanner.scan(
                 function (result) {
                     if (!result.cancelled) {
+                        var quantity = null
 
                         app.showLoader("Searching part")
 
@@ -154,20 +155,46 @@ var app = {
                                 navigator.notification.alert(
                                     'Part search',  // message
                                     false,         // callback
-                                    'Part was not fouded',            // title
+                                    'Part was not founded',            // title
                                     'OK'                  // buttonName
                                 );
                             } else {
-                                if (app.usedParts[data.Part_Id]) {
-                                    app.usedParts[data.Part_Id]++;
-                                    jQuery("#part" + data.Part_Id + " .ui-li-count").text(app.usedParts[data.Part_Id]);
-                                } else {
-                                    jQuery('<li data-icon="delete" id="part' + data.Part_Id + '"><a onclick="app.removePart(' + data.Part_Id + ')">' + data.Part_Code + ' ' + data.Detail + ' ' + data.Description + '<span class="ui-li-count">1</span></a></li>').appendTo("#parts");
-                                    app.usedParts[data.Part_Id] = 1;
-                                }
-                                $('#parts').listview('refresh');
-                                $.mobile.loading( "hide" );
-                                $.mobile.silentScroll($("#parts").offset().top);
+                                navigator.notification.prompt(
+                                    'Please enter quantity',  // message
+                                    function (results) {
+                                        console.info('parseInt(results.input1)', parseInt(results.input1));
+                                        if(parseInt(results.input1)!=NaN){
+                                            quantity = parseInt(results.input1);
+                                        }else{
+                                            navigator.notification.alert(
+                                                'Please enter only numbers',  // message
+                                                false,         // callback
+                                                'Is not  number',            // title
+                                                'OK'                  // buttonName
+                                            );
+
+                                        }
+                                        if (app.usedParts[data.Part_Id]) {
+                                            if (quantity)
+                                                app.usedParts[data.Part_Id] += quantity;
+                                            else
+                                                app.usedParts[data.Part_Id]++;
+                                            jQuery("#part" + data.Part_Id + " .ui-li-count").text(app.usedParts[data.Part_Id]);
+                                        } else {
+                                            jQuery('<li data-icon="delete" id="part' + data.Part_Id + '"><a onclick="app.removePart(' + data.Part_Id + ')">' + data.Part_Code + ' ' + data.Detail + ' ' + data.Description + '<span class="ui-li-count">'+(quantity?quantity:1)+'</span></a></li>').appendTo("#parts");
+                                            app.usedParts[data.Part_Id] = quantity?quantity:1;
+                                        }
+                                        $('#parts').listview('refresh');
+                                        $.mobile.loading( "hide" );
+                                        $.mobile.silentScroll($("#parts").offset().top);
+                                    }
+                                    ,                  // callback to invoke
+                                    'Quantity',            // title
+                                    ['Ok','Exit'],             // buttonLabels
+                                    '1'                 // defaultText
+                                );
+                                console.info(quantity);
+
                             }
                         });
                     }
@@ -428,15 +455,21 @@ var app = {
 
             console.log("Dispatch timetamp: "+moment(data.Dispatch_Time, "MMM DD YYYY HH:mm:ss0A").unix());
             if(moment(data.Dispatch_Time, "MMM DD YYYY HH:mm:ss0A").unix() > 0){
+                console.info('data.Dispatch_Time, "MMM DD YYYY HH:mm:ss0A").unix() > 0')
                 $("#status_dispatch").addClass('ui-disabled');
                 console.log("Arrigal timetamp: "+moment(data.Arrival_Time, "MMM DD YYYY HH:mm:ss0A").unix());
                 if(moment(data.Arrival_Time, "MMM DD YYYY HH:mm:ss0A").unix() > 0){
+                    console.info('data.Arrival_Time, "MMM DD YYYY HH:mm:ss0A").unix() > 0')
+
                     $("#status_arrived").addClass('ui-disabled');
                     console.log("Depart timetamp: "+moment(data.Depart_Time, "MMM DD YYYY HH:mm:ss0A").unix());
                     if(moment(data.Depart_Time, "MMM DD YYYY HH:mm:ss0A").unix() > 0){
+                        console.info('data.Depart_Time, "MMM DD YYYY HH:mm:ss0A").unix() > 0')
                         $("#status_depart").addClass('ui-disabled');
                     }else{
-                        $("#status_depart").removeClass('ui-disabled');
+                        console.info('!data.Depart_Time, "MMM DD YYYY HH:mm:ss0A").unix() > 0')
+
+                        $("#status_depart,button[id^='task_btn_']").removeClass('ui-disabled');
                     }
                 }else{
                     console.log("remove class for arrival");
@@ -494,79 +527,101 @@ var app = {
         jQuery("#photos").empty();
         jQuery("#files").empty();
         jQuery("#parts").empty();
-        $("#status_dispatch").addClass('ui-disabled');
+        $("#status_dispatch,#status_arrived,#status_depart").addClass('ui-disabled');
+        /*
         $("#status_arrived").addClass('ui-disabled');
         $("#status_depart").addClass('ui-disabled');
+        */
     },
     setProgressBarValue: function (id, value) {
         $('#' + id).val(value);
         $('#' + id).slider("refresh");
     },
-    setTaskStatus: function (status) {
-
+    saveTaskStatus: function (status,statusData) {
         app.showLoader("Save task status");
-        console.log(this.task_data);
-        var data = {};
-        switch(status){
-            case 'dispatch':
-                    data.Dispatch_Time = moment().format("MMM DD YYYY HH:mm:ss A");
-                break;
-            case 'arrived':
-                    data.Arrival_Time = moment().format("MMM DD YYYY HH:mm:ss A");
-                break;
-            case 'depart':
-                data.Depart_Time = moment().format("MMM DD YYYY HH:mm:ss A");
-                break;
-        }
         $.ajax({
             type: 'PUT',
-            url: this.apiUrl+'dispatch/'+this.task_data[this.task_id].dispatch_id+','+this.task_id+"?access-token="+app.access_token,
-            data: data
-        }).always(function(data){
-            console.log(data);
+            url: this.apiUrl + 'dispatch/' + this.task_data[this.task_id].dispatch_id + ',' + this.task_id + "?access-token=" + app.access_token,
+            data: statusData
+        }).always(function (dataResponse) {
+            console.log(dataResponse);
         });
 
         $.ajax({
             type: 'POST',
-            url: this.apiUrl + "taskhistory/create?access-token="+app.access_token,
+            url: this.apiUrl + "taskhistory/create?access-token=" + app.access_token,
             data: {
                 task_id: this.task_id,
                 tech_id: this.user_id,
                 status: status
             }
-        }).always(function (data) {
-            $.mobile.loading( "hide" );
-            if(typeof data.id != 'undefined'){
-                $("#status_"+data.status).addClass('ui-disabled');
-                if('depart' == data.status){
-                    navigator.notification.confirm("Select depart type", function(button){
+        }).always(function (dataResponse) {
+            $.mobile.loading("hide");
+            if (typeof dataResponse.id != 'undefined') {
+                /*
+                $("#status_" + dataResponse.status).addClass('ui-disabled');
+
+                switch (dataResponse.status) {
+                    case "dispatch":
+
+                        break;
+                    case "arrived":
+
+                        break;
+                    case "depart":
+                        break;
+                }
+                */
+                if ("dispatch" == dataResponse.status) {
+                    $("#status_dispatch,#status_depart,button[id^='task_btn_']").addClass('ui-disabled');
+                    $("#status_arrived").removeClass('ui-disabled');
+                }else
+                if ("arrived" == dataResponse.status) {
+                    $("#status_dispatch, #status_arrived").addClass('ui-disabled');
+                    $("#status_depart,button[id^='task_btn_']").removeClass('ui-disabled');
+                    app.showLoader("Save task status");
+                    jQuery.ajax({
+                        type: 'PUT',
+                        url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
+                        data: {
+                            Ticket_Status: 'IP'
+                        }
+                    }).always(function (data) {
+                        $.mobile.loading("hide");
+                        console.log(data);
+                    });
+                }else
+                if ('depart' == dataResponse.status) {
+                    $("#status_dispatch,#status_arrived,#status_depart,button[id^='task_btn_']").addClass('ui-disabled');
+
+                    navigator.notification.confirm("Select depart type", function (button) {
                         app.showLoader("Save task status");
                         var status = false;
-                        switch(button){
+                        switch (button) {
                             case 1:
-                                    status = 'GB';
+                                status = 'GB';
                                 break;
+/*                            case 2:
+                                status = 'DP';
+                                break;*/
                             case 2:
-                                    status = 'DP';
-                                break;
-                            case 3:
-                                    status = 'RS';
+                                status = 'RS';
                                 break;
                         }
-                        if(status){
+                        console.info(status)
+                        if (status) {
                             jQuery.ajax({
                                 type: 'PUT',
-                                url: app.apiUrl+'ticket/'+app.task_id+"?access-token="+app.access_token,
+                                url: app.apiUrl + 'ticket/' + app.task_id + "?access-token=" + app.access_token,
                                 data: {
                                     Ticket_Status: status
                                 }
-                            }).always(function(data){
-                                $("#task"+data.Service_Ticket_Id).remove();
-                                $.mobile.loading( "hide" );
-                                console.log(data);
+                            }).always(function (data) {
+                                $("#task" + data.Service_Ticket_Id).remove();
+                                $.mobile.loading("hide");
                                 navigator.notification.alert(
                                     'Time was saved',  // message
-                                    function(){
+                                    function () {
                                         $.mobile.navigate("#tasks");
                                     },         // callback
                                     'Time',            // title
@@ -575,42 +630,9 @@ var app = {
 
                             });
                         }
-                    }, "Depart type", ["Go back","Depart","Resolved"])
+                    }, "Depart type", ["Go back", "Resolved"])
                 }
-
-                if("arrived" == data.status){
-                    app.showLoader("Save task status");
-                    jQuery.ajax({
-                        type: 'PUT',
-                        url: app.apiUrl+'ticket/'+app.task_id+'?access-token='+app.access_token,
-                        data: {
-                            Ticket_Status: 'IP'
-                        }
-                    }).always(function(data){
-                        $.mobile.loading( "hide" );
-                        console.log(data);
-
-                    });
-                }
-
-                switch(data.status){
-                    case "dispatch":
-                            $("#status_dispatch").addClass('ui-disabled');
-                            $("#status_arrived").removeClass('ui-disabled');
-                            $("#status_depart").addClass('ui-disabled');
-                        break;
-                    case "arrived":
-                            $("#status_dispatch").addClass('ui-disabled');
-                            $("#status_arrived").addClass('ui-disabled');
-                            $("#status_depart").removeClass('ui-disabled');
-                        break;
-                    case "depart":
-                        $("#status_dispatch").addClass('ui-disabled');
-                        $("#status_arrived").addClass('ui-disabled');
-                        $("#status_depart").addClass('ui-disabled');
-                        break;
-                }
-            }else{
+            } else {
                 navigator.notification.alert(
                     'Time was saved',  // message
                     false,         // callback
@@ -619,6 +641,74 @@ var app = {
                 );
             }
         });
+    },
+    setTaskStatus: function (status) {
+        var canSetStatus = false;
+        console.log(this.task_data);
+
+        var data = {};
+        switch (status) {
+            case 'dispatch':
+                navigator.notification.confirm(
+                    'Ready to go to ' + this.task_data[this.task_id].address_1, // message
+                    function (button) {
+                        if (button == 1) {
+                            canSetStatus = true;
+                            data.Dispatch_Time = moment().format("MMM DD YYYY HH:mm:ss A");
+                            data.Ticket_Status = 'IP';
+                            app.saveTaskStatus(status,data);
+                        }
+                        else $.mobile.navigate("#tasks");
+                    },            // callback to invoke with index of button pressed
+                    'Dispatch?',           // title
+                    ['Yes', 'No'] // buttonLabels
+                );
+                break;
+            case 'arrived':
+                navigator.notification.confirm(
+                    'Arrived to ' + this.task_data[this.task_id].address_1, // message
+                    function (button) {
+                        if (button == 1) {
+                            canSetStatus = true;
+                            data.Arrival_Time = moment().format("MMM DD YYYY HH:mm:ss A");
+                            navigator.notification.confirm(
+                                'Place system on test?', // message
+                                function (button) {
+                                    if (button == 1) {
+                                        navigator.notification.alert(
+                                            'MSG:Please provide MASMobile app path',  // message
+                                            false,         // callback
+                                            'MASMobile',            // title
+                                            'OK'                  // buttonName
+                                        );
+                                    }
+                                    app.saveTaskStatus(status,data);
+                                },            // callback to invoke with index of button pressed
+                                'MASMobile',           // title
+                                ['Yes', 'No'] // buttonLabels
+                            );
+                            //app.saveTaskStatus(data);
+                        }
+                    },
+                    'Arrived?',
+                    ['Yes', 'No']
+                );
+                break;
+            case 'depart':
+                navigator.notification.confirm(
+                    'Departure from ' + this.task_data[this.task_id].address_1, // message
+                    function (button) {
+                        if (button == 1) {
+                            //canSetStatus = true;
+                            data.Depart_Time = moment().format("MMM DD YYYY HH:mm:ss A");
+                            app.saveTaskStatus(status,data);
+                        }
+                    },
+                    'Departure?',
+                    ['Yes', 'No']
+                );
+                break;
+        }
     },
     goBack: function () {
         if ($.mobile.activePage.is('#tasks') || $.mobile.activePage.is('#signin')) {

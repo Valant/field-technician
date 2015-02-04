@@ -100,13 +100,13 @@
         </div>
         <div id="files"><h1>Files</h1></div>
         <div id="taskControls">
-            <button id="status_dispatch" class="ui-disabled" data-icon="navigation" onclick="app.setTaskStatus('dispatch')">Dispatch</button>
+            <button id="status_dispatch" class="ui-disabled" data-icon="navigation" onclick="app.setTaskStatus('dispatch')">On my way</button>
             <button id="status_arrived" class="ui-disabled" data-icon="user" onclick="app.setTaskStatus('arrived')">Arrived</button>
             <button id="status_depart" class="ui-disabled" data-icon="tag" onclick="app.setTaskStatus('depart')">Depart</button>
-            <button data-icon="eye" onclick="app.choiseFile()">Use existing pic</button>
-            <button data-icon="bars" onclick="app.scanBarCode()">Scan barcode</button>
-            <button data-icon="camera" onclick="app.makePhoto()">Take a photo</button>
-            <button data-icon="action" onclick="app.uploadTaskData()">Save</button>
+            <button id="task_btn_pic" class="ui-disabled" data-icon="eye" onclick="app.choiseFile()">Use existing pic</button>
+            <button id="task_btn_scan" class="ui-disabled" data-icon="bars" onclick="app.scanBarCode()">Scan barcode</button>
+            <button id="task_btn_cam" class="ui-disabled" data-icon="camera" onclick="app.makePhoto()">Take a photo</button>
+            <button id="task_btn_save" class="ui-disabled" data-icon="action" onclick="app.uploadTaskData()">Save</button>
         </div>
     </div>
     <div data-role="footer" position="fixed"><h3>&copy; AFA Protective System</h3></div>
