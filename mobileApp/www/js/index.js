@@ -638,17 +638,7 @@ var app = {
         });
     },
     testMASMobile: function(){
-        window.plugins.launcher.canLaunch(
-            {packageName:'com.mas.masmobile'},
-            function(data) {
-                alert("Success!");
-                window.plugins.launcher.launch("{packageName:'com.mas.masmobile'}",function(){alert('ok')},function(){alert('err')});
-                console.info(data);
-                // if calling canLaunch() with getAppList:true, data will contain an array named "appList" with the package names of applications that can handle the uri specified.
-            },
-            function(errMsg) {
-                alert("Error! " + errMsg);
-            });
+        window.plugins.launcher.launch({packageName:'com.mas.masmobile'},function(data){console.info(data)},function(data){console.info(data)});
     },
     setTaskStatus: function (status) {
         var canSetStatus = false;
