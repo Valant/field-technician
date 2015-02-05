@@ -187,13 +187,14 @@ var app = {
                                         $('#parts').listview('refresh');
                                         $.mobile.loading( "hide" );
                                         $.mobile.silentScroll($("#parts").offset().top);
+                                        app.uploadTaskData(false);
                                     }
                                     ,                  // callback to invoke
                                     'Quantity',            // title
                                     ['Ok','Exit'],             // buttonLabels
                                     '1'                 // defaultText
                                 );
-                                console.info(quantity);
+
 
                             }
                         });
@@ -329,10 +330,10 @@ var app = {
     onFailMakePhoto: function (message) {
         //alert('Failed because: ' + message);
     },
-    uploadTaskData: function () {
-        this.db.transaction(this.saveTaskData.bind(this), this.dbError.bind(this));
+    uploadTaskData: function (isExit) {
+        this.db && this.db.transaction(this.saveTaskData(isExit).bind(this), this.dbError.bind(this));
     },
-    saveTaskData: function (tx) {
+    saveTaskData: function (isExit) {
         var self = this;
 
         var filesList = [];
@@ -389,6 +390,7 @@ var app = {
                 self.uploadPhoto(val, key);
             });
         } else {
+            if(isExit)
             $.mobile.navigate("#tasks");
         }
 
@@ -404,8 +406,8 @@ var app = {
         this.task_id = task_id;
 
 
-
-        this.db.transaction(this.getTaskData.bind(this), this.dbError.bind(this));
+        console.info(this.db);
+        this.db && this.db.transaction(this.getTaskData.bind(this), this.dbError.bind(this));
 
         $.when($.getJSON(this.apiUrl + "/ticket/find", {
             'id': this.task_id,
@@ -537,12 +539,13 @@ var app = {
         $('#' + id).val(value);
         $('#' + id).slider("refresh");
     },
-    saveTaskStatus: function (status,statusData) {
+    saveTaskStatus: function (status,taskStatusData) {
+        console.info('saveTaskStatus:taskStatusData',taskStatusData);
         app.showLoader("Save task status");
         $.ajax({
             type: 'PUT',
             url: this.apiUrl + 'dispatch/' + this.task_data[this.task_id].dispatch_id + ',' + this.task_id + "?access-token=" + app.access_token,
-            data: statusData
+            data: taskStatusData
         }).always(function (dataResponse) {
             console.log(dataResponse);
         });
@@ -558,20 +561,6 @@ var app = {
         }).always(function (dataResponse) {
             $.mobile.loading("hide");
             if (typeof dataResponse.id != 'undefined') {
-                /*
-                $("#status_" + dataResponse.status).addClass('ui-disabled');
-
-                switch (dataResponse.status) {
-                    case "dispatch":
-
-                        break;
-                    case "arrived":
-
-                        break;
-                    case "depart":
-                        break;
-                }
-                */
                 if ("dispatch" == dataResponse.status) {
                     $("#status_dispatch,#status_depart,button[id^='task_btn_']").addClass('ui-disabled');
                     $("#status_arrived").removeClass('ui-disabled');
@@ -597,39 +586,45 @@ var app = {
                     navigator.notification.confirm("Select depart type", function (button) {
                         app.showLoader("Save task status");
                         var status = false;
-                        switch (button) {
-                            case 1:
-                                status = 'GB';
-                                break;
-/*                            case 2:
-                                status = 'DP';
-                                break;*/
-                            case 2:
-                                status = 'RS';
-                                break;
+                        if (1 == button) {
+                            status = 'GB';
+                        } else if (2 == button) {
+                            status = 'RS';
                         }
-                        console.info(status)
                         if (status) {
-                            jQuery.ajax({
-                                type: 'PUT',
-                                url: app.apiUrl + 'ticket/' + app.task_id + "?access-token=" + app.access_token,
-                                data: {
-                                    Ticket_Status: status
-                                }
-                            }).always(function (data) {
-                                $("#task" + data.Service_Ticket_Id).remove();
-                                $.mobile.loading("hide");
-                                navigator.notification.alert(
-                                    'Time was saved',  // message
-                                    function () {
-                                        $.mobile.navigate("#tasks");
-                                    },         // callback
-                                    'Time',            // title
-                                    'OK'                  // buttonName
-                                );
+                            navigator.notification.confirm('Do you need to add material?',
+                                function (button) {
+                                    if (1 == button) {
+                                        app.goBack();
+                                    } else  if (1 == button) {
+                                        jQuery.ajax({
+                                            type: 'PUT',
+                                            url: app.apiUrl + 'ticket/' + app.task_id + "?access-token=" + app.access_token,
+                                            data: {
+                                                Ticket_Status: status
+                                            }
+                                        }).always(function (data) {
+                                            $("#task" + data.Service_Ticket_Id).remove();
+                                            $.mobile.loading("hide");
+                                            navigator.notification.alert(
+                                                'Time was saved',  // message
+                                                function () {
+                                                    $.mobile.navigate("#tasks");
+                                                },         // callback
+                                                'Time',            // title
+                                                'OK'                  // buttonName
+                                            );
 
-                            });
+                                        });
+                                    }else {
+                                        app.goBack();
+                                    }
+                                },
+                                'Add material',
+                                ['Yes', 'No']
+                            );
                         }
+
                     }, "Depart type", ["Go back", "Resolved"])
                 }
             } else {
@@ -642,9 +637,23 @@ var app = {
             }
         });
     },
+    testMASMobile: function(){
+        window.plugins.launcher.canLaunch(
+            {packageName:'com.mas.masmobile'},
+            function(data) {
+                alert("Success!");
+                window.plugins.launcher.launch("{packageName:'com.mas.masmobile'}",function(){alert('ok')},function(){alert('err')});
+                console.info(data);
+                // if calling canLaunch() with getAppList:true, data will contain an array named "appList" with the package names of applications that can handle the uri specified.
+            },
+            function(errMsg) {
+                alert("Error! " + errMsg);
+            });
+    },
     setTaskStatus: function (status) {
         var canSetStatus = false;
         console.log(this.task_data);
+        console.info('setTaskStatus');
 
         var data = {};
         switch (status) {
@@ -652,7 +661,7 @@ var app = {
                 navigator.notification.confirm(
                     'Ready to go to ' + this.task_data[this.task_id].address_1, // message
                     function (button) {
-                        if (button == 1) {
+                        if (1== button) {
                             canSetStatus = true;
                             data.Dispatch_Time = moment().format("MMM DD YYYY HH:mm:ss A");
                             data.Ticket_Status = 'IP';
@@ -674,13 +683,27 @@ var app = {
                             navigator.notification.confirm(
                                 'Place system on test?', // message
                                 function (button) {
-                                    if (button == 1) {
+                                    if (1 == button) {
+                                        console.info('Arrived yes')
+                                        window.plugins.launcher.canLaunch(
+                                            {packageName:'com.mas.masmobile'},
+                                            function(data) {
+                                            alert("Success!");
+                                                console.info(data);
+                                            // if calling canLaunch() with getAppList:true, data will contain an array named "appList" with the package names of applications that can handle the uri specified.
+                                        },
+                                            function(errMsg) {
+                                            alert("Error! " + errMsg);
+                                        });
                                         navigator.notification.alert(
                                             'MSG:Please provide MASMobile app path',  // message
                                             false,         // callback
                                             'MASMobile',            // title
                                             'OK'                  // buttonName
                                         );
+                                    }else{
+                                        console.info('Arrived no/other', button)
+
                                     }
                                     app.saveTaskStatus(status,data);
                                 },            // callback to invoke with index of button pressed
@@ -698,10 +721,16 @@ var app = {
                 navigator.notification.confirm(
                     'Departure from ' + this.task_data[this.task_id].address_1, // message
                     function (button) {
-                        if (button == 1) {
+                        if (1 == button) {
+                            console.info('depart yes')
                             //canSetStatus = true;
                             data.Depart_Time = moment().format("MMM DD YYYY HH:mm:ss A");
                             app.saveTaskStatus(status,data);
+                        }else if(2 == button){
+                            console.info('depart no')
+                        }else{
+                            console.info('depart other')
+
                         }
                     },
                     'Departure?',
