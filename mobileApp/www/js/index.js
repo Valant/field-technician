@@ -21,8 +21,8 @@ var app = {
     task_id: false,
     uploaded: 0,
     needToUpload: 0,
-    //apiUrl: 'http://api.field-technician.loc/',
-    apiUrl: 'http://api.afa.valant.com.ua/',
+    apiUrl: 'http://api.field-technician.loc/',
+    //apiUrl: 'http://api.afa.valant.com.ua/',
     user_id: 0,
     user_code: '',
     user_data: {},
@@ -126,8 +126,10 @@ var app = {
             function(data){
                 console.log('loading resolution statuses for "go back notes"');
                 if(data){
+                    $("select#resolution_code").html('');
                     $.each(data,function(key, el){
-                        $("select#resolution_code").append('<option value="'+key+'">'+el.Description+'</option>')
+
+                        $("select#resolution_code").append('<option value="'+el.Resolution_Code+'">'+el.Description+'</option>')
                     });
             }
         });
@@ -143,9 +145,11 @@ var app = {
                 Notes: $('#resolution_notes').val()+', Status: '+$('#resolution_code').val()
             }
         }).always(function (dataResponse) {
-            $.mobile.navigate('#tasks');
+
             $('#resolution_notes').val('');
-            $('#resolution_code').val('');
+            $('#resolution_code option').attr('selected',false);
+            $('#resolution_code').selectmenu( "refresh", true );
+            $.mobile.navigate('#tasks');
         });
     },
     drawTask: function (data) {
@@ -261,6 +265,7 @@ var app = {
     onSuccessChoiseFile: function (imageURI) {
         jQuery("#files").append("<div class='newImage'><img class='photoPreview'  src='" + imageURI + "'/><button data-icon='delete' data-iconpos='notext' onclick='app.removeImage(this);'></button></div>");
         jQuery("#files").trigger("create");
+        this.uploadTaskData(false);
     },
     uploadPhoto: function (imageURI, id) {
 
@@ -358,6 +363,7 @@ var app = {
         //new Parse.File("myfile.txt", { base64: imageURI });
         jQuery("#files").append("<div class='newImage'><img class='photoPreview'  src='" + imageURI + "'/><button data-icon='delete' data-iconpos='notext' onclick='app.removeImage(this);'></button></div>");
         jQuery("#files").trigger("create");
+        this.uploadTaskData(false);
     },
     onFailMakePhoto: function (message) {
         //alert('Failed because: ' + message);
