@@ -135,6 +135,7 @@ var app = {
         });
     },
     saveGoBackNotes:function(){
+        app.showLoader("Saving task status");
         jQuery.ajax({
             type: 'POST',
             url: app.apiUrl+'/ticketnotes/create?access-token='+app.access_token,
@@ -149,6 +150,7 @@ var app = {
             $('#resolution_notes').val('');
             $('#resolution_code option').attr('selected',false);
             $('#resolution_code').selectmenu( "refresh", true );
+            $.mobile.loading( "hide" );
             $.mobile.navigate('#tasks');
         });
     },
@@ -174,9 +176,19 @@ var app = {
         navigator.notification && navigator.notification.vibrate(1000);
     },
     scanBarCode: function () {
+        //@todo remove old plugin for barcode
+        if (window.plugins.barcodeScanner) {
+            var scanner = window.plugins.barcodeScanner;
+            console.info('1')
+        } else if (cordova.plugins.barcodeScanner) {
+            var scanner = cordova.plugins.barcodeScanner;
+            console.info('2')
+        }
         try {
-            window.plugins.barcodeScanner.scan(
+
+            scanner.scan(
                 function (result) {
+                    console.info(result);
                     if (!result.cancelled) {
                         var quantity = null
 
@@ -237,6 +249,7 @@ var app = {
                     }
                 },
                 function (error) {
+                    console.info(error);
                     navigator.notification.alert(
                         'Scanning',  // message
                         false,         // callback
