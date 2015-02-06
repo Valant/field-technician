@@ -26,6 +26,7 @@
             $model = new LoginForm();
             if ($model->load( Yii::$app->request->post() ) && $model->login()) {
                 return $model->getUser();
+
             } else {
                 return [ 'status' => 'error', 'message' => $model->getErrors() ];
             }

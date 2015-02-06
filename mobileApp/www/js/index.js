@@ -24,6 +24,7 @@ var app = {
     apiUrl: 'http://api.field-technician.loc/',
 //    apiUrl: 'http://api.afa.valant.com.ua/',
     user_id: 0,
+    user_code: '',
     user_data: {},
     task_data: [],
     usedParts: {},
@@ -34,7 +35,6 @@ var app = {
     // Application Constructor
     initialize: function () {
         this.bindEvents();
-
     },
     // Bind Event Listeners
     //
@@ -50,6 +50,7 @@ var app = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function () {
         app.receivedEvent('deviceready');
+
     },
     // Update DOM on a Received Event
     receivedEvent: function (id) {
@@ -57,6 +58,7 @@ var app = {
             StatusBar.overlaysWebView(false);
             this.prepareDB();
         }
+
         console.log('Received Event: ' + id);
     },
     prepareDB: function () {
@@ -66,8 +68,11 @@ var app = {
         if(window.localStorage.getItem('tech_id')&&window.localStorage.getItem('access_token')){
             app.showLoader("Load user data");
             this.user_id =  window.localStorage.getItem('tech_id');
-            jQuery.getJSON(this.apiUrl+"user/"+window.localStorage.getItem('user_id'),{'access-token':window.localStorage.getItem('access_token')},function(data){
-               if(data){
+            jQuery.getJSON(this.apiUrl+"user/"+window.localStorage.getItem('user_id'),
+                {'access-token':window.localStorage.getItem('access_token')},
+                function(data){
+                console.info(data)
+                if(data){
                    if(typeof data.id != 'undefined') {
                        app.user_data = data;
                        app.access_token = data.auth_key;
@@ -85,8 +90,8 @@ var app = {
         //tx.executeSql('CREATE TABLE IF NOT EXISTS taskAttachment(task_id INTEGER, type VARCHAR(50), data TEXT, attachment_id INTEGER)');
     },
     signin: function () {
-        console.log("User login: " + $("#login").val());
-        console.log("User password: " + $("#password").val());
+        //console.log("User login: " + $("#login").val());
+        //console.log("User password: " + $("#password").val());
 
         app.showLoader("Authorize")
         jQuery.post(this.apiUrl + "/user/login", {
@@ -94,26 +99,55 @@ var app = {
             'LoginForm[password]': $("#password").val()
         }, function (data) {
             if (data.id) {
+                console.log('user login [OK]')
                 app.user_data = data;
                 window.localStorage.setItem('tech_id',data.technition_id);
                 window.localStorage.setItem('user_id',data.id);
+                window.localStorage.setItem('user_code',data.usercode);
                 window.localStorage.setItem('access_token',data.auth_key);
                 $("#signin .errors").text("");
                 app.user_id = data.technition_id;
+                app.user_code = data.usercode;
                 app.access_token = data.auth_key;
                 app.loadTask();
             } else {
-                console.log(data.message.password[0]);
+                console.warn(data.message.password[0]);
                 $("#signin .errors").text(data.message.password[0]);
                 $.mobile.loading( "hide" );
             }
         });
     },
     loadTask: function () {
-        app.showLoader("Load tasks")
+        app.showLoader("Load tasks");
         $.getJSON(this.apiUrl + "/ticket/list", {
             'access-token':this.access_token
         }, this.drawTask.bind(this));
+
+        jQuery.getJSON(this.apiUrl+"/resolution/",{'per-page':200,'access-token':window.localStorage.getItem('access_token')},
+            function(data){
+                console.log('loading resolution statuses for "go back notes"');
+                if(data){
+                    $.each(data,function(key, el){
+                        $("select#resolution_code").append('<option value="'+key+'">'+el.Description+'</option>')
+                    });
+            }
+        });
+    },
+    saveGoBackNotes:function(){
+        jQuery.ajax({
+            type: 'POST',
+            url: app.apiUrl+'/ticketnotes/create?access-token='+app.access_token,
+            data:{
+                Service_Ticket_Id:this.task_data[this.task_id].Service_Ticket_Id,
+                UserCode: app.user_code,
+                Entered_Date: moment().format("MMM DD YYYY HH:mm:ss A"),
+                Notes: $('#resolution_notes').val()+', Status: '+$('#resolution_code').val()
+            }
+        }).always(function (dataResponse) {
+            $.mobile.navigate('#tasks');
+            $('#resolution_notes').val('');
+            $('#resolution_code').val('');
+        });
     },
     drawTask: function (data) {
         if($("#tasks #tasks_content table")) {
@@ -184,6 +218,7 @@ var app = {
                                             jQuery('<li data-icon="delete" id="part' + data.Part_Id + '"><a onclick="app.removePart(' + data.Part_Id + ')">' + data.Part_Code + ' ' + data.Detail + ' ' + data.Description + '<span class="ui-li-count">'+(quantity?quantity:1)+'</span></a></li>').appendTo("#parts");
                                             app.usedParts[data.Part_Id] = quantity?quantity:1;
                                         }
+                                        console.info('refresh1')
                                         $('#parts').listview('refresh');
                                         $.mobile.loading( "hide" );
                                         $.mobile.silentScroll($("#parts").offset().top);
@@ -452,25 +487,16 @@ var app = {
             console.info("Dispatch data");
             console.log(data);
             app.task_data[data.Service_Ticket_Id]['dispatch_id'] = data.Dispatch_Id;
-
-
-
-            console.log("Dispatch timetamp: "+moment(data.Dispatch_Time, "MMM DD YYYY HH:mm:ss0A").unix());
+            console.info(app.task_data[data.Service_Ticket_Id]);
             if(moment(data.Dispatch_Time, "MMM DD YYYY HH:mm:ss0A").unix() > 0){
-                console.info('data.Dispatch_Time, "MMM DD YYYY HH:mm:ss0A").unix() > 0')
-                $("#status_dispatch").addClass('ui-disabled');
-                console.log("Arrigal timetamp: "+moment(data.Arrival_Time, "MMM DD YYYY HH:mm:ss0A").unix());
-                if(moment(data.Arrival_Time, "MMM DD YYYY HH:mm:ss0A").unix() > 0){
-                    console.info('data.Arrival_Time, "MMM DD YYYY HH:mm:ss0A").unix() > 0')
 
+                $("#status_dispatch").addClass('ui-disabled');
+
+                if(moment(data.Arrival_Time, "MMM DD YYYY HH:mm:ss0A").unix() > 0){
                     $("#status_arrived").addClass('ui-disabled');
-                    console.log("Depart timetamp: "+moment(data.Depart_Time, "MMM DD YYYY HH:mm:ss0A").unix());
                     if(moment(data.Depart_Time, "MMM DD YYYY HH:mm:ss0A").unix() > 0){
-                        console.info('data.Depart_Time, "MMM DD YYYY HH:mm:ss0A").unix() > 0')
                         $("#status_depart").addClass('ui-disabled');
                     }else{
-                        console.info('!data.Depart_Time, "MMM DD YYYY HH:mm:ss0A").unix() > 0')
-
                         $("#status_depart,button[id^='task_btn_']").removeClass('ui-disabled');
                     }
                 }else{
@@ -524,28 +550,29 @@ var app = {
         $( "<p><pre>Customer Comment : </pre>" + task.CustomerComments + "</p>" ).appendTo( "#taskDescription" );
     },
     clearTask: function () {
+        console.log('clear task')
         jQuery("#taskName").empty();
         jQuery("#taskDescription").empty();
         jQuery("#photos").empty();
         jQuery("#files").empty();
         jQuery("#parts").empty();
         $("#status_dispatch,#status_arrived,#status_depart").addClass('ui-disabled');
-        /*
-        $("#status_arrived").addClass('ui-disabled');
-        $("#status_depart").addClass('ui-disabled');
-        */
     },
     setProgressBarValue: function (id, value) {
         $('#' + id).val(value);
         $('#' + id).slider("refresh");
     },
-    saveTaskStatus: function (status,taskStatusData) {
-        console.info('saveTaskStatus:taskStatusData',taskStatusData);
-        app.showLoader("Save task status");
+    saveTaskStatus: function (taskStatusData) {
+        console.info('saveTaskStatus:taskStatusData',taskStatusData.data);
+        console.info(this.task_data[this.task_id].dispatch_id );
+        console.info(this.task_data[this.task_id] );
+        console.info(this.task_data);
+        app.showLoader("Saving task status");
+
         $.ajax({
             type: 'PUT',
             url: this.apiUrl + 'dispatch/' + this.task_data[this.task_id].dispatch_id + ',' + this.task_id + "?access-token=" + app.access_token,
-            data: taskStatusData
+            data: taskStatusData.data
         }).always(function (dataResponse) {
             console.log(dataResponse);
         });
@@ -556,19 +583,35 @@ var app = {
             data: {
                 task_id: this.task_id,
                 tech_id: this.user_id,
-                status: status
+                status: taskStatusData.status
             }
         }).always(function (dataResponse) {
             $.mobile.loading("hide");
+
+            console.info('taskhistory/create', dataResponse);
             if (typeof dataResponse.id != 'undefined') {
                 if ("dispatch" == dataResponse.status) {
+                    app.showLoader("Saving task status");
+
                     $("#status_dispatch,#status_depart,button[id^='task_btn_']").addClass('ui-disabled');
                     $("#status_arrived").removeClass('ui-disabled');
+                    jQuery.ajax({
+                        type: 'PUT',
+                        url: app.apiUrl + 'ticket/' + app.task_id + "?access-token=" + app.access_token,
+                        data: {
+                            Ticket_Status: 'IP'
+                        }
+                    }).always(function (data) {
+                        $("#task" + data.Service_Ticket_Id).remove();
+                        $.mobile.loading("hide");
+                    });
                 }else
                 if ("arrived" == dataResponse.status) {
+                    app.showLoader("Saving task status");
+
                     $("#status_dispatch, #status_arrived").addClass('ui-disabled');
                     $("#status_depart,button[id^='task_btn_']").removeClass('ui-disabled');
-                    app.showLoader("Save task status");
+
                     jQuery.ajax({
                         type: 'PUT',
                         url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
@@ -582,21 +625,28 @@ var app = {
                 }else
                 if ('depart' == dataResponse.status) {
                     $("#status_dispatch,#status_arrived,#status_depart,button[id^='task_btn_']").addClass('ui-disabled');
+                    app.showLoader("Saving task status");
 
                     navigator.notification.confirm("Select depart type", function (button) {
-                        app.showLoader("Save task status");
                         var status = false;
                         if (1 == button) {
                             status = 'GB';
                         } else if (2 == button) {
                             status = 'RS';
                         }
+                        console.info('depart type', status);
+
                         if (status) {
                             navigator.notification.confirm('Do you need to add material?',
                                 function (button) {
                                     if (1 == button) {
-                                        app.goBack();
-                                    } else  if (1 == button) {
+                                       console.info('close goback')
+                                       $("#status_depart,button[id^='task_btn_']").removeClass('ui-disabled');
+
+                                    } else
+                                    if (2 == button) {
+                                        app.showLoader("Saving task status");
+
                                         jQuery.ajax({
                                             type: 'PUT',
                                             url: app.apiUrl + 'ticket/' + app.task_id + "?access-token=" + app.access_token,
@@ -606,18 +656,13 @@ var app = {
                                         }).always(function (data) {
                                             $("#task" + data.Service_Ticket_Id).remove();
                                             $.mobile.loading("hide");
-                                            navigator.notification.alert(
-                                                'Time was saved',  // message
-                                                function () {
-                                                    $.mobile.navigate("#tasks");
-                                                },         // callback
-                                                'Time',            // title
-                                                'OK'                  // buttonName
-                                            );
-
+                                            console.log('Time saved:', data)
+                                            $.mobile.navigate("#gobacknotes");
                                         });
+
+
                                     }else {
-                                        app.goBack();
+                                        console.info('not yes/no selected close goback')
                                     }
                                 },
                                 'Add material',
@@ -637,8 +682,10 @@ var app = {
             }
         });
     },
-    testMASMobile: function(){
-        window.plugins.launcher.launch({packageName:'com.mas.masmobile'},function(data){console.info(data)},function(data){console.info(data)});
+    launchMASMobile: function(){
+        if('android'==cordova.platformId)
+            window.plugins.launcher.launch({packageName:'com.mas.masmobile'},function(data){console.info(data)},function(data){console.info(data)});
+        else window.plugins.launcher.launch({packageName:'com.mas.masmobile'},function(data){console.info(data)},function(data){console.info(data)});
     },
     setTaskStatus: function (status) {
         var canSetStatus = false;
@@ -655,7 +702,7 @@ var app = {
                             canSetStatus = true;
                             data.Dispatch_Time = moment().format("MMM DD YYYY HH:mm:ss A");
                             data.Ticket_Status = 'IP';
-                            app.saveTaskStatus(status,data);
+                            app.saveTaskStatus({status:status,data:data, taskId:this.task_id});
                         }
                         else $.mobile.navigate("#tasks");
                     },            // callback to invoke with index of button pressed
@@ -670,32 +717,20 @@ var app = {
                         if (button == 1) {
                             canSetStatus = true;
                             data.Arrival_Time = moment().format("MMM DD YYYY HH:mm:ss A");
+                            app.saveTaskStatus({status:status,data:data, taskId:this.task_id});
+
+
                             navigator.notification.confirm(
                                 'Place system on test?', // message
                                 function (button) {
                                     if (1 == button) {
                                         console.info('Arrived yes')
-                                        window.plugins.launcher.canLaunch(
-                                            {packageName:'com.mas.masmobile'},
-                                            function(data) {
-                                            alert("Success!");
-                                                console.info(data);
-                                            // if calling canLaunch() with getAppList:true, data will contain an array named "appList" with the package names of applications that can handle the uri specified.
-                                        },
-                                            function(errMsg) {
-                                            alert("Error! " + errMsg);
-                                        });
-                                        navigator.notification.alert(
-                                            'MSG:Please provide MASMobile app path',  // message
-                                            false,         // callback
-                                            'MASMobile',            // title
-                                            'OK'                  // buttonName
-                                        );
+                                        app.launchMASMobile();
                                     }else{
                                         console.info('Arrived no/other', button)
 
                                     }
-                                    app.saveTaskStatus(status,data);
+
                                 },            // callback to invoke with index of button pressed
                                 'MASMobile',           // title
                                 ['Yes', 'No'] // buttonLabels
@@ -715,7 +750,7 @@ var app = {
                             console.info('depart yes')
                             //canSetStatus = true;
                             data.Depart_Time = moment().format("MMM DD YYYY HH:mm:ss A");
-                            app.saveTaskStatus(status,data);
+                            app.saveTaskStatus({status:status,data:data, taskId:this.task_id});
                         }else if(2 == button){
                             console.info('depart no')
                         }else{

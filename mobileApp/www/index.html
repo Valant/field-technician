@@ -106,7 +106,6 @@
             <button id="task_btn_pic" class="ui-disabled" data-icon="eye" onclick="app.choiseFile()">Use existing pic</button>
             <button id="task_btn_scan" class="ui-disabled" data-icon="bars" onclick="app.scanBarCode()">Scan barcode</button>
             <button id="task_btn_cam" class="ui-disabled" data-icon="camera" onclick="app.makePhoto()">Take a photo</button>
-            <button id="btn_masmobile"  data-icon="camera" onclick="app.testMASMobile()">TEST MASMOBILE APP</button>
             <button id="task_btn_save" class="ui-disabled" data-icon="action" onclick="app.uploadTaskData(true)">Save</button>
         </div>
     </div>
@@ -122,6 +121,24 @@
         <h3>Upload...</h3>
 
         <div id="progressBars"></div>
+    </div>
+    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective System</h3></div>
+</div>
+<div data-role="page" id="gobacknotes">
+    <div data-role="header">
+        <a onclick="app.goBack();">Back</a>
+
+        <h2>Go back notes</h2>
+    </div>
+    <div role="main" class="ui-content" id="gobacknotesContent">
+        <h3>Go back notes</h3>
+
+            <textarea style="text" id="resolution_notes" cols="30" rows="10"></textarea>
+            <select style="select" id="resolution_code">
+
+            </select>
+        <button data-icon="check" onclick="app.saveGoBackNotes()">Save</button>
+
     </div>
     <div data-role="footer" position="fixed"><h3>&copy; AFA Protective System</h3></div>
 </div>
