@@ -21,8 +21,8 @@ var app = {
     task_id: false,
     uploaded: 0,
     needToUpload: 0,
-    apiUrl: 'http://api.field-technician.loc/',
-//    apiUrl: 'http://api.afa.valant.com.ua/',
+    //apiUrl: 'http://api.field-technician.loc/',
+    apiUrl: 'http://api.afa.valant.com.ua/',
     user_id: 0,
     user_code: '',
     user_data: {},
@@ -71,7 +71,6 @@ var app = {
             jQuery.getJSON(this.apiUrl+"user/"+window.localStorage.getItem('user_id'),
                 {'access-token':window.localStorage.getItem('access_token')},
                 function(data){
-                console.info(data)
                 if(data){
                    if(typeof data.id != 'undefined') {
                        app.user_data = data;
@@ -196,7 +195,6 @@ var app = {
                                 navigator.notification.prompt(
                                     'Please enter quantity',  // message
                                     function (results) {
-                                        console.info('parseInt(results.input1)', parseInt(results.input1));
                                         if(parseInt(results.input1)!=NaN){
                                             quantity = parseInt(results.input1);
                                         }else{
@@ -218,7 +216,6 @@ var app = {
                                             jQuery('<li data-icon="delete" id="part' + data.Part_Id + '"><a onclick="app.removePart(' + data.Part_Id + ')">' + data.Part_Code + ' ' + data.Detail + ' ' + data.Description + '<span class="ui-li-count">'+(quantity?quantity:1)+'</span></a></li>').appendTo("#parts");
                                             app.usedParts[data.Part_Id] = quantity?quantity:1;
                                         }
-                                        console.info('refresh1')
                                         $('#parts').listview('refresh');
                                         $.mobile.loading( "hide" );
                                         $.mobile.silentScroll($("#parts").offset().top);
@@ -439,9 +436,6 @@ var app = {
         this.attachmentToDelete = [];
         console.log(task);
         this.task_id = task_id;
-
-
-        console.info(this.db);
         this.db && this.db.transaction(this.getTaskData.bind(this), this.dbError.bind(this));
 
         $.when($.getJSON(this.apiUrl + "/ticket/find", {
@@ -459,7 +453,6 @@ var app = {
     getTaskData: function (tx) {
 
         jQuery.getJSON(this.apiUrl + '/taskattachment/search', {task_id: this.task_id,'access-token':this.access_token}, function (data) {
-            console.log(data);
             if(data){
                 for(var i in data){
                     jQuery("#photos").append("<div class='newImage' data-attachment-id='"+data[i].id+"'><img class='photoPreview' data-on-server='true' src='"+app.apiUrl+'/uploads/'+data[i].task_id+'/' + data[i].path + "'/><button data-icon='delete' data-iconpos='notext' onclick='app.removeImage(this);'></button></div>");
@@ -484,10 +477,7 @@ var app = {
             task_id: this.task_id,
             'access-token':this.access_token
         },function(data){
-            console.info("Dispatch data");
-            console.log(data);
             app.task_data[data.Service_Ticket_Id]['dispatch_id'] = data.Dispatch_Id;
-            console.info(app.task_data[data.Service_Ticket_Id]);
             if(moment(data.Dispatch_Time, "MMM DD YYYY HH:mm:ss0A").unix() > 0){
 
                 $("#status_dispatch").addClass('ui-disabled');
@@ -563,10 +553,6 @@ var app = {
         $('#' + id).slider("refresh");
     },
     saveTaskStatus: function (taskStatusData) {
-        console.info('saveTaskStatus:taskStatusData',taskStatusData.data);
-        console.info(this.task_data[this.task_id].dispatch_id );
-        console.info(this.task_data[this.task_id] );
-        console.info(this.task_data);
         app.showLoader("Saving task status");
 
         $.ajax({
@@ -587,8 +573,6 @@ var app = {
             }
         }).always(function (dataResponse) {
             $.mobile.loading("hide");
-
-            console.info('taskhistory/create', dataResponse);
             if (typeof dataResponse.id != 'undefined') {
                 if ("dispatch" == dataResponse.status) {
                     app.showLoader("Saving task status");
@@ -634,15 +618,11 @@ var app = {
                         } else if (2 == button) {
                             status = 'RS';
                         }
-                        console.info('depart type', status);
-
                         if (status) {
                             navigator.notification.confirm('Do you need to add material?',
                                 function (button) {
                                     if (1 == button) {
-                                       console.info('close goback')
                                        $("#status_depart,button[id^='task_btn_']").removeClass('ui-disabled');
-
                                     } else
                                     if (2 == button) {
                                         app.showLoader("Saving task status");
@@ -656,13 +636,8 @@ var app = {
                                         }).always(function (data) {
                                             $("#task" + data.Service_Ticket_Id).remove();
                                             $.mobile.loading("hide");
-                                            console.log('Time saved:', data)
                                             $.mobile.navigate("#gobacknotes");
                                         });
-
-
-                                    }else {
-                                        console.info('not yes/no selected close goback')
                                     }
                                 },
                                 'Add material',
@@ -684,14 +659,12 @@ var app = {
     },
     launchMASMobile: function(){
         if('android'==cordova.platformId)
-            window.plugins.launcher.launch({packageName:'com.mas.masmobile'},function(data){console.info(data)},function(data){console.info(data)});
-        else window.plugins.launcher.launch({packageName:'com.mas.masmobile'},function(data){console.info(data)},function(data){console.info(data)});
+            window.plugins.launcher.launch({packageName:'com.mas.masmobile'},function(data){console.log(data)},function(data){console.log(data)});
+        else
+            window.plugins.launcher.launch({packageName:'com.mas.masmobile'},function(data){console.log(data)},function(data){console.log(data)});
     },
     setTaskStatus: function (status) {
         var canSetStatus = false;
-        console.log(this.task_data);
-        console.info('setTaskStatus');
-
         var data = {};
         switch (status) {
             case 'dispatch':
@@ -724,13 +697,8 @@ var app = {
                                 'Place system on test?', // message
                                 function (button) {
                                     if (1 == button) {
-                                        console.info('Arrived yes')
                                         app.launchMASMobile();
-                                    }else{
-                                        console.info('Arrived no/other', button)
-
                                     }
-
                                 },            // callback to invoke with index of button pressed
                                 'MASMobile',           // title
                                 ['Yes', 'No'] // buttonLabels
@@ -747,15 +715,9 @@ var app = {
                     'Departure from ' + this.task_data[this.task_id].address_1, // message
                     function (button) {
                         if (1 == button) {
-                            console.info('depart yes')
                             //canSetStatus = true;
                             data.Depart_Time = moment().format("MMM DD YYYY HH:mm:ss A");
                             app.saveTaskStatus({status:status,data:data, taskId:this.task_id});
-                        }else if(2 == button){
-                            console.info('depart no')
-                        }else{
-                            console.info('depart other')
-
                         }
                     },
                     'Departure?',
