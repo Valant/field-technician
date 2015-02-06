@@ -623,6 +623,8 @@ var app = {
                                 function (button) {
                                     if (1 == button) {
                                        $("#status_depart,button[id^='task_btn_']").removeClass('ui-disabled');
+                                        $.mobile.loading("hide");
+
                                     } else
                                     if (2 == button) {
                                         app.showLoader("Saving task status");
