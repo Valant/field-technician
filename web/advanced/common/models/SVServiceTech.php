@@ -135,7 +135,9 @@
             $fields['techname'] = function(){
                 return $this->employee->fullname;
             };
-
+            $fields['usercode'] = function(){
+                return $this->employee->usercode;
+            };
             return $fields;
         }
 //        public function getTechname(){

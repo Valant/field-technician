@@ -90,7 +90,7 @@
                 [ [ 'username',  'password_hash', 'email' ], 'required', 'on'=>'create' ],
                 [ [ 'username',  'email' ], 'required', 'on'=>'update' ],
                 [ [ 'role', 'status', 'technition_id' ], 'integer' ],
-                [ [ 'username', 'password_hash', 'password_reset_token', 'email' ], 'string', 'max' => 255 ],
+                [ [ 'username', 'password_hash', 'password_reset_token', 'email', 'userCode' ], 'string', 'max' => 255 ],
                 [ [ 'auth_key' ], 'string', 'max' => 32 ]
             ];
         }
@@ -264,5 +264,20 @@
         public function getTechnitionName(){
             return $this->technition->employee->First_Name." ".$this->technition->employee->Last_Name;
         }
+        public function getUserCode(){
+            return $this->technition->employee->UserCode;
+        }
+        public function extraFields()
+        {
+            return ['technition'];
+        }
+        public function fields()
+        {
+            $fields = parent::fields();
 
+            $fields['usercode'] = function(){
+                return $this->technition->employee->UserCode;
+            };
+            return $fields;
+        }
     }
