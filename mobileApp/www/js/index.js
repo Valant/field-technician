@@ -176,19 +176,10 @@ var app = {
         navigator.notification && navigator.notification.vibrate(1000);
     },
     scanBarCode: function () {
-        //@todo remove old plugin for barcode
-        if (window.plugins.barcodeScanner) {
-            var scanner = window.plugins.barcodeScanner;
-            console.info('1')
-        } else if (cordova.plugins.barcodeScanner) {
-            var scanner = cordova.plugins.barcodeScanner;
-            console.info('2')
-        }
+        var scanner = cordova.require("com.phonegap.plugins.barcodescanner.barcodescanner"); // ver.0.6.0
         try {
-
             scanner.scan(
                 function (result) {
-                    console.info(result);
                     if (!result.cancelled) {
                         var quantity = null
 
@@ -198,7 +189,6 @@ var app = {
                             code: result.text,
                             'access-token':app.access_token
                         }, function (data) {
-                            console.log(data);
                             if ("error" == data.status) {
                                 $.mobile.loading( "hide" );
                                 navigator.notification.alert(
@@ -292,11 +282,8 @@ var app = {
         params.task_id = app.task_id;
         params.name = options.fileName;
         params['access-token'] = app.access_token;
-
         options.params = params;
-        console.log("options");
-        console.log(imageURI);
-        console.log(options);
+        console.log("options", options, imageURI );
 
         this.createProgressBar(id, options.fileName);
 
@@ -381,10 +368,10 @@ var app = {
     onFailMakePhoto: function (message) {
         //alert('Failed because: ' + message);
     },
-    uploadTaskData: function (isExit) {
-        this.db && this.db.transaction(this.saveTaskData(isExit).bind(this), this.dbError.bind(this));
+    uploadTaskData: function () {
+        this.db && this.db.transaction(this.saveTaskData.bind(this), this.dbError.bind(this));
     },
-    saveTaskData: function (isExit) {
+    saveTaskData: function () {
         var self = this;
 
         var filesList = [];
@@ -440,9 +427,9 @@ var app = {
             $.each(filesList, function (key, val) {
                 self.uploadPhoto(val, key);
             });
-        } else {
-            if(isExit)
-            $.mobile.navigate("#tasks");
+        //} else {
+        //    if(isExit)
+        //    $.mobile.navigate("#tasks");
         }
 
 
@@ -482,7 +469,6 @@ var app = {
         });
 
         jQuery.getJSON(this.apiUrl+'/taskpart/search',{Service_Ticket_Id: this.task_id, expand: 'part','access-token':this.access_token}, function (data) {
-            console.log(data);
             if(data){
                 for(var i in data){
                     app.usedParts[data[i].part.Part_Id] = data[i].Quantity;
@@ -521,7 +507,6 @@ var app = {
     },
     drawTaskDetails: function (data) {
         data = data.shift();
-        console.log(data);
         this.task_data[this.task_id] = data;
         var task = data;
         $("#taskName").text(task.ProblemDescription + ' - ' + task.Customer_Name);
@@ -559,12 +544,14 @@ var app = {
         $( "<p><pre>Customer Comment : </pre>" + task.CustomerComments + "</p>" ).appendTo( "#taskDescription" );
     },
     clearTask: function () {
-        console.log('clear task')
+        jQuery("#taskName, #taskDescription, #photos, #files, #parts").empty();
+        /*
         jQuery("#taskName").empty();
         jQuery("#taskDescription").empty();
         jQuery("#photos").empty();
         jQuery("#files").empty();
         jQuery("#parts").empty();
+        */
         $("#status_dispatch,#status_arrived,#status_depart").addClass('ui-disabled');
     },
     setProgressBarValue: function (id, value) {
@@ -623,7 +610,6 @@ var app = {
                         }
                     }).always(function (data) {
                         $.mobile.loading("hide");
-                        console.log(data);
                     });
                 }else
                 if ('depart' == dataResponse.status) {
