@@ -371,6 +371,10 @@ var app = {
     uploadTaskData: function () {
         this.db && this.db.transaction(this.saveTaskData.bind(this), this.dbError.bind(this));
     },
+    saveAndExit: function () {
+        this.saveTaskData();
+        $.mobile.navigate("#tasks");
+    },
     saveTaskData: function () {
         var self = this;
 
@@ -427,9 +431,6 @@ var app = {
             $.each(filesList, function (key, val) {
                 self.uploadPhoto(val, key);
             });
-        //} else {
-        //    if(isExit)
-        //    $.mobile.navigate("#tasks");
         }
 
 
@@ -560,7 +561,6 @@ var app = {
     },
     saveTaskStatus: function (taskStatusData) {
         app.showLoader("Saving task status");
-
         $.ajax({
             type: 'PUT',
             url: this.apiUrl + 'dispatch/' + this.task_data[this.task_id].dispatch_id + ',' + this.task_id + "?access-token=" + app.access_token,
