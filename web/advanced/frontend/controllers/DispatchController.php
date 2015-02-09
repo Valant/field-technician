@@ -22,4 +22,19 @@ class DispatchController extends ActiveController {
         ];
         return $behaviors;
     }
+    public function actions()
+    {
+
+        $actions = [
+            'update' => [
+                'class' => 'frontend\controllers\Dispatch\UpdateAction',
+                'modelClass' => $this->modelClass,
+                'checkAccess' => [$this, 'checkAccess'],
+                'scenario' => $this->updateScenario,
+            ],
+        ];
+
+        return array_merge( parent::actions(), $actions );
+    }
+
 }
