@@ -106,7 +106,7 @@
             <button id="task_btn_pic" class="ui-disabled" data-icon="eye" onclick="app.choiseFile()">Use existing pic</button>
             <button id="task_btn_scan" class="ui-disabled" data-icon="bars" onclick="app.scanBarCode()">Scan barcode</button>
             <button id="task_btn_cam" class="ui-disabled" data-icon="camera" onclick="app.makePhoto()">Take a photo</button>
-            <button id="task_btn_save" class="ui-disabled" data-icon="action" onclick="app.uploadTaskData()">Save</button>
+            <button id="task_btn_save" class="ui-disabled" data-icon="action" onclick="app.saveAndExit()">Save</button>
         </div>
     </div>
     <div data-role="footer" position="fixed"><h3>&copy; AFA Protective System</h3></div>
@@ -126,13 +126,12 @@
 </div>
 <div data-role="page" id="gobacknotes">
     <div data-role="header">
-        <h2>Go back notes</h2>
+        <h2>Resolution</h2>
     </div>
     <div role="main" class="ui-content" id="gobacknotesContent">
-        <h3>Go back notes</h3>
-
-            <textarea style="text" name="resolution_notes" id="resolution_notes" cols="30" rows="10"></textarea>
-            <select style="select" name="resolution_code" id="resolution_code"></select>
+        <h3>Resolution</h3>
+            <select style="select" name="resolution_code" id="resolution_code" required="required"></select>
+            <textarea style="text" name="resolution_notes" id="resolution_notes" cols="30" rows="10" required="required"></textarea>
         <button data-icon="check" onclick="app.saveGoBackNotes()">Save</button>
 
     </div>
