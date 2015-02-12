@@ -7,7 +7,7 @@ module.exports = {
         var _message = (message || "Message");
         var _title = (title || "Title");
         var _buttonLabels = (buttonLabels || ["OK","Cancel"]);
-        cordova.exec(resultCallback, null, "PinDialog", "prompt", [_message, _title, _buttonLabels]);
+        cordova.exec(resultCallback, null, "iosNumpad", "prompt", [_message, _title, _buttonLabels]);
     }
 
 };

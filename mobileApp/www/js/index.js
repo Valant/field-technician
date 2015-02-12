@@ -57,7 +57,17 @@ var app = {
             StatusBar.overlaysWebView(false);
             this.prepareDB();
         }
+        mobile_prompt = navigator.notification.prompt;
+        if ('android' != cordova.platformId && undefined != window.plugins.iosNumpad)
+        {
+            console.info('iosNumpad')
+            mobile_prompt = window.plugins.iosNumpad;
+        }
+        else
+        {
+            console.info('navigator.notification.prompt')
 
+        }
         console.log('Received Event: ' + id);
     },
     prepareDB: function () {
@@ -203,10 +213,11 @@ var app = {
                     this.scanBarCode();
                 }
                 else if (2 == button) {
-                    navigator.notification.prompt(
+
+                    mobile_prompt(
                         'Please enter material code',  // message
                         function (results) {
-                            if(2 != results.buttonIndex)
+                            if (2 != results.buttonIndex)
                                 this.searchPart(results.input1)
                         }.bind(this)
                     );
@@ -231,7 +242,7 @@ var app = {
                     'OK'                  // buttonName
                 );
             } else {
-                navigator.notification.prompt(
+                mobile_prompt(
                     'Please enter quantity',  // message
                     function (results) {
                         if(parseInt(results.input1)!=NaN){
