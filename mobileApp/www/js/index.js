@@ -21,8 +21,8 @@ var app = {
     task_id: false,
     uploaded: 0,
     needToUpload: 0,
-    apiUrl: 'http://api.field-technician.loc/',
-    //apiUrl: 'http://api.afa.valant.com.ua/',
+    //apiUrl: 'http://api.field-technician.loc/',
+    apiUrl: 'http://api.afa.valant.com.ua/',
     user_id: 0,
     user_code: '',
     user_data: {},
@@ -60,14 +60,9 @@ var app = {
         mobile_prompt = navigator.notification.prompt;
         if ('android' != cordova.platformId && undefined != window.plugins.iosNumpad)
         {
-            console.info('iosNumpad')
             mobile_prompt = window.plugins.iosNumpad.prompt;
         }
-        else
-        {
-            console.info('navigator.notification.prompt')
 
-        }
         console.log('Received Event: ' + id);
     },
     prepareDB: function () {
@@ -76,8 +71,8 @@ var app = {
 
         if (window.localStorage.getItem('tech_id') && window.localStorage.getItem('access_token')) {
             this.showLoader('Load user data');
-            this.user_id = window.localStorage.getItem('tech_id');
-            $.getJSON(this.apiUrl + 'user/' + window.localStorage.getItem('user_id'),
+            app.user_id = window.localStorage.getItem('tech_id');
+            $.getJSON(app.apiUrl + 'user/' + window.localStorage.getItem('user_id'),
                 {'access-token': window.localStorage.getItem('access_token')},
                 function (data) {
                     if (data) {
@@ -103,7 +98,7 @@ var app = {
         //console.log('User login: ' + $('#login').val());
         //console.log('User password: ' + $('#password').val());
         this.showLoader('Authorize')
-        jQuery.post(this.apiUrl + '/user/login', {
+        jQuery.post(app.apiUrl + '/user/login', {
             'LoginForm[username]': $('#login').val(),
             'LoginForm[password]': $('#password').val()
         }, function (data) {
@@ -128,11 +123,11 @@ var app = {
     },
     loadTask: function () {
         app.showLoader('Load tasks');
-        $.getJSON(this.apiUrl + '/ticket/list', {
-            'access-token':this.access_token
-        }, this.drawTask.bind(this));
+        $.getJSON(app.apiUrl + '/ticket/list', {
+            'access-token':app.access_token
+        }, this.drawTask);
 
-        jQuery.getJSON(this.apiUrl+'/resolution/',{'per-page':200,'access-token':window.localStorage.getItem('access_token')},
+        jQuery.getJSON(app.apiUrl+'/resolution/',{'per-page':200,'access-token':window.localStorage.getItem('access_token')},
             function(data){
                 if(data){
                     $('select#resolution_code').empty();
@@ -150,7 +145,7 @@ var app = {
             type: 'POST',
             url: app.apiUrl+'/ticketnotes/create?access-token='+app.access_token,
             data:{
-                Service_Ticket_Id:this.task_data[this.task_id].Service_Ticket_Id,
+                Service_Ticket_Id:app.task_data[app.task_id].Service_Ticket_Id,
                 UserCode: app.user_code,
                 Edit_UserCode: app.user_code,
                 Entered_Date: moment().format('MMM DD YYYY HH:mm:ss A'),
@@ -190,6 +185,7 @@ var app = {
         }
         $('#tasks #tasks_content table tbody').empty();
         $.each(data, function (index, value) {
+            console.info(value)
             app.task_data[value.Service_Ticket_Id] = value;
             $('<tr id="task'+value.Service_Ticket_Id+'">' +
             '<td>' + value.Ticket_Number + '</td>' +
@@ -229,9 +225,9 @@ var app = {
     },
     searchPart: function (materialCode) {
         this.showLoader('Searching part')
-        $.getJSON(this.apiUrl + 'part/search', {
+        $.getJSON(app.apiUrl + 'part/search', {
             code: materialCode,
-            'access-token':this.access_token
+            'access-token':app.access_token
         }, function (data) {
             if ('error' == data.status) {
                 $.mobile.loading('hide');
@@ -255,19 +251,19 @@ var app = {
                                 'OK'                  // buttonName
                             );
                         }
-                        if (this.usedParts[data.Part_Id]) {
+                        if (app.usedParts[data.Part_Id]) {
                             if (quantity)
-                                this.usedParts[data.Part_Id] += quantity;
+                                app.usedParts[data.Part_Id] += quantity;
                             else
-                                this.usedParts[data.Part_Id]++;
-                            jQuery('#part' + data.Part_Id + ' .ui-li-count').text(this.usedParts[data.Part_Id]);
+                                app.usedParts[data.Part_Id]++;
+                            jQuery('#part' + data.Part_Id + ' .ui-li-count').text(app.usedParts[data.Part_Id]);
                         } else {
                             jQuery('<li data-icon="delete" id="part' + data.Part_Id + '">' +
                             '<a onclick="app.removePart(' + data.Part_Id + ')">'
                             + data.Part_Code + ' ' + data.Detail + ' ' + data.Description +
                             '<span class="ui-li-count">'+(quantity?quantity:1)+'</span>' +
                             '</a></li>').appendTo('#parts');
-                            this.usedParts[data.Part_Id] = quantity?quantity:1;
+                            app.usedParts[data.Part_Id] = quantity?quantity:1;
                         }
                         $('#parts').listview('refresh');
                         $.mobile.loading('hide');
@@ -338,9 +334,9 @@ var app = {
         options.chunkedMode = false;
 
         var params = {};
-        params.task_id = this.task_id;
+        params.task_id = app.task_id;
         params.name = options.fileName;
-        params['access-token'] = this.access_token;
+        params['access-token'] = app.access_token;
         options.params = params;
         console.log('options', options, imageURI );
 
@@ -354,7 +350,7 @@ var app = {
                 self.setProgressBarValue('slider_' + id, perc);
             }
         };
-        ft.upload(imageURI, encodeURI(this.apiUrl + 'taskattachment/upload?access-token='+this.access_token), this.uploadPhotoWin.bind(this), this.uploadPhotoFail.bind(this), options);
+        ft.upload(imageURI, encodeURI(app.apiUrl + 'taskattachment/upload?access-token='+app.access_token), this.uploadPhotoWin.bind(this), this.uploadPhotoFail.bind(this), options);
     },
     createProgressBar: function (id, text) {
         var cont = $('<div>');
@@ -402,8 +398,8 @@ var app = {
         this.checkUploadFinish()
     },
     checkUploadFinish: function () {
-        this.uploaded++;
-        if (this.uploaded == this.needToUpload) {
+        app.uploaded++;
+        if (app.uploaded == app.needToUpload) {
             $.mobile.navigate('#tasks');
         }
     },
@@ -446,31 +442,31 @@ var app = {
             filesList.push(jQuery(this).attr('src'));
         });
 
-        if(this.attachmentToDelete){
-            for(var i in this.attachmentToDelete){
+        if(app.attachmentToDelete){
+            for(var i in app.attachmentToDelete){
                 jQuery.ajax({
                     type:'DELETE',
-                    url: this.apiUrl+'taskattachment/'+this.attachmentToDelete[i]+'?access-token='+this.access_token
+                    url: app.apiUrl+'taskattachment/'+app.attachmentToDelete[i]+'?access-token='+app.access_token
                 });
             }
         }
 
-        if (this.usedParts) {
+        if (app.usedParts) {
             $.when(jQuery.ajax({
                     type: 'GET',
-                    url: this.apiUrl + 'taskpart/empty',
-                    data: {'access-token': this.access_token,'Service_Ticket_Id': this.task_id}
+                    url: app.apiUrl + 'taskpart/empty',
+                    data: {'access-token': app.access_token,'Service_Ticket_Id': app.task_id}
                 })
             ).done(function () {
-                    for (var part_id in this.usedParts) {
+                    for (var part_id in app.usedParts) {
                         jQuery.ajax({
                             type: 'POST',
-                            url: this.apiUrl + 'taskpart/create?access-token=' + this.access_token,
+                            url: app.apiUrl + 'taskpart/create?access-token=' + app.access_token,
                             data: {
-                                Service_Tech_ID: this.user_id,
-                                Service_Ticket_Id: this.task_id,
+                                Service_Tech_ID: app.user_id,
+                                Service_Ticket_Id: app.task_id,
                                 Part_Id: part_id,
-                                Quantity: this.usedParts[part_id]
+                                Quantity: app.usedParts[part_id]
                             }
                         });
                     }
@@ -480,32 +476,33 @@ var app = {
         this.setProgressBarValue(0);
         $('#progressBars').empty();
 
-        this.needToUpload = filesList.length;
-        if (this.needToUpload) {
+        app.needToUpload = filesList.length;
+        if (app.needToUpload) {
             $.mobile.navigate('#progress');
-            //this.needToUpload = filesList.length;
-            this.uploaded = 0;
-            $.each(filesList, function (key, val) {
+            //app.needToUpload = filesList.length;
+            app.uploaded = 0;
+            $.when($.each(filesList, function (key, val) {
                 self.uploadPhoto(val, key);
-            });
+            })).then(function(){this.checkUploadFinish();console.info('hello')});
         }
     },
     showTaskDetail: function (task_id, data) {
         this.showLoader('Loading task data')
         this.clearTask();
-        var task = this.task_data[task_id];
-        this.usedParts = [];
-        this.attachmentToDelete = [];
+        var task = app.task_data[task_id];
+        app.usedParts = [];
+        app.attachmentToDelete = [];
         console.log(task);
-        this.task_id = task_id;
-        this.db && this.db.transaction(this.getTaskData.bind(this), this.dbError.bind(this));
+        app.task_id = task_id;
+        this.db && this.db.transaction(this.getTaskData, this.dbError);
 
-        $.when($.getJSON(this.apiUrl + '/ticket/find', {
-            'id': this.task_id,
-            'access-token':this.access_token
-        }, this.drawTaskDetails.bind(this))).done(function () {
+        $.when($.getJSON(app.apiUrl + '/ticket/find', {
+            'id': app.task_id,
+            'access-token':app.access_token
+        }, this.drawTaskDetails.bind(this))).done(function (res) {
             $.mobile.loading('hide');
-            $.mobile.navigate('#taskDetails');
+            if(res.length)
+            {$.mobile.navigate('#taskDetails');}
         })
 
     },
@@ -514,14 +511,14 @@ var app = {
     },
     getTaskData: function (tx) {
 
-        jQuery.getJSON(this.apiUrl + '/taskattachment/search', {task_id: this.task_id,'access-token':this.access_token}, function (data) {
+        jQuery.getJSON(app.apiUrl + '/taskattachment/search', {task_id: app.task_id,'access-token':app.access_token}, function (data) {
             if(data){
                 for(var i in data){
                     jQuery('#photos').append(
                         '<div class="newImage" data-attachment-id="' + data[i].id + '" >' +
                             '<img class="photoPreview" ' +
                                 'data-on-server="true" ' +
-                                'src="' + this.apiUrl + '/uploads/' + data[i].task_id + '/' + data[i].path + '"/>' +
+                                'src="' + app.apiUrl + '/uploads/' + data[i].task_id + '/' + data[i].path + '"/>' +
                             '<button data-icon="delete" data-iconpos="notext" onclick="app.removeImage(this);"></button>' +
                         '</div>');
                     jQuery('#photos').trigger('create');
@@ -530,14 +527,14 @@ var app = {
 
         });
 
-        jQuery.getJSON(this.apiUrl + '/taskpart/search', {
-            'Service_Ticket_Id': this.task_id,
+        jQuery.getJSON(app.apiUrl + '/taskpart/search', {
+            'Service_Ticket_Id': app.task_id,
             'expand': 'part',
-            'access-token': this.access_token
+            'access-token': app.access_token
         }, function (data) {
             if (data) {
                 for (var i in data) {
-                    this.usedParts[data[i].part.Part_Id] = data[i].Quantity;
+                    app.usedParts[data[i].part.Part_Id] = data[i].Quantity;
                     jQuery('#parts').append('<li data-icon="delete" id="part' + data[i].part.Part_Id + '">' +
                     '<a onclick="app.removePart(' + data[i].part.Part_Id + ')">'
                     + data[i].part.Part_Code + ' ' + data[i].part.Detail + ' ' + data[i].part.Description +
@@ -549,11 +546,11 @@ var app = {
             }
         }.bind(this));
 
-        jQuery.getJSON(this.apiUrl+'ticket/getdispatch',{
-            task_id: this.task_id,
-            'access-token':this.access_token
+        jQuery.getJSON(app.apiUrl+'ticket/getdispatch',{
+            task_id: app.task_id,
+            'access-token':app.access_token
         },function(data){
-            this.task_data[data.Service_Ticket_Id]['dispatch_id'] = data.Dispatch_Id;
+            app.task_data[data.Service_Ticket_Id]['dispatch_id'] = data.Dispatch_Id;
             if(moment(data.Dispatch_Time, 'MMM DD YYYY HH:mm:ss0A').unix() > 0){
 
                 $('#status_dispatch').addClass('ui-disabled');
@@ -577,42 +574,59 @@ var app = {
 
     },
     drawTaskDetails: function (data) {
+        console.info('drawTaskDetails', data);
         data = data.shift();
+
+        if (undefined!=data) {
+        console.info('drawTaskDetails shift', data);
         this.task_data[this.task_id] = data;
         var task = data;
-        $('#taskName').text(task.ProblemDescription + ' - ' + task.Customer_Name);
-        $('<h4>Customer</h4>').appendTo('#taskDescription');
-        $('<p><pre>' + task.business_name + '</pre></p>').appendTo('#taskDescription');
-        $('<p><pre>' + task.Customer_Name + '</pre></p>').appendTo('#taskDescription');
-        $('<p><pre>' + task.address_1 + '</pre></p>').appendTo('#taskDescription');
-        $('<p><pre>' + task.ge1_description + '</pre></p>').appendTo('#taskDescription');
-        $('<p><pre>' + task.ge2_short + '</pre></p>').appendTo('#taskDescription');
-        $('<p><pre>' + task.ge3_description + '</pre></p>').appendTo('#taskDescription');
 
-        $('<h4>Site</h4>').appendTo('#taskDescription');
-        $('<p><pre>' + task.customer_number + '</pre></p>').appendTo('#taskDescription');
-        $('<p><pre>' + task.Customer_Site_Address + '</pre></p>').appendTo('#taskDescription');
-        $('<p><pre>' + task.Customer_Site_Ge1_Description + '</pre></p>').appendTo('#taskDescription');
-        $('<p><pre>' + task.Customer_Site_Ge2_Short + '</pre></p>').appendTo('#taskDescription');
-        $('<p><pre>' + task.Customer_Site_Ge3_Description + '</pre></p>').appendTo('#taskDescription');
+            $('#taskName').text(task.ProblemDescription + ' - ' + task.Customer_Name);
 
-        $('<h4>System Information</h4>').appendTo('#taskDescription');
-        $('<p><pre>System Account: ' + task.alarm_account + '</pre></p>').appendTo('#taskDescription');
-        $('<p><pre>System Type: ' + task.System_Description + '</pre></p>').appendTo('#taskDescription');
-        $('<p><pre>Panel Type: ' + task.System_Panel_Description + '</pre></p>').appendTo('#taskDescription');
-        $('<p><pre>Site Phone: ' + task.phone_1 + '</pre></p>').appendTo('#taskDescription');
-        $('<p><pre>Cross Street: ' + task.cross_street + '</pre></p>').appendTo('#taskDescription');
-        $('<p><pre>System Comments: ' + task.system_comments + '</pre></p>').appendTo('#taskDescription');
+            $('<h4>Customer</h4>').appendTo('#taskDescription');
+            $('<p><pre>' + task.business_name + '</pre></p>').appendTo('#taskDescription');
+            $('<p><pre>' + task.Customer_Name + '</pre></p>').appendTo('#taskDescription');
+            $('<p><pre>' + task.address_1 + '</pre></p>').appendTo('#taskDescription');
+            $('<p><pre>' + task.ge1_description + '</pre></p>').appendTo('#taskDescription');
+            $('<p><pre>' + task.ge2_short + '</pre></p>').appendTo('#taskDescription');
+            $('<p><pre>' + task.ge3_description + '</pre></p>').appendTo('#taskDescription');
 
-        $('<h4>Ticket Information</h4>').appendTo('#taskDescription');
-        $( '<p><pre>Ticket number: ' + task.Ticket_Number + '</pre></p>' ).appendTo( '#taskDescription' );
-        $('<p><pre>Status: ' + task.ticket_status + '</pre></p>').appendTo('#taskDescription');
-        $('<p><pre>Created on: ' + task.Creation_Date + '</pre></p>').appendTo('#taskDescription');
-        $('<p><pre>Created by: ' + task.entered_by + '</pre></p>').appendTo('#taskDescription');
-        $('<p><pre>Contact: ' + task.Requested_By + '</pre></p>').appendTo('#taskDescription');
-        $('<p><pre>Phone: ' + task.requested_by_phone + '</pre></p>').appendTo('#taskDescription');
-        $('<p><pre>Problem: ' + task.ProblemDescription + '</pre></p>').appendTo('#taskDescription');
-        $('<p><pre>Customer Comment : </pre>' + task.CustomerComments + '</p>' ).appendTo('#taskDescription');
+            $('<h4>Site</h4>').appendTo('#taskDescription');
+            $('<p><pre>' + task.customer_number + '</pre></p>').appendTo('#taskDescription');
+            $('<p><pre>' + task.Customer_Site_Address + '</pre></p>').appendTo('#taskDescription');
+            $('<p><pre>' + task.Customer_Site_Ge1_Description + '</pre></p>').appendTo('#taskDescription');
+            $('<p><pre>' + task.Customer_Site_Ge2_Short + '</pre></p>').appendTo('#taskDescription');
+            $('<p><pre>' + task.Customer_Site_Ge3_Description + '</pre></p>').appendTo('#taskDescription');
+
+            $('<h4>System Information</h4>').appendTo('#taskDescription');
+            $('<p><pre>System Account: ' + task.alarm_account + '</pre></p>').appendTo('#taskDescription');
+            $('<p><pre>System Type: ' + task.System_Description + '</pre></p>').appendTo('#taskDescription');
+            $('<p><pre>Panel Type: ' + task.System_Panel_Description + '</pre></p>').appendTo('#taskDescription');
+            $('<p><pre>Site Phone: ' + task.phone_1 + '</pre></p>').appendTo('#taskDescription');
+            $('<p><pre>Cross Street: ' + task.cross_street + '</pre></p>').appendTo('#taskDescription');
+            $('<p><pre>System Comments: ' + task.system_comments + '</pre></p>').appendTo('#taskDescription');
+
+            $('<h4>Ticket Information</h4>').appendTo('#taskDescription');
+            $('<p><pre>Ticket number: ' + task.Ticket_Number + '</pre></p>').appendTo('#taskDescription');
+            $('<p><pre>Status: ' + task.ticket_status + '</pre></p>').appendTo('#taskDescription');
+            $('<p><pre>Created on: ' + task.Creation_Date + '</pre></p>').appendTo('#taskDescription');
+            $('<p><pre>Created by: ' + task.entered_by + '</pre></p>').appendTo('#taskDescription');
+            $('<p><pre>Contact: ' + task.Requested_By + '</pre></p>').appendTo('#taskDescription');
+            $('<p><pre>Phone: ' + task.requested_by_phone + '</pre></p>').appendTo('#taskDescription');
+            $('<p><pre>Problem: ' + task.ProblemDescription + '</pre></p>').appendTo('#taskDescription');
+            $('<p><pre>Customer Comment : </pre>' + task.CustomerComments + '</p>').appendTo('#taskDescription');
+        } else {
+
+            navigator.notification.alert(
+                'There is no data for this task',  // message
+                function(res){
+                    $.mobile.navigate('#tasks');
+                },         // callback
+                'Task loading error',            // title
+                'OK'                  // buttonName
+            );
+        }
     },
     clearTask: function () {
         jQuery('#taskName, #taskDescription, #photos, #files, #parts').empty();
@@ -627,7 +641,7 @@ var app = {
         this.showLoader('Saving task status');
         $.ajax({
             type: 'PUT',
-            url: this.apiUrl + 'dispatch/' + this.task_data[this.task_id].dispatch_id + ',' + this.task_id + '?access-token=' + app.access_token,
+            url: app.apiUrl + 'dispatch/' + app.task_data[app.task_id].dispatch_id + ',' + app.task_id + '?access-token=' + app.access_token,
             data: taskStatusData.data
         }).always(function (dataResponse) {
             console.log(dataResponse);
@@ -635,10 +649,10 @@ var app = {
 
         $.ajax({
             type: 'POST',
-            url: this.apiUrl + 'taskhistory/create?access-token=' + this.access_token,
+            url: app.apiUrl + 'taskhistory/create?access-token=' + app.access_token,
             data: {
-                task_id: this.task_id,
-                tech_id: this.user_id,
+                task_id: app.task_id,
+                tech_id: app.user_id,
                 status: taskStatusData.status
             }
         }).always(function (dataResponse) {
@@ -650,7 +664,7 @@ var app = {
                     $('#status_arrived').removeClass('ui-disabled');
                     jQuery.ajax({
                         type: 'PUT',
-                        url: this.apiUrl + 'ticket/' + this.task_id + '?access-token=' + this.access_token,
+                        url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
                         data: {
                             Ticket_Status: 'IP'
                         }
@@ -667,7 +681,7 @@ var app = {
 
                     jQuery.ajax({
                         type: 'PUT',
-                        url: this.apiUrl + 'ticket/' + this.task_id + '?access-token=' + this.access_token,
+                        url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
                         data: {
                             Ticket_Status: 'IP'
                         }
@@ -699,7 +713,7 @@ var app = {
                                         data.Ticket_Status = status;
                                         jQuery.ajax({
                                             type: 'PUT',
-                                            url: this.apiUrl + 'ticket/' + this.task_id + '?access-token=' + this.access_token,
+                                            url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
                                             data: data
                                         }).always(function (data) {
                                             $('#task' + data.Service_Ticket_Id).remove();
@@ -737,15 +751,16 @@ var app = {
         switch (status) {
             case 'dispatch':
                 navigator.notification.confirm(
-                    'Ready to go to ' + this.task_data[this.task_id].address_1, // message
+                    'Ready to go to ' + app.task_data[app.task_id].address_1, // message
                     function (button) {
-                        if (1== button) {
+                        if (1 == button) {
                             canSetStatus = true;
                             data.Dispatch_Time = moment().format('MMM DD YYYY HH:mm:ss A');
                             data.Ticket_Status = 'IP';
-                            this.saveTaskStatus({status:status,data:data, taskId:this.task_id});
+                            this.saveTaskStatus({status: status, data: data, taskId: app.task_id});
+                        } else {
+                            $.mobile.navigate('#tasks');
                         }
-                        else $.mobile.navigate('#tasks');
                     }.bind(this),            // callback to invoke with index of button pressed
                     'Dispatch?',           // title
                     ['Yes', 'No'] // buttonLabels
@@ -753,12 +768,12 @@ var app = {
                 break;
             case 'arrived':
                 navigator.notification.confirm(
-                    'Arrived to ' + this.task_data[this.task_id].address_1, // message
+                    'Arrived to ' + app.task_data[app.task_id].address_1, // message
                     function (button) {
                         if (button == 1) {
                             canSetStatus = true;
                             data.Arrival_Time = moment().format('MMM DD YYYY HH:mm:ss A');
-                            this.saveTaskStatus({status:status,data:data, taskId:this.task_id});
+                            this.saveTaskStatus({status:status,data:data, taskId:app.task_id});
 
 
                             navigator.notification.confirm(
@@ -780,12 +795,12 @@ var app = {
                 break;
             case 'depart':
                 navigator.notification.confirm(
-                    'Departure from ' + this.task_data[this.task_id].address_1, // message
+                    'Departure from ' + app.task_data[app.task_id].address_1, // message
                     function (button) {
                         if (1 == button) {
                             //canSetStatus = true;
                             data.Departure_Time = moment().format('MMM DD YYYY HH:mm:ss A');
-                            this.saveTaskStatus({status:status,data:data, taskId:this.task_id});
+                            this.saveTaskStatus({status:status,data:data, taskId:app.task_id});
                         }
                     }.bind(this),
                     'Departure?',
@@ -812,7 +827,7 @@ var app = {
         }
     },
     removePart: function (part_id) {
-        this.part_to_delete = part_id;
+        app.part_to_delete = part_id;
         navigator.notification.confirm(
             'Remove part from list', // message
             function(index){
@@ -820,14 +835,14 @@ var app = {
                     delete app.usedParts[app.part_to_delete];
                     jQuery('#part' + app.part_to_delete).remove();
                 }
-            }.bind(this),            // callback to invoke with index of button pressed
+            },            // callback to invoke with index of button pressed
             'Part removing',           // title
             ['Yes','No']         // buttonLabels
         );
 
     },
     removeImage: function(obj){
-        this.image_to_remove = obj;
+        app.image_to_remove = obj;
         navigator.notification.confirm(
             'Remove photo from task', // message
             function(index){
@@ -847,8 +862,8 @@ var app = {
 
     },
     settings: function(){
-        $('#username').val(this.user_data.username);
-        $('#email').val(this.user_data.email);
+        $('#username').val(app.user_data.username);
+        $('#email').val(app.user_data.email);
         $('#newpassword').val('');
         $.mobile.navigate('#profile');
     },
@@ -865,10 +880,10 @@ var app = {
         }
         jQuery.ajax({
             type: 'PUT',
-            url: this.apiUrl + 'user/'+this.user_data.id+'?access-token='+app.access_token,
+            url: app.apiUrl + 'user/'+app.user_data.id+'?access-token='+app.access_token,
             data: data
         }).always(function (data) {
-            this.user_data = data;
+            app.user_data = data;
             $.mobile.navigate('#tasks');
             navigator.notification.alert(
                 'Profile was saved',  // message
@@ -876,7 +891,7 @@ var app = {
                 'Profile',            // title
                 'OK'                  // buttonName
             );
-        }.bind(this));
+        });
     },
     logout: function(){
         window.localStorage.clear();
