@@ -61,7 +61,7 @@ var app = {
         if ('android' != cordova.platformId && undefined != window.plugins.iosNumpad)
         {
             console.info('iosNumpad')
-            mobile_prompt = window.plugins.iosNumpad;
+            mobile_prompt = window.plugins.iosNumpad.prompt;
         }
         else
         {
