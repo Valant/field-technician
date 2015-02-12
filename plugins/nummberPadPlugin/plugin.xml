@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin xmlns="http://cordova.apache.org/ns/plugins/1.0" id="phonegap.plugins.iosnumpad" version="0.0.1">
+
+    <name>PinDialog</name>
+    
+	<description>
+			PhoneGap numeric dialog plugin for iOS. Forked from https://github.com/apache/cordova-plugin-dialogs.git
+	</description>
+	<license>MIT</license>
+	<keywords>phonegap,android,ios,numeric,password,pin,dialog</keywords>
+
+	<js-module src="www/pin.js" name="iosNumpad">
+	  <merges target="window.plugins.iosNumpad" />
+	</js-module>
+
+	<!-- ios -->
+	<platform name="ios">
+	  <config-file target="config.xml" parent="/*">
+		<feature name="iosNumpad">
+		  <param name="ios-package" value="CDVPinDialog"/>
+		</feature>
+	  </config-file>
+
+	  <header-file src="src/ios/CDVPinDialog.h" />
+	  <source-file src="src/ios/CDVPinDialog.m" />
+	</platform>
+	
+</plugin>
+
