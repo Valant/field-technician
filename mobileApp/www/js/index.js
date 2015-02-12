@@ -429,6 +429,8 @@ var app = {
     saveAndExit: function () {
         this.saveTaskData();
         this.checkUploadFinish()
+        $.mobile.loading('hide');
+
     },
     saveTaskData: function () {
         var self = this;
@@ -483,8 +485,11 @@ var app = {
             app.uploaded = 0;
             $.when($.each(filesList, function (key, val) {
                 self.uploadPhoto(val, key);
-            })).then(function(){this.checkUploadFinish();console.info('hello')});
+            })).then(function () {
+                this.checkUploadFinish();
+            });
         }
+
     },
     showTaskDetail: function (task_id, data) {
         this.showLoader('Loading task data')
@@ -579,7 +584,8 @@ var app = {
 
         if (undefined!=data) {
         console.info('drawTaskDetails shift', data);
-        this.task_data[this.task_id] = data;
+        //this.task_data[this.task_id] = data; // here was error with rewriting task custom params
+        jQuery.extend(this.task_data[this.task_id], data);
         var task = data;
 
             $('#taskName').text(task.ProblemDescription + ' - ' + task.Customer_Name);
@@ -708,7 +714,7 @@ var app = {
                                         $.mobile.loading('hide');
                                     } else
                                     if (2 == button) {
-                                        this.showLoader('Saving task status');
+                                        app.showLoader('Saving task status');
                                         var data = taskStatusData.data;
                                         data.Ticket_Status = status;
                                         jQuery.ajax({
@@ -721,7 +727,7 @@ var app = {
                                             $.mobile.navigate('#gobacknotes');
                                         });
                                     }
-                                }.bind(this),
+                                },
                                 'Add material',
                                 ['Yes', 'No']
                             );
@@ -755,6 +761,10 @@ var app = {
                     function (button) {
                         if (1 == button) {
                             canSetStatus = true;
+                            // reset data(for debug)
+                            //data.Dispatch_Time = 'Jan 1 1970 2:00:00 AM';
+                            //data.Arrival_Time = 'Jan 1 1970 2:00:00 AM';
+                            //data.Departure_Time = 'Jan 1 1970 2:00:00 AM';
                             data.Dispatch_Time = moment().format('MMM DD YYYY HH:mm:ss A');
                             data.Ticket_Status = 'IP';
                             this.saveTaskStatus({status: status, data: data, taskId: app.task_id});
