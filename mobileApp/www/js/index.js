@@ -72,7 +72,7 @@ var app = {
         if (window.localStorage.getItem('tech_id') && window.localStorage.getItem('access_token')) {
             this.showLoader('Load user data');
             app.user_id = window.localStorage.getItem('tech_id');
-            $.getJSON(app.apiUrl + 'user/' + window.localStorage.getItem('user_id'),
+            jQuery.getJSON(app.apiUrl + 'user/' + window.localStorage.getItem('user_id'),
                 {'access-token': window.localStorage.getItem('access_token')},
                 function (data) {
                     if (data) {
@@ -98,7 +98,7 @@ var app = {
         //console.log('User login: ' + $('#login').val());
         //console.log('User password: ' + $('#password').val());
         this.showLoader('Authorize')
-        $.post(app.apiUrl + '/user/login', {
+        jQuery.post(app.apiUrl + '/user/login', {
             'LoginForm[username]': $('#login').val(),
             'LoginForm[password]': $('#password').val()
         }, function (data) {
@@ -123,11 +123,11 @@ var app = {
     },
     loadTask: function () {
         app.showLoader('Load tasks');
-        $.getJSON(app.apiUrl + '/ticket/list', {
+        jQuery.getJSON(app.apiUrl + '/ticket/list', {
             'access-token':app.access_token
         }, this.drawTask);
 
-        $.getJSON(app.apiUrl+'/resolution/',{'per-page':200,'access-token':window.localStorage.getItem('access_token')},
+        jQuery.getJSON(app.apiUrl+'/resolution/',{'per-page':200,'access-token':window.localStorage.getItem('access_token')},
             function(data){
                 if(data){
                     $('select#resolution_code').empty();
@@ -141,7 +141,7 @@ var app = {
         if($('#resolution_notes').val() && $('#resolution_code').val())
         {
             app.showLoader('Saving task status');
-            $.ajax({
+            jQuery.ajax({
             type: 'POST',
             url: app.apiUrl+'/ticketnotes/create?access-token='+app.access_token,
             data:{
@@ -154,7 +154,7 @@ var app = {
             }
         }).always(function (dataResponse) {
 
-                $.ajax({
+                jQuery.ajax({
                     type: 'PUT',
                     url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
                     data: {
@@ -225,7 +225,8 @@ var app = {
     },
     searchPart: function (materialCode) {
         this.showLoader('Searching part')
-        $.getJSON(app.apiUrl + 'part/search', {
+        var self = this
+        jQuery.getJSON(app.apiUrl + 'part/search', {
             code: materialCode,
             'access-token':app.access_token
         }, function (data) {
@@ -268,7 +269,7 @@ var app = {
                         $('#parts').listview('refresh');
                         $.mobile.loading('hide');
                         $.mobile.silentScroll($('#parts').offset().top);
-                        this.uploadTaskData();
+                        self.uploadTaskData();
                     }.bind(this)
                     ,                  // callback to invoke
                     'Quantity',            // title
@@ -318,12 +319,13 @@ var app = {
         );
     },
     onSuccessChoiseFile: function (imageURI) {
+        console.info(imageURI)
         $('#files').append('<div class="newImage">' +
         '<img class="photoPreview"  src="' + imageURI + '"/>' +
         '<button data-icon="delete" data-iconpos="notext" onclick="app.removeImage(this);"></button>' +
         '</div>');
         $('#files').trigger('create');
-        this.uploadTaskData();
+        //app.uploadTaskData();
     },
     uploadPhoto: function (imageURI, id) {
 
@@ -382,7 +384,7 @@ var app = {
         //this.db.transaction(function (tx) {
         //    tx.executeSql('INSERT INTO taskAttachment (task_id, type, data, attachment_id) VALUES (?, ?, ?, ?)', [data.task_id, 'photos', data.path, data.id]);
         //});
-        app.checkUploadFinish();
+        this.checkUploadFinish();
     },
     uploadPhotoFail: function (error) {
         navigator.notification.alert(
@@ -395,11 +397,11 @@ var app = {
         console.log(error);
         console.log('upload error source ' + error.source);
         console.log('upload error target ' + error.target);
-        app.checkUploadFinish()
+        this.checkUploadFinish();
     },
     checkUploadFinish: function () {
-        app.uploaded++;
-        if (app.uploaded == app.needToUpload) {
+        this.uploaded++;
+        if (this.uploaded == this.needToUpload) {
             $.mobile.navigate('#tasks');
         }
     },
@@ -414,11 +416,14 @@ var app = {
         });
     },
     onSuccessMakePhoto: function (imageURI) {
+        console.info('success make photo', imageURI)
         //new Parse.File('myfile.txt', { base64: imageURI });
         $('#files').append('<div class="newImage"><img class="photoPreview"  src="' + imageURI + '"/>' +
         '<button data-icon="delete" data-iconpos="notext" onclick="app.removeImage(this);"></button>' +
         '</div>');
         $('#files').trigger('create');
+        this.checkUploadFinish();
+
     },
     onFailMakePhoto: function (message) {
         //alert('Failed because: ' + message);
@@ -446,7 +451,7 @@ var app = {
 
         if(app.attachmentToDelete){
             for(var i in app.attachmentToDelete){
-                $.ajax({
+                jQuery.ajax({
                     type:'DELETE',
                     url: app.apiUrl+'taskattachment/'+app.attachmentToDelete[i]+'?access-token='+app.access_token
                 });
@@ -454,14 +459,14 @@ var app = {
         }
 
         if (app.usedParts) {
-            $.when($.ajax({
+            $.when(jQuery.ajax({
                     type: 'GET',
                     url: app.apiUrl + 'taskpart/empty',
                     data: {'access-token': app.access_token,'Service_Ticket_Id': app.task_id}
                 })
             ).done(function () {
                     for (var part_id in app.usedParts) {
-                        $.ajax({
+                        jQuery.ajax({
                             type: 'POST',
                             url: app.apiUrl + 'taskpart/create?access-token=' + app.access_token,
                             data: {
@@ -479,15 +484,16 @@ var app = {
         $('#progressBars').empty();
 
         app.needToUpload = filesList.length;
+        console.info('app.needToUpload',app.needToUpload)
         if (app.needToUpload) {
             $.mobile.navigate('#progress');
             //app.needToUpload = filesList.length;
             app.uploaded = 0;
-            $.when($.each(filesList, function (key, val) {
+            $.each(filesList, function (key, val) {
                 self.uploadPhoto(val, key);
-            })).then(function () {
-                app.checkUploadFinish();
             });
+            this.checkUploadFinish();
+
         }
 
     },
@@ -501,7 +507,7 @@ var app = {
         app.task_id = task_id;
         this.db && this.db.transaction(this.getTaskData, this.dbError);
 
-        $.when($.getJSON(app.apiUrl + '/ticket/find', {
+        $.when(jQuery.getJSON(app.apiUrl + '/ticket/find', {
             'id': app.task_id,
             'access-token':app.access_token
         }, this.drawTaskDetails.bind(this))).done(function (res) {
@@ -516,7 +522,7 @@ var app = {
     },
     getTaskData: function (tx) {
 
-        $.getJSON(app.apiUrl + '/taskattachment/search', {task_id: app.task_id,'access-token':app.access_token}, function (data) {
+        jQuery.getJSON(app.apiUrl + '/taskattachment/search', {task_id: app.task_id,'access-token':app.access_token}, function (data) {
             if(data){
                 for(var i in data){
                     $('#photos').append(
@@ -532,7 +538,7 @@ var app = {
 
         });
 
-        $.getJSON(app.apiUrl + '/taskpart/search', {
+        jQuery.getJSON(app.apiUrl + '/taskpart/search', {
             'Service_Ticket_Id': app.task_id,
             'expand': 'part',
             'access-token': app.access_token
@@ -551,7 +557,7 @@ var app = {
             }
         }.bind(this));
 
-        $.getJSON(app.apiUrl+'ticket/getdispatch',{
+        jQuery.getJSON(app.apiUrl+'ticket/getdispatch',{
             task_id: app.task_id,
             'access-token':app.access_token
         },function(data){
@@ -645,7 +651,7 @@ var app = {
     },
     saveTaskStatus: function (taskStatusData) {
         this.showLoader('Saving task status');
-        $.ajax({
+        jQuery.ajax({
             type: 'PUT',
             url: app.apiUrl + 'dispatch/' + app.task_data[app.task_id].Dispatch_Id + ',' + app.task_id + '?access-token=' + app.access_token,
             data: taskStatusData.data
@@ -653,7 +659,7 @@ var app = {
             console.log(dataResponse);
         });
 
-        $.ajax({
+        jQuery.ajax({
             type: 'POST',
             url: app.apiUrl + 'taskhistory/create?access-token=' + app.access_token,
             data: {
@@ -668,7 +674,7 @@ var app = {
                     this.showLoader('Saving task status');
                     $('#status_dispatch,#status_depart,button[id^="task_btn_"]').addClass('ui-disabled');
                     $('#status_arrived').removeClass('ui-disabled');
-                    $.ajax({
+                    jQuery.ajax({
                         type: 'PUT',
                         url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
                         data: {
@@ -685,7 +691,7 @@ var app = {
                     $('#status_dispatch, #status_arrived').addClass('ui-disabled');
                     $('#status_depart,button[id^="task_btn_"]').removeClass('ui-disabled');
 
-                    $.ajax({
+                    jQuery.ajax({
                         type: 'PUT',
                         url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
                         data: {
@@ -717,7 +723,7 @@ var app = {
                                         app.showLoader('Saving task status');
                                         var data = taskStatusData.data;
                                         data.Ticket_Status = status;
-                                        $.ajax({
+                                        jQuery.ajax({
                                             type: 'PUT',
                                             url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
                                             data: data
@@ -889,7 +895,7 @@ var app = {
         if($('#newpassword').val()){
             data.password_hash = $('#newpassword').val();
         }
-        $.ajax({
+        jQuery.ajax({
             type: 'PUT',
             url: app.apiUrl + 'user/'+app.user_data.id+'?access-token='+app.access_token,
             data: data
