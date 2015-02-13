@@ -435,7 +435,7 @@ var app = {
         this.saveTaskData();
         console.info('aftersaveTaskData')
 
-        this.checkUploadFinish();
+        //this.checkUploadFinish();
         console.info('aftercheckUploadFinish')
 
     },
