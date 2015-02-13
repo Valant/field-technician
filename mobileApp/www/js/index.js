@@ -382,7 +382,7 @@ var app = {
         //this.db.transaction(function (tx) {
         //    tx.executeSql('INSERT INTO taskAttachment (task_id, type, data, attachment_id) VALUES (?, ?, ?, ?)', [data.task_id, 'photos', data.path, data.id]);
         //});
-        this.checkUploadFinish();
+        app.checkUploadFinish();
     },
     uploadPhotoFail: function (error) {
         navigator.notification.alert(
@@ -395,7 +395,7 @@ var app = {
         console.log(error);
         console.log('upload error source ' + error.source);
         console.log('upload error target ' + error.target);
-        this.checkUploadFinish()
+        app.checkUploadFinish()
     },
     checkUploadFinish: function () {
         app.uploaded++;
