@@ -306,27 +306,6 @@ var app = {
             console.log(e);
         }
     },
-    choiseFile: function () {
-        navigator.camera.getPicture(this.onSuccessChoiseFile,
-            function (message) {
-                //alert('get picture failed');
-            },
-            {
-                quality: 50,
-                destinationType: navigator.camera.DestinationType.FILE_URI,
-                sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY
-            }
-        );
-    },
-    onSuccessChoiseFile: function (imageURI) {
-        console.info(imageURI)
-        $('#files').append('<div class="newImage">' +
-        '<img class="photoPreview"  src="' + imageURI + '"/>' +
-        '<button data-icon="delete" data-iconpos="notext" onclick="app.removeImage(this);"></button>' +
-        '</div>');
-        $('#files').trigger('create');
-        //app.uploadTaskData();
-    },
     uploadPhoto: function (imageURI, id) {
 
         var options = new FileUploadOptions();
@@ -400,10 +379,22 @@ var app = {
         this.checkUploadFinish();
     },
     checkUploadFinish: function () {
-        this.uploaded++;
+        console.info('checkUploadFinish ',this.uploaded);
         if (this.uploaded == this.needToUpload) {
+            console.info('this.uploaded == this.needToUpload ',this.uploaded);
             $.mobile.navigate('#tasks');
         }
+        this.uploaded++;
+
+    },
+    choiseFile: function () {
+        navigator.camera.getPicture(this.onSuccessMakePhoto, this.onFailMakePhoto,
+            {
+                quality: 50,
+                destinationType: navigator.camera.DestinationType.FILE_URI,
+                sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY
+            }
+        );
     },
     makePhoto: function () {
         navigator.camera.getPicture(this.onSuccessMakePhoto, this.onFailMakePhoto, {
@@ -415,14 +406,23 @@ var app = {
             allowEdit:true
         });
     },
+    onSuccessChoiseFile: function (imageURI) {
+        console.info('choise', imageURI);
+        $('#files').append('<div class="newImage">' +
+        '<img class="photoPreview"  src="' + imageURI + '"/>' +
+        '<button data-icon="delete" data-iconpos="notext" onclick="app.removeImage(this);"></button>' +
+        '</div>');
+        $('#files').trigger('create');
+    },
     onSuccessMakePhoto: function (imageURI) {
+        console.info('make', imageURI);
+
         console.info('success make photo', imageURI)
         //new Parse.File('myfile.txt', { base64: imageURI });
         $('#files').append('<div class="newImage"><img class="photoPreview"  src="' + imageURI + '"/>' +
         '<button data-icon="delete" data-iconpos="notext" onclick="app.removeImage(this);"></button>' +
         '</div>');
         $('#files').trigger('create');
-        this.checkUploadFinish();
 
     },
     onFailMakePhoto: function (message) {
@@ -432,12 +432,16 @@ var app = {
         this.db && this.db.transaction(this.saveTaskData.bind(this), this.dbError.bind(this));
     },
     saveAndExit: function () {
+        console.info('saveAndExit')
         this.saveTaskData();
-        this.checkUploadFinish()
-        $.mobile.loading('hide');
+        console.info('aftersaveTaskData')
+
+        this.checkUploadFinish();
+        console.info('aftercheckUploadFinish')
 
     },
     saveTaskData: function () {
+        console.info('savetaskdata')
         var self = this;
 
         var filesList = [];
@@ -449,16 +453,21 @@ var app = {
             filesList.push($(this).attr('src'));
         });
 
-        if(app.attachmentToDelete){
-            for(var i in app.attachmentToDelete){
+        if (app.attachmentToDelete) {
+            for (var i in app.attachmentToDelete) {
                 jQuery.ajax({
-                    type:'DELETE',
-                    url: app.apiUrl+'taskattachment/'+app.attachmentToDelete[i]+'?access-token='+app.access_token
-                });
+                    type: 'DELETE',
+                    url: app.apiUrl + 'taskattachment/' + app.attachmentToDelete[i] + '?access-token=' + app.access_token
+                }).always(function(data){
+                    console.info('delete done')
+                    delete app.attachmentToDelete[i];
+                })
+
+
             }
         }
 
-        if (app.usedParts) {
+        if (this.usedParts) {
             $.when(jQuery.ajax({
                     type: 'GET',
                     url: app.apiUrl + 'taskpart/empty',
@@ -483,17 +492,16 @@ var app = {
         this.setProgressBarValue(0);
         $('#progressBars').empty();
 
-        app.needToUpload = filesList.length;
+        this.needToUpload = filesList.length;
         console.info('app.needToUpload',app.needToUpload)
-        if (app.needToUpload) {
-            $.mobile.navigate('#progress');
-            //app.needToUpload = filesList.length;
-            app.uploaded = 0;
+
+        if (this.needToUpload) {
+            console.info('beforenavigate')
+            $.mobile.navigate("#progress");
             $.each(filesList, function (key, val) {
                 self.uploadPhoto(val, key);
             });
-            this.checkUploadFinish();
-
+            this.uploaded = 0;
         }
 
     },
