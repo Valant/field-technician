@@ -322,7 +322,7 @@ var app = {
         console.log('options', options, imageURI );
 
         this.createProgressBar(id, options.fileName);
-
+        $('img[src="'+imageURI+'"]').attr('data-on-server',true);
         var ft = new FileTransfer();
         var self = this;
         ft.onprogress = function (progressEvent) {
@@ -383,7 +383,7 @@ var app = {
         if (this.uploaded == this.needToUpload) {
             console.info('this.uploaded == this.needToUpload ',this.uploaded);
             //$.mobile.navigate('#tasks');
-            $.mobile.back();
+            $.mobile.navigate('#taskDetails');
         }
         this.uploaded++;
 
@@ -453,10 +453,10 @@ var app = {
             filesList.push($(this).attr('src'));
         });
 
-        if (app.attachmentToDelete) {
+        if (this.attachmentToDelete) {
             this.showLoader('Saving...');
 
-            for (var i in app.attachmentToDelete) {
+            for (var i in this.attachmentToDelete) {
                 jQuery.ajax({
                     type: 'DELETE',
                     url: app.apiUrl + 'taskattachment/' + app.attachmentToDelete[i] + '?access-token=' + app.access_token
@@ -508,6 +508,7 @@ var app = {
             console.info('beforenavigate')
             $.mobile.navigate("#progress");
             $.each(filesList, function (key, val) {
+                console.info('key, val ', key,val)
                 self.uploadPhoto(val, key);
             });
             this.uploaded = 0;
@@ -869,6 +870,7 @@ var app = {
                 if(1 == index){
                     delete app.usedParts[app.part_to_delete];
                     $('#part' + app.part_to_delete).remove();
+                    app.saveTaskData();
                 }
             },            // callback to invoke with index of button pressed
             'Part removing',           // title
