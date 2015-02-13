@@ -382,7 +382,8 @@ var app = {
         console.info('checkUploadFinish ',this.uploaded);
         if (this.uploaded == this.needToUpload) {
             console.info('this.uploaded == this.needToUpload ',this.uploaded);
-            $.mobile.navigate('#tasks');
+            //$.mobile.navigate('#tasks');
+            $.mobile.back();
         }
         this.uploaded++;
 
@@ -406,18 +407,16 @@ var app = {
             allowEdit:true
         });
     },
-    onSuccessChoiseFile: function (imageURI) {
+    /*onSuccessChoiseFile: function (imageURI) {
         console.info('choise', imageURI);
         $('#files').append('<div class="newImage">' +
         '<img class="photoPreview"  src="' + imageURI + '"/>' +
         '<button data-icon="delete" data-iconpos="notext" onclick="app.removeImage(this);"></button>' +
         '</div>');
         $('#files').trigger('create');
-    },
+    },*/
     onSuccessMakePhoto: function (imageURI) {
-        console.info('make', imageURI);
-
-        console.info('success make photo', imageURI)
+        console.info('onSuccessMakePhoto', imageURI);
         //new Parse.File('myfile.txt', { base64: imageURI });
         $('#files').append('<div class="newImage"><img class="photoPreview"  src="' + imageURI + '"/>' +
         '<button data-icon="delete" data-iconpos="notext" onclick="app.removeImage(this);"></button>' +
@@ -442,6 +441,7 @@ var app = {
     },
     saveTaskData: function () {
         console.info('savetaskdata')
+
         var self = this;
 
         var filesList = [];
@@ -454,6 +454,8 @@ var app = {
         });
 
         if (app.attachmentToDelete) {
+            this.showLoader('Saving...');
+
             for (var i in app.attachmentToDelete) {
                 jQuery.ajax({
                     type: 'DELETE',
@@ -461,6 +463,7 @@ var app = {
                 }).always(function(data){
                     console.info('delete done')
                     delete app.attachmentToDelete[i];
+                        $.mobile.loading('hide');
                 })
 
 
@@ -468,6 +471,8 @@ var app = {
         }
 
         if (this.usedParts) {
+            this.showLoader('Saving...');
+
             $.when(jQuery.ajax({
                     type: 'GET',
                     url: app.apiUrl + 'taskpart/empty',
@@ -484,8 +489,11 @@ var app = {
                                 Part_Id: part_id,
                                 Quantity: app.usedParts[part_id]
                             }
-                        });
+                        })
                     }
+
+                        $.mobile.loading('hide');
+
                 }.bind(this)
             );
         }
@@ -496,12 +504,14 @@ var app = {
         console.info('app.needToUpload',app.needToUpload)
 
         if (this.needToUpload) {
+
             console.info('beforenavigate')
             $.mobile.navigate("#progress");
             $.each(filesList, function (key, val) {
                 self.uploadPhoto(val, key);
             });
             this.uploaded = 0;
+
         }
 
     },
