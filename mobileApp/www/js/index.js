@@ -98,7 +98,7 @@ var app = {
         //console.log('User login: ' + $('#login').val());
         //console.log('User password: ' + $('#password').val());
         this.showLoader('Authorize')
-        jQuery.post(app.apiUrl + '/user/login', {
+        $.post(app.apiUrl + '/user/login', {
             'LoginForm[username]': $('#login').val(),
             'LoginForm[password]': $('#password').val()
         }, function (data) {
@@ -127,7 +127,7 @@ var app = {
             'access-token':app.access_token
         }, this.drawTask);
 
-        jQuery.getJSON(app.apiUrl+'/resolution/',{'per-page':200,'access-token':window.localStorage.getItem('access_token')},
+        $.getJSON(app.apiUrl+'/resolution/',{'per-page':200,'access-token':window.localStorage.getItem('access_token')},
             function(data){
                 if(data){
                     $('select#resolution_code').empty();
@@ -141,7 +141,7 @@ var app = {
         if($('#resolution_notes').val() && $('#resolution_code').val())
         {
             app.showLoader('Saving task status');
-            jQuery.ajax({
+            $.ajax({
             type: 'POST',
             url: app.apiUrl+'/ticketnotes/create?access-token='+app.access_token,
             data:{
@@ -154,7 +154,7 @@ var app = {
             }
         }).always(function (dataResponse) {
 
-                jQuery.ajax({
+                $.ajax({
                     type: 'PUT',
                     url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
                     data: {
@@ -256,9 +256,9 @@ var app = {
                                 app.usedParts[data.Part_Id] += quantity;
                             else
                                 app.usedParts[data.Part_Id]++;
-                            jQuery('#part' + data.Part_Id + ' .ui-li-count').text(app.usedParts[data.Part_Id]);
+                            $('#part' + data.Part_Id + ' .ui-li-count').text(app.usedParts[data.Part_Id]);
                         } else {
-                            jQuery('<li data-icon="delete" id="part' + data.Part_Id + '">' +
+                            $('<li data-icon="delete" id="part' + data.Part_Id + '">' +
                             '<a onclick="app.removePart(' + data.Part_Id + ')">'
                             + data.Part_Code + ' ' + data.Detail + ' ' + data.Description +
                             '<span class="ui-li-count">'+(quantity?quantity:1)+'</span>' +
@@ -318,11 +318,11 @@ var app = {
         );
     },
     onSuccessChoiseFile: function (imageURI) {
-        jQuery('#files').append('<div class="newImage">' +
+        $('#files').append('<div class="newImage">' +
         '<img class="photoPreview"  src="' + imageURI + '"/>' +
         '<button data-icon="delete" data-iconpos="notext" onclick="app.removeImage(this);"></button>' +
         '</div>');
-        jQuery('#files').trigger('create');
+        $('#files').trigger('create');
         this.uploadTaskData();
     },
     uploadPhoto: function (imageURI, id) {
@@ -415,10 +415,10 @@ var app = {
     },
     onSuccessMakePhoto: function (imageURI) {
         //new Parse.File('myfile.txt', { base64: imageURI });
-        jQuery('#files').append('<div class="newImage"><img class="photoPreview"  src="' + imageURI + '"/>' +
+        $('#files').append('<div class="newImage"><img class="photoPreview"  src="' + imageURI + '"/>' +
         '<button data-icon="delete" data-iconpos="notext" onclick="app.removeImage(this);"></button>' +
         '</div>');
-        jQuery('#files').trigger('create');
+        $('#files').trigger('create');
     },
     onFailMakePhoto: function (message) {
         //alert('Failed because: ' + message);
@@ -437,16 +437,16 @@ var app = {
 
         var filesList = [];
 
-        jQuery('#photos > div > img:not([data-on-server])').each(function () {
-            filesList.push(jQuery(this).attr('src'));
+        $('#photos > div > img:not([data-on-server])').each(function () {
+            filesList.push($(this).attr('src'));
         });
-        jQuery('#files > div > img:not([data-on-server])').each(function () {
-            filesList.push(jQuery(this).attr('src'));
+        $('#files > div > img:not([data-on-server])').each(function () {
+            filesList.push($(this).attr('src'));
         });
 
         if(app.attachmentToDelete){
             for(var i in app.attachmentToDelete){
-                jQuery.ajax({
+                $.ajax({
                     type:'DELETE',
                     url: app.apiUrl+'taskattachment/'+app.attachmentToDelete[i]+'?access-token='+app.access_token
                 });
@@ -454,14 +454,14 @@ var app = {
         }
 
         if (app.usedParts) {
-            $.when(jQuery.ajax({
+            $.when($.ajax({
                     type: 'GET',
                     url: app.apiUrl + 'taskpart/empty',
                     data: {'access-token': app.access_token,'Service_Ticket_Id': app.task_id}
                 })
             ).done(function () {
                     for (var part_id in app.usedParts) {
-                        jQuery.ajax({
+                        $.ajax({
                             type: 'POST',
                             url: app.apiUrl + 'taskpart/create?access-token=' + app.access_token,
                             data: {
@@ -486,7 +486,7 @@ var app = {
             $.when($.each(filesList, function (key, val) {
                 self.uploadPhoto(val, key);
             })).then(function () {
-                this.checkUploadFinish();
+                app.checkUploadFinish();
             });
         }
 
@@ -516,23 +516,23 @@ var app = {
     },
     getTaskData: function (tx) {
 
-        jQuery.getJSON(app.apiUrl + '/taskattachment/search', {task_id: app.task_id,'access-token':app.access_token}, function (data) {
+        $.getJSON(app.apiUrl + '/taskattachment/search', {task_id: app.task_id,'access-token':app.access_token}, function (data) {
             if(data){
                 for(var i in data){
-                    jQuery('#photos').append(
+                    $('#photos').append(
                         '<div class="newImage" data-attachment-id="' + data[i].id + '" >' +
                             '<img class="photoPreview" ' +
                                 'data-on-server="true" ' +
                                 'src="' + app.apiUrl + '/uploads/' + data[i].task_id + '/' + data[i].path + '"/>' +
                             '<button data-icon="delete" data-iconpos="notext" onclick="app.removeImage(this);"></button>' +
                         '</div>');
-                    jQuery('#photos').trigger('create');
+                    $('#photos').trigger('create');
                 }
             }
 
         });
 
-        jQuery.getJSON(app.apiUrl + '/taskpart/search', {
+        $.getJSON(app.apiUrl + '/taskpart/search', {
             'Service_Ticket_Id': app.task_id,
             'expand': 'part',
             'access-token': app.access_token
@@ -540,7 +540,7 @@ var app = {
             if (data) {
                 for (var i in data) {
                     app.usedParts[data[i].part.Part_Id] = data[i].Quantity;
-                    jQuery('#parts').append('<li data-icon="delete" id="part' + data[i].part.Part_Id + '">' +
+                    $('#parts').append('<li data-icon="delete" id="part' + data[i].part.Part_Id + '">' +
                     '<a onclick="app.removePart(' + data[i].part.Part_Id + ')">'
                     + data[i].part.Part_Code + ' ' + data[i].part.Detail + ' ' + data[i].part.Description +
                     '<span class="ui-li-count">' + data[i].Quantity + '</span>' +
@@ -551,11 +551,11 @@ var app = {
             }
         }.bind(this));
 
-        jQuery.getJSON(app.apiUrl+'ticket/getdispatch',{
+        $.getJSON(app.apiUrl+'ticket/getdispatch',{
             task_id: app.task_id,
             'access-token':app.access_token
         },function(data){
-            app.task_data[data.Service_Ticket_Id]['dispatch_id'] = data.Dispatch_Id;
+            app.task_data[data.Service_Ticket_Id]['Dispatch_Id'] = data.Dispatch_Id;
             if(moment(data.Dispatch_Time, 'MMM DD YYYY HH:mm:ss0A').unix() > 0){
 
                 $('#status_dispatch').addClass('ui-disabled');
@@ -585,7 +585,7 @@ var app = {
         if (undefined!=data) {
         console.info('drawTaskDetails shift', data);
         //this.task_data[this.task_id] = data; // here was error with rewriting task custom params
-        jQuery.extend(this.task_data[this.task_id], data);
+        $.extend(this.task_data[this.task_id], data);
         var task = data;
 
             $('#taskName').text(task.ProblemDescription + ' - ' + task.Customer_Name);
@@ -635,7 +635,7 @@ var app = {
         }
     },
     clearTask: function () {
-        jQuery('#taskName, #taskDescription, #photos, #files, #parts').empty();
+        $('#taskName, #taskDescription, #photos, #files, #parts').empty();
 
         $('#status_dispatch,#status_arrived,#status_depart,button[id^="task_btn_"]').addClass('ui-disabled');
     },
@@ -647,7 +647,7 @@ var app = {
         this.showLoader('Saving task status');
         $.ajax({
             type: 'PUT',
-            url: app.apiUrl + 'dispatch/' + app.task_data[app.task_id].dispatch_id + ',' + app.task_id + '?access-token=' + app.access_token,
+            url: app.apiUrl + 'dispatch/' + app.task_data[app.task_id].Dispatch_Id + ',' + app.task_id + '?access-token=' + app.access_token,
             data: taskStatusData.data
         }).always(function (dataResponse) {
             console.log(dataResponse);
@@ -668,14 +668,14 @@ var app = {
                     this.showLoader('Saving task status');
                     $('#status_dispatch,#status_depart,button[id^="task_btn_"]').addClass('ui-disabled');
                     $('#status_arrived').removeClass('ui-disabled');
-                    jQuery.ajax({
+                    $.ajax({
                         type: 'PUT',
                         url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
                         data: {
                             Ticket_Status: 'IP'
                         }
                     }).always(function (data) {
-                        $('#task' + data.Service_Ticket_Id).remove();
+                        //$('#task' + data.Service_Ticket_Id).remove();
                         $.mobile.loading('hide');
                     });
                 }else
@@ -685,7 +685,7 @@ var app = {
                     $('#status_dispatch, #status_arrived').addClass('ui-disabled');
                     $('#status_depart,button[id^="task_btn_"]').removeClass('ui-disabled');
 
-                    jQuery.ajax({
+                    $.ajax({
                         type: 'PUT',
                         url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
                         data: {
@@ -717,7 +717,7 @@ var app = {
                                         app.showLoader('Saving task status');
                                         var data = taskStatusData.data;
                                         data.Ticket_Status = status;
-                                        jQuery.ajax({
+                                        $.ajax({
                                             type: 'PUT',
                                             url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
                                             data: data
@@ -761,11 +761,13 @@ var app = {
                     function (button) {
                         if (1 == button) {
                             canSetStatus = true;
-                            // reset data(for debug)
+                            // reset time to 0 in unixtime (for debug)
                             //data.Dispatch_Time = 'Jan 1 1970 2:00:00 AM';
                             //data.Arrival_Time = 'Jan 1 1970 2:00:00 AM';
                             //data.Departure_Time = 'Jan 1 1970 2:00:00 AM';
                             data.Dispatch_Time = moment().format('MMM DD YYYY HH:mm:ss A');
+                            data.Arrival_Time = 'Jan 1 1970 2:00:00 AM';// reset to 0 in unixtime
+                            data.Departure_Time = 'Jan 1 1970 2:00:00 AM';// reset to 0 in unixtime
                             data.Ticket_Status = 'IP';
                             this.saveTaskStatus({status: status, data: data, taskId: app.task_id});
                         } else {
@@ -783,9 +785,8 @@ var app = {
                         if (button == 1) {
                             canSetStatus = true;
                             data.Arrival_Time = moment().format('MMM DD YYYY HH:mm:ss A');
+                            data.Departure_Time = 'Jan 1 1970 2:00:00 AM';// reset to 0 in unixtime
                             this.saveTaskStatus({status:status,data:data, taskId:app.task_id});
-
-
                             navigator.notification.confirm(
                                 'Place system on test?', // message
                                 function (button) {
@@ -843,7 +844,7 @@ var app = {
             function(index){
                 if(1 == index){
                     delete app.usedParts[app.part_to_delete];
-                    jQuery('#part' + app.part_to_delete).remove();
+                    $('#part' + app.part_to_delete).remove();
                 }
             },            // callback to invoke with index of button pressed
             'Part removing',           // title
@@ -858,7 +859,7 @@ var app = {
             function(index){
                 if(1 == index){
                     var obj = app.image_to_remove;
-                    var cont = jQuery(obj).closest('div');
+                    var cont = $(obj).closest('div');
                     if(cont.data('attachment-id')){
                         app.attachmentToDelete.push(cont.data('attachment-id'));
                     }
@@ -888,7 +889,7 @@ var app = {
         if($('#newpassword').val()){
             data.password_hash = $('#newpassword').val();
         }
-        jQuery.ajax({
+        $.ajax({
             type: 'PUT',
             url: app.apiUrl + 'user/'+app.user_data.id+'?access-token='+app.access_token,
             data: data
