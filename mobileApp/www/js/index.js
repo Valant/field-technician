@@ -383,10 +383,10 @@ var app = {
         if (this.uploaded == this.needToUpload) {
             console.info('this.uploaded == this.needToUpload ',this.uploaded);
             //$.mobile.navigate('#tasks');
-            $.mobile.navigate('#taskDetails');
+
         }
         this.uploaded++;
-
+        $.mobile.navigate('#taskDetails');
     },
     choiseFile: function () {
         navigator.camera.getPicture(this.onSuccessMakePhoto, this.onFailMakePhoto,
