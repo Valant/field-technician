@@ -418,7 +418,7 @@ var app = {
         '<button data-icon="delete" data-iconpos="notext" onclick="app.removeImage(this);"></button>' +
         '</div>');
         $('#files').trigger('create');
-
+        app.uploadTaskData();
     },
     onFailMakePhoto: function (message) {
         //alert('Failed because: ' + message);
@@ -874,6 +874,8 @@ var app = {
                         app.attachmentToDelete.push(cont.data('attachment-id'));
                     }
                     cont.remove();
+                    app.uploadTaskData();
+
                 }
             },            // callback to invoke with index of button pressed
             'Photo removing',           // title
