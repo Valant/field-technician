@@ -185,7 +185,6 @@ var app = {
         }
         $('#tasks #tasks_content table tbody').empty();
         $.each(data, function (index, value) {
-            console.info(value)
             app.task_data[value.Service_Ticket_Id] = value;
             $('<tr id="task'+value.Service_Ticket_Id+'">' +
             '<td>' + value.Ticket_Number + '</td>' +
@@ -379,12 +378,9 @@ var app = {
         this.checkUploadFinish();
     },
     checkUploadFinish: function () {
-        console.info('checkUploadFinish ',this.uploaded);
-        if (this.uploaded == this.needToUpload) {
-            console.info('this.uploaded == this.needToUpload ',this.uploaded);
-            //$.mobile.navigate('#tasks');
-
-        }
+        //if (this.uploaded == this.needToUpload) {
+        //$.mobile.navigate('#tasks');
+        //}
         this.uploaded++;
         $.mobile.navigate('#taskDetails');
     },
@@ -416,7 +412,7 @@ var app = {
         $('#files').trigger('create');
     },*/
     onSuccessMakePhoto: function (imageURI) {
-        console.info('onSuccessMakePhoto', imageURI);
+
         //new Parse.File('myfile.txt', { base64: imageURI });
         $('#files').append('<div class="newImage"><img class="photoPreview"  src="' + imageURI + '"/>' +
         '<button data-icon="delete" data-iconpos="notext" onclick="app.removeImage(this);"></button>' +
@@ -431,19 +427,12 @@ var app = {
         this.db && this.db.transaction(this.saveTaskData.bind(this), this.dbError.bind(this));
     },
     saveAndExit: function () {
-        console.info('saveAndExit')
         this.saveTaskData();
-        console.info('aftersaveTaskData')
-
         //this.checkUploadFinish();
-        console.info('aftercheckUploadFinish')
 
     },
     saveTaskData: function () {
-        console.info('savetaskdata')
-
         var self = this;
-
         var filesList = [];
 
         $('#photos > div > img:not([data-on-server])').each(function () {
@@ -461,7 +450,7 @@ var app = {
                     type: 'DELETE',
                     url: app.apiUrl + 'taskattachment/' + app.attachmentToDelete[i] + '?access-token=' + app.access_token
                 }).always(function(data){
-                    console.info('delete done')
+
                     delete app.attachmentToDelete[i];
                         $.mobile.loading('hide');
                 })
@@ -501,14 +490,11 @@ var app = {
         $('#progressBars').empty();
 
         this.needToUpload = filesList.length;
-        console.info('app.needToUpload',app.needToUpload)
 
         if (this.needToUpload) {
 
-            console.info('beforenavigate')
             $.mobile.navigate("#progress");
             $.each(filesList, function (key, val) {
-                console.info('key, val ', key,val)
                 self.uploadPhoto(val, key);
             });
             this.uploaded = 0;
@@ -604,11 +590,9 @@ var app = {
 
     },
     drawTaskDetails: function (data) {
-        console.info('drawTaskDetails', data);
         data = data.shift();
 
         if (undefined!=data) {
-        console.info('drawTaskDetails shift', data);
         //this.task_data[this.task_id] = data; // here was error with rewriting task custom params
         $.extend(this.task_data[this.task_id], data);
         var task = data;
