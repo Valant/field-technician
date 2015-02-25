@@ -157,3 +157,6 @@ h1 {
     overflow: hidden;
     display: inline;
 }
+#tasks_content{
+    overflow-x: scroll;
+}
