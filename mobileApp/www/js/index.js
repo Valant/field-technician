@@ -241,6 +241,8 @@ var app = {
         mobile_prompt(
             'Please enter quantity',  // message
             function (results) {
+                if(results.buttonIndex == 1){
+
                 if (parseInt(results.input1) != NaN) {
                     quantity = parseInt(results.input1);
                 } else {
@@ -268,10 +270,10 @@ var app = {
                 }
                 $('#parts').listview('refresh');
                 $.mobile.loading('hide');
-
                 $.mobile.navigate('#taskDetails')
                 $.mobile.silentScroll($('#parts').offset().top);
                 app.uploadTaskData();
+                }
             }.bind(this),                  // callback to invoke
             'Quantity',            // title
             ['Ok', 'Exit'],             // buttonLabels
@@ -298,13 +300,13 @@ var app = {
             }
         }.bind(this));
     },
-    searchPartsByKeyword: function(){
-            this.keywordSuggestParts(jQuery('#part_keyword').val());
+    searchPartsByKeyword: function(input){
+        this.keywordSuggestParts(input);
     },
     keywordSuggestParts: function (keyword) {
         this.showLoader('Searching part')
         var self = this
-        var sugList = jQuery("#suggestions");
+        var sugList = jQuery("#autocomplete");
         sugList.html("");
         jQuery.getJSON(app.apiUrl + 'part/keyword', {
             code: keyword,
@@ -321,11 +323,9 @@ var app = {
                 );
             } else {
                 jQuery.each(data,function(key,val){
-                    sugList.append('<li onClick="app.addPartToTicket({Part_Id:\''+val.Part_Id+'\',Description:\''+val.Description+'\',Detail:\''+val.Detail+'\'})" >'+val.Description+'</li>')
-
+                    sugList.append('<li onClick="app.addPartToTicket({Part_Id:\''+val.Part_Id+'\',Description:\''+val.Description+'\',Detail:\''+val.Detail+'\'})" >'+val.Description+'</li>');
                 })
                 sugList.listview("refresh");
-                console.info(data);
             }
         }.bind(this));
     },
@@ -337,7 +337,6 @@ var app = {
                     if (!result.cancelled) {
                         var quantity = null
                         this.searchPart(result.text);
-
                     }
                 }.bind(this),
                 function (error) {

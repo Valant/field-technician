@@ -42,6 +42,14 @@
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript" src="js/index.js"></script>
 <script type="text/javascript">
+    $( document ).on( "pageinit", "#partsearch", function() {
+        $( "#autocomplete" ).on( "filterablebeforefilter", function ( e, data ) {
+            var value = $(data.input).val();
+            if( value.length >2){
+                app.keywordSuggestParts(value);
+            }
+        });
+    });
     app.initialize();
 </script>
 <div data-role="page" id="signin">
@@ -142,10 +150,8 @@
     </div>
     <div role="main" class="ui-content" id="partsearchContent">
 
-        <label for="part_keyword"></label>
-        <input type="text" name="part_keyword" id="part_keyword" required="required" />
-        <ul id="suggestions" data-role="listview" data-inset="true"></ul>
-        <button data-icon="search" onclick="app.searchPartsByKeyword()">Search</button>
+        <ul id="autocomplete" data-role="listview" data-inset="true" data-filter="true" data-filter-placeholder="Find material"
+             data-filter-theme="a"  ></ul>
     </div>
     <div data-role="footer" position="fixed"><h3>&copy; AFA Protective System</h3></div>
 </div>
