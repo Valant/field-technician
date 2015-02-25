@@ -222,8 +222,6 @@ var app = {
                                 );
                             }
                             else if (2 == button) {
-                                jQuery("#suggestions").html("")
-                                jQuery("#part_keyword").val("")
                                 $.mobile.navigate('#partsearch')
                             }
                         }.bind(this),
@@ -241,38 +239,40 @@ var app = {
         mobile_prompt(
             'Please enter quantity',  // message
             function (results) {
-                if(results.buttonIndex == 1){
+                if (results.buttonIndex == 1) {
 
-                if (parseInt(results.input1) != NaN) {
-                    quantity = parseInt(results.input1);
-                } else {
-                    navigator.notification.alert(
-                        'Please enter only numbers',  // message
-                        false,         // callback
-                        'Is not  number',            // title
-                        'OK'                  // buttonName
-                    );
-                }
+                    if (parseInt(results.input1) != NaN) {
+                        quantity = parseInt(results.input1);
+                    } else {
+                        navigator.notification.alert(
+                            'Please enter only numbers',  // message
+                            false,         // callback
+                            'Is not  number',            // title
+                            'OK'                  // buttonName
+                        );
+                    }
 
-                if (app.usedParts[data.Part_Id]) {
-                    if (quantity)
-                        app.usedParts[data.Part_Id] += quantity;
-                    else
-                        app.usedParts[data.Part_Id]++;
-                    $('#part' + data.Part_Id + ' .ui-li-count').text(app.usedParts[data.Part_Id]);
-                } else {
-                    $('<li data-icon="delete" id="part' + data.Part_Id + '">' +
-                    '<a onclick="app.removePart(' + data.Part_Id + ')">'
-                    + data.Part_Code + ' ' + data.Detail + ' ' + data.Description +
-                    '<span class="ui-li-count">' + (quantity ? quantity : 1) + '</span>' +
-                    '</a></li>').appendTo('#parts');
-                    app.usedParts[data.Part_Id] = quantity ? quantity : 1;
-                }
-                $('#parts').listview('refresh');
-                $.mobile.loading('hide');
-                $.mobile.navigate('#taskDetails')
-                $.mobile.silentScroll($('#parts').offset().top);
-                app.uploadTaskData();
+                    if (app.usedParts[data.Part_Id]) {
+                        if (quantity)
+                            app.usedParts[data.Part_Id] += quantity;
+                        else
+                            app.usedParts[data.Part_Id]++;
+                        $('#part' + data.Part_Id + ' .ui-li-count').text(app.usedParts[data.Part_Id]);
+                    } else {
+                        $('<li data-icon="delete" id="part' + data.Part_Id + '">' +
+                        '<a onclick="app.removePart(' + data.Part_Id + ')">'
+                        + data.Part_Code + ' ' + data.Detail + ' ' + data.Description +
+                        '<span class="ui-li-count">' + (quantity ? quantity : 1) + '</span>' +
+                        '</a></li>').appendTo('#parts');
+                        app.usedParts[data.Part_Id] = quantity ? quantity : 1;
+                    }
+                    $('#parts').listview('refresh');
+                    jQuery("#autocomplete").html("");
+                    $('input[data-type="search"]').val("")
+                    $.mobile.loading('hide');
+                    $.mobile.navigate('#taskDetails')
+                    $.mobile.silentScroll($('#parts').offset().top);
+                    app.uploadTaskData();
                 }
             }.bind(this),                  // callback to invoke
             'Quantity',            // title
@@ -300,14 +300,12 @@ var app = {
             }
         }.bind(this));
     },
-    searchPartsByKeyword: function(input){
-        this.keywordSuggestParts(input);
-    },
     keywordSuggestParts: function (keyword) {
         this.showLoader('Searching part')
         var self = this
         var sugList = jQuery("#autocomplete");
         sugList.html("");
+        //$('input[data-type="search"]').val("")
         jQuery.getJSON(app.apiUrl + 'part/keyword', {
             code: keyword,
             'access-token':app.access_token
