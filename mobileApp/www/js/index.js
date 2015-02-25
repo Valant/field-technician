@@ -21,8 +21,8 @@ var app = {
     task_id: false,
     uploaded: 0,
     needToUpload: 0,
-    //apiUrl: 'http://api.field-technician.loc/',
-    apiUrl: 'http://api.afa.valant.com.ua/',
+    apiUrl: 'http://api.field-technician.loc/',
+    //apiUrl: 'http://api.afa.valant.com.ua/',
     user_id: 0,
     user_code: '',
     user_data: {},
@@ -209,17 +209,73 @@ var app = {
                 }
                 else if (2 == button) {
 
-                    mobile_prompt(
-                        'Please enter material code',  // message
-                        function (results) {
-                            if (2 != results.buttonIndex)
-                                this.searchPart(results.input1)
-                        }.bind(this)
+                    navigator.notification.confirm(
+                        'Enter Material',
+                        function (button) {
+                            if (1 == button) {
+                                mobile_prompt(
+                                    'Please enter material code',  // message
+                                    function (results) {
+                                        if (2 != results.buttonIndex)
+                                            this.searchPart(results.input1)
+                                    }.bind(this)
+                                );
+                            }
+                            else if (2 == button) {
+                                jQuery("#suggestions").html("")
+                                jQuery("#part_keyword").val("")
+                                $.mobile.navigate('#partsearch')
+                            }
+                        }.bind(this),
+                        'Add material',
+                        ['Enter Part#', 'Enter Codeword'] // buttonLabels
                     );
+
                 }
             }.bind(this),
             'Add material',
-            ['Scan barcode', 'Enter code'] // buttonLabels
+            ['Scan barcode', 'Enter Material'] // buttonLabels
+        );
+    },
+    addPartToTicket: function (data) {
+        mobile_prompt(
+            'Please enter quantity',  // message
+            function (results) {
+                if (parseInt(results.input1) != NaN) {
+                    quantity = parseInt(results.input1);
+                } else {
+                    navigator.notification.alert(
+                        'Please enter only numbers',  // message
+                        false,         // callback
+                        'Is not  number',            // title
+                        'OK'                  // buttonName
+                    );
+                }
+
+                if (app.usedParts[data.Part_Id]) {
+                    if (quantity)
+                        app.usedParts[data.Part_Id] += quantity;
+                    else
+                        app.usedParts[data.Part_Id]++;
+                    $('#part' + data.Part_Id + ' .ui-li-count').text(app.usedParts[data.Part_Id]);
+                } else {
+                    $('<li data-icon="delete" id="part' + data.Part_Id + '">' +
+                    '<a onclick="app.removePart(' + data.Part_Id + ')">'
+                    + data.Part_Code + ' ' + data.Detail + ' ' + data.Description +
+                    '<span class="ui-li-count">' + (quantity ? quantity : 1) + '</span>' +
+                    '</a></li>').appendTo('#parts');
+                    app.usedParts[data.Part_Id] = quantity ? quantity : 1;
+                }
+                $('#parts').listview('refresh');
+                $.mobile.loading('hide');
+
+                $.mobile.navigate('#taskDetails')
+                $.mobile.silentScroll($('#parts').offset().top);
+                app.uploadTaskData();
+            }.bind(this),                  // callback to invoke
+            'Quantity',            // title
+            ['Ok', 'Exit'],             // buttonLabels
+            '1'                 // defaultText
         );
     },
     searchPart: function (materialCode) {
@@ -238,45 +294,38 @@ var app = {
                     'OK'                  // buttonName
                 );
             } else {
-                mobile_prompt(
-                    'Please enter quantity',  // message
-                    function (results) {
-                        if(parseInt(results.input1)!=NaN){
-                            quantity = parseInt(results.input1);
-                        }else{
-                            navigator.notification.alert(
-                                'Please enter only numbers',  // message
-                                false,         // callback
-                                'Is not  number',            // title
-                                'OK'                  // buttonName
-                            );
-                        }
-                        if (app.usedParts[data.Part_Id]) {
-                            if (quantity)
-                                app.usedParts[data.Part_Id] += quantity;
-                            else
-                                app.usedParts[data.Part_Id]++;
-                            $('#part' + data.Part_Id + ' .ui-li-count').text(app.usedParts[data.Part_Id]);
-                        } else {
-                            $('<li data-icon="delete" id="part' + data.Part_Id + '">' +
-                            '<a onclick="app.removePart(' + data.Part_Id + ')">'
-                            + data.Part_Code + ' ' + data.Detail + ' ' + data.Description +
-                            '<span class="ui-li-count">'+(quantity?quantity:1)+'</span>' +
-                            '</a></li>').appendTo('#parts');
-                            app.usedParts[data.Part_Id] = quantity?quantity:1;
-                        }
-                        $('#parts').listview('refresh');
-                        $.mobile.loading('hide');
-                        $.mobile.silentScroll($('#parts').offset().top);
-                        self.uploadTaskData();
-                    }.bind(this)
-                    ,                  // callback to invoke
-                    'Quantity',            // title
-                    ['Ok','Exit'],             // buttonLabels
-                    '1'                 // defaultText
+                app.addPartToTicket(data)
+            }
+        }.bind(this));
+    },
+    searchPartsByKeyword: function(){
+            this.keywordSuggestParts(jQuery('#part_keyword').val());
+    },
+    keywordSuggestParts: function (keyword) {
+        this.showLoader('Searching part')
+        var self = this
+        var sugList = jQuery("#suggestions");
+        sugList.html("");
+        jQuery.getJSON(app.apiUrl + 'part/keyword', {
+            code: keyword,
+            'access-token':app.access_token
+        }, function (data) {
+            $.mobile.loading('hide')
+            if ('error' == data.status) {
+                $.mobile.loading('hide');
+                navigator.notification.alert(
+                    'Part search',  // message
+                    false,         // callback
+                    'Part was not founded',            // title
+                    'OK'                  // buttonName
                 );
+            } else {
+                jQuery.each(data,function(key,val){
+                    sugList.append('<li onClick="app.addPartToTicket({Part_Id:\''+val.Part_Id+'\',Description:\''+val.Description+'\',Detail:\''+val.Detail+'\'})" >'+val.Description+'</li>')
 
-
+                })
+                sugList.listview("refresh");
+                console.info(data);
             }
         }.bind(this));
     },

@@ -28,6 +28,14 @@ class PartController extends ActiveController{
            return ['status'=>'error'];
        }
     }
+    public function actionKeyword($code){
+    $res = INPart::find()
+        ->where("Description like :code", array(':code'=>'%'.$code.'%'))
+        ->orWhere("Detail like :code", array(':code'=>'%'.$code.'%'))
+    ;
+
+    return $res->all();
+    }
 
     public function behaviors()
     {

@@ -30,7 +30,7 @@
     <link rel="stylesheet" type="text/css" href="css/jquery.mobile.css"/>
 
     <meta name="msapplication-tap-highlight" content="no"/>
-    <title>Hello World</title>
+    <title>AFA Field Technician</title>
 </head>
 <body>
 
@@ -90,7 +90,6 @@
     </div>
     <div role="main" class="ui-content" id="taskContent">
         <h3 id="taskName"></h3>
-
         <div id="taskDescription" data-theme="b" data-form="ui-body-b" class="ui-body ui-body-b ui-corner-all"></div>
         <div id="partList">
             <ul id="parts" data-role="listview" data-inset="true" data-count-theme="c" data-split-icon="delete">
@@ -128,11 +127,25 @@
         <h2>Resolution</h2>
     </div>
     <div role="main" class="ui-content" id="gobacknotesContent">
-        <h3>Resolution</h3>
-            <select style="select" name="resolution_code" id="resolution_code" required="required"></select>
-            <textarea style="text" name="resolution_notes" id="resolution_notes" cols="30" rows="10" required="required"></textarea>
-        <button data-icon="check" onclick="app.saveGoBackNotes()">Save</button>
 
+        <label for="resolution_code">RESOLUTION CODE</label>
+        <select name="resolution_code" id="resolution_code" required="required"></select>
+        <label for="resolution_notes">RESOLUTION NOTE</label>
+        <textarea name="resolution_notes" id="resolution_notes" cols="30" rows="10" required="required"></textarea>
+        <button data-icon="check" onclick="app.saveGoBackNotes()">Save</button>
+    </div>
+    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective System</h3></div>
+</div>
+<div data-role="page" id="partsearch">
+    <div data-role="header">
+        <h2>Search part</h2>
+    </div>
+    <div role="main" class="ui-content" id="partsearchContent">
+
+        <label for="part_keyword"></label>
+        <input type="text" name="part_keyword" id="part_keyword" required="required" />
+        <ul id="suggestions" data-role="listview" data-inset="true"></ul>
+        <button data-icon="search" onclick="app.searchPartsByKeyword()">Search</button>
     </div>
     <div data-role="footer" position="fixed"><h3>&copy; AFA Protective System</h3></div>
 </div>
