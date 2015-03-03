@@ -17,6 +17,7 @@
  * under the License.
  */
 var app = {
+    version: '0.10.11',
     db: false,
     task_id: false,
     uploaded: 0,
@@ -933,7 +934,10 @@ var app = {
     settings: function(){
         $('#username').val(app.user_data.username);
         $('#email').val(app.user_data.email);
-        $('#newpassword').val('');
+        $('#appversion').html('version: '+app.version);
+
+
+        //$('#newpassword').val('');
         $.mobile.navigate('#profile');
     },
     saveProfile:function(){
