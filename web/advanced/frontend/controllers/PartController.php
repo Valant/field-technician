@@ -28,6 +28,10 @@ class PartController extends ActiveController{
            return ['status'=>'error'];
        }
     }
+    public function actionCodesearch($code){
+        $res = INPart::find()->where("CONVERT(varchar(11), Part_Code) like :code", array(':code'=>$code.'%'));
+        return $res->all();
+    }
     public function actionKeyword($code){
     $res = INPart::find()
         ->where("Description like :code", array(':code'=>'%'.$code.'%'))
