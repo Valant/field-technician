@@ -822,8 +822,8 @@ var app = {
                             //data.Arrival_Time = 'Jan 1 1970 2:00:00 AM';
                             //data.Departure_Time = 'Jan 1 1970 2:00:00 AM';
                             data.Dispatch_Time = moment().format('MMM DD YYYY HH:mm:ss A');
-                            data.Arrival_Time = 'Jan 1 1970 2:00:00 AM';// reset to 0 in unixtime
-                            data.Departure_Time = 'Jan 1 1970 2:00:00 AM';// reset to 0 in unixtime
+                            //data.Arrival_Time = 'Jan 1 1970 2:00:00 AM';// reset to 0 in unixtime
+                            //data.Departure_Time = 'Jan 1 1970 2:00:00 AM';// reset to 0 in unixtime
                             data.Ticket_Status = 'IP';
                             this.saveTaskStatus({status: status, data: data, taskId: app.task_id});
                         } else {
@@ -841,7 +841,7 @@ var app = {
                         if (button == 1) {
                             canSetStatus = true;
                             data.Arrival_Time = moment().format('MMM DD YYYY HH:mm:ss A');
-                            data.Departure_Time = 'Jan 1 1970 2:00:00 AM';// reset to 0 in unixtime
+                            //data.Departure_Time = 'Jan 1 1970 2:00:00 AM';// reset to 0 in unixtime
                             this.saveTaskStatus({status:status,data:data, taskId:app.task_id});
                             navigator.notification.confirm(
                                 'Place system on test?', // message
