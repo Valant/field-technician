@@ -700,14 +700,7 @@ var app = {
         $('#' + id).slider('refresh');
     },
     saveTaskStatus: function (taskStatusData) {
-        this.showLoader('Saving task status');
-        jQuery.ajax({
-            type: 'PUT',
-            url: app.apiUrl + 'dispatch/' + app.task_data[app.task_id].Dispatch_Id + ',' + app.task_id + '?access-token=' + app.access_token,
-            data: taskStatusData.data
-        }).always(function (dataResponse) {
-            console.log(dataResponse);
-        });
+
 
         jQuery.ajax({
             type: 'POST',
@@ -721,6 +714,15 @@ var app = {
             $.mobile.loading('hide');
             if (typeof dataResponse.id != 'undefined') {
                 if ('dispatch' == dataResponse.status) {
+                    this.showLoader('Saving task status');
+                    console.info('dispatchong task status');
+                    jQuery.ajax({
+                        type: 'PUT',
+                        url: app.apiUrl + 'dispatch/' + app.task_data[app.task_id].Dispatch_Id + ',' + app.task_id + '?access-token=' + app.access_token,
+                        data: taskStatusData.data
+                    }).always(function (dataResponse) {
+                        console.log(dataResponse);
+                    });
                     this.showLoader('Saving task status');
                     $('#status_dispatch,#status_depart,button[id^="task_btn_"]').addClass('ui-disabled');
                     $('#status_arrived').removeClass('ui-disabled');
@@ -736,8 +738,16 @@ var app = {
                     });
                 }else
                 if ('arrived' == dataResponse.status) {
-                    this.showLoader('Saving task status');
 
+                    this.showLoader('Saving task status');
+                    console.info('dispatchong task status');
+                    jQuery.ajax({
+                        type: 'PUT',
+                        url: app.apiUrl + 'dispatch/' + app.task_data[app.task_id].Dispatch_Id + ',' + app.task_id + '?access-token=' + app.access_token,
+                        data: taskStatusData.data
+                    }).always(function (dataResponse) {
+                        console.log(dataResponse);
+                    });
                     $('#status_dispatch, #status_arrived').addClass('ui-disabled');
                     $('#status_depart,button[id^="task_btn_"]').removeClass('ui-disabled');
 
@@ -765,12 +775,24 @@ var app = {
                         if (status) {
                             navigator.notification.confirm('Do you need to add material?',
                                 function (button) {
+
                                     if (1 == button) {
+                                        console.info('ok add material')
                                         $('#status_depart,button[id^="task_btn_"]').removeClass('ui-disabled');
                                         $.mobile.loading('hide');
                                     } else
                                     if (2 == button) {
-                                        app.showLoader('Saving task status');
+                                        console.info('cancel add material')
+
+                                        console.info('dispatchong task status');
+                                        jQuery.ajax({
+                                            type: 'PUT',
+                                            url: app.apiUrl + 'dispatch/' + app.task_data[app.task_id].Dispatch_Id + ',' + app.task_id + '?access-token=' + app.access_token,
+                                            data: taskStatusData.data
+                                        }).always(function (dataResponse) {
+                                            console.log(dataResponse);
+                                        });
+
                                         var data = taskStatusData.data;
                                         data.Ticket_Status = status;
                                         jQuery.ajax({
@@ -799,6 +821,7 @@ var app = {
                     'OK'                  // buttonName
                 );
             }
+
         }.bind(this));
     },
     launchMASMobile: function(){
