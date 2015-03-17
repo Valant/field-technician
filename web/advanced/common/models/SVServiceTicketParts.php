@@ -100,7 +100,7 @@
         public function beforeSave($insert){
             if($insert){
                 if($part = INPart::findOne($this->Part_Id)){
-                    $this->Rate = $part->Standard_Cost * 3.5;
+                    $this->Rate = $part->Service_Price * 3.5;
                 }
                 $this->COGS_Register_Id = 1;
                 $this->Issue_From_Stock = 'Y';
