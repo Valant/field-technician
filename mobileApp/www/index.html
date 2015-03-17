@@ -45,7 +45,7 @@
         $( "#autocomplete" ).on( "filterablebeforefilter", function ( e, data ) {
             var value = $(data.input).val();
             if( value.length >2){
-                app.keywordSuggestParts(value);
+                app.keywordSuggestParts(value,$('#partsearch').attr('data-searchbycode'));
             }
         });
     });

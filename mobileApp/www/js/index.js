@@ -214,15 +214,18 @@ var app = {
                         'Enter Material',
                         function (button) {
                             if (1 == button) {
-                                mobile_prompt(
+                                /*mobile_prompt(
                                     'Please enter material code',  // message
                                     function (results) {
                                         if (2 != results.buttonIndex)
                                             this.searchPart(results.input1)
                                     }.bind(this)
-                                );
+                                );*/
+                                $('#partsearch').attr('data-searchbycode',1);
+                                $.mobile.navigate('#partsearch')
                             }
                             else if (2 == button) {
+                                $('#partsearch').attr('data-searchbycode',0);
                                 $.mobile.navigate('#partsearch')
                             }
                         }.bind(this),
@@ -301,13 +304,20 @@ var app = {
             }
         }.bind(this));
     },
-    keywordSuggestParts: function (keyword) {
+    keywordSuggestParts: function (keyword,codesearch) {
+        if(codesearch==undefined){
+            codesearch = 0;
+        }
         this.showLoader('Searching part')
         var self = this
         var sugList = jQuery("#autocomplete");
         sugList.html("");
+        var searchpath =  'part/keyword';
+        if(codesearch==1){
+            var searchpath =  'part/codesearch';
+        }
         //$('input[data-type="search"]').val("")
-        jQuery.getJSON(app.apiUrl + 'part/keyword', {
+        jQuery.getJSON(app.apiUrl +searchpath, {
             code: keyword,
             'access-token':app.access_token
         }, function (data) {
@@ -325,6 +335,7 @@ var app = {
                     sugList.append('<li onClick="app.addPartToTicket({Part_Id:\''+val.Part_Id+'\',Description:\''+val.Description+'\',Detail:\''+val.Detail+'\'})" >'+val.Description+'</li>');
                 })
                 sugList.listview("refresh");
+                $('#autocomplete li').removeClass('ui-screen-hidden')
             }
         }.bind(this));
     },
