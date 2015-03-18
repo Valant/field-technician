@@ -816,14 +816,20 @@ var app = {
                                                 $('#resolution_code').attr('required',true)
                                                 $('#resolution_code').show();
                                                 $('#resolution_code').selectmenu();
+                                                $('#resolution_code').selectmenu('refresh');
                                             }
                                             else if(status=='GB'){
                                                 $('label[for=resolution_code]').hide()
                                                 $('#resolution_code').hide()
                                                 $('#resolution_code').attr('required',false)
-                                                $('#resolution_code').selectmenu();
+                                                $('#resolution_code').selectmenu({
+                                                    create: function( event, ui ) {
+                                                        event.preventDefault();
+                                                        $('#resolution_code').selectmenu('destroy');
 
-                                                $('#resolution_code').selectmenu('destroy');
+                                                    }
+                                                });
+
 
                                             }
 
