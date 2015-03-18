@@ -138,8 +138,11 @@ var app = {
             }
         });
     },
-    saveGoBackNotes:function(){
-        if($('#resolution_notes').val() && $('#resolution_code').val())
+    saveGoBackNotes:function(withcode){
+        if(withcode == undefined){
+            withcode = 0;
+        }
+        if($('#resolution_notes'+(withcode?'_withcode':'')).val())
         {
             app.showLoader('Saving task status');
             jQuery.ajax({
@@ -151,7 +154,7 @@ var app = {
                 Edit_UserCode: app.user_code,
                 Entered_Date: moment().format('MMM DD YYYY HH:mm:ss A'),
                 Edit_Date: moment().format('MMM DD YYYY HH:mm:ss A'),
-                Notes: $('#resolution_notes').val()
+                Notes: $('#resolution_notes'+(withcode?'_withcode':'')).val()
             }
         }).always(function (dataResponse) {
                 var endNotes = function (data) {
@@ -159,11 +162,11 @@ var app = {
                     $.mobile.loading('hide');
                     $.mobile.navigate('#tasks');
 
-                    $('#resolution_notes').val('');                         // clearing goback/resolved
+                    $('#resolution_notes'+(withcode?'_withcode':'')).val('');                         // clearing goback/resolved
                     $('#resolution_code option').attr('selected', false);    // resolution notes
                     $('#resolution_code').selectmenu('refresh', true);    // values
                 }
-                if ($('#resolution_code').is(':hidden')) {
+                if (withcode) {
                     endNotes({Service_Ticket_Id:app.task_data[app.task_id].Service_Ticket_Id});
                 } else {
                     jQuery.ajax({
@@ -812,28 +815,13 @@ var app = {
                                             $('#task' + data.Service_Ticket_Id).remove();
 
                                             if(status=='RS'){
-                                                $('label[for=resolution_code]').show()
-                                                $('#resolution_code').attr('required',true)
-                                                $('#resolution_code').show();
-                                                $('#resolution_code').selectmenu();
-                                                $('#resolution_code').selectmenu('refresh');
+                                                $.mobile.navigate('#gobacknoteswithcode');
+
                                             }
                                             else if(status=='GB'){
-                                                $('label[for=resolution_code]').hide()
-                                                $('#resolution_code').hide()
-                                                $('#resolution_code').attr('required',false)
-                                                $('#resolution_code').selectmenu({
-                                                    create: function( event, ui ) {
-                                                        event.preventDefault();
-                                                        $('#resolution_code').selectmenu('destroy');
-
-                                                    }
-                                                });
-
+                                                $.mobile.navigate('#gobacknotes');
 
                                             }
-
-                                            $.mobile.navigate('#gobacknotes');
                                         });
                                     }else{
                                         $('#status_depart,button[id^="task_btn_"]').removeClass('ui-disabled');

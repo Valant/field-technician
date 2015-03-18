@@ -134,12 +134,23 @@
         <h2>Resolution</h2>
     </div>
     <div role="main" class="ui-content" id="gobacknotesContent">
+        <label for="resolution_notes">RESOLUTION NOTE</label>
+        <textarea name="resolution_notes" id="resolution_notes" cols="30" rows="10" required="required"></textarea>
+        <button data-icon="check" onclick="app.saveGoBackNotes(0)">Save</button>
+    </div>
+    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective System</h3></div>
+</div>
+<div data-role="page" id="gobacknoteswithcode">
+    <div data-role="header">
+        <h2>Resolution</h2>
+    </div>
+    <div role="main" class="ui-content" id="gobacknoteswithcodeContent">
 
         <label for="resolution_code">RESOLUTION CODE</label>
         <select name="resolution_code" id="resolution_code" required="required"></select>
-        <label for="resolution_notes">RESOLUTION NOTE</label>
-        <textarea name="resolution_notes" id="resolution_notes" cols="30" rows="10" required="required"></textarea>
-        <button data-icon="check" onclick="app.saveGoBackNotes()">Save</button>
+        <label for="resolution_notes_withcode">RESOLUTION NOTE</label>
+        <textarea name="resolution_notes_withcode" id="resolution_notes_withcode" cols="30" rows="10" required="required"></textarea>
+        <button data-icon="check" onclick="app.saveGoBackNotes(1)">Save</button>
     </div>
     <div data-role="footer" position="fixed"><h3>&copy; AFA Protective System</h3></div>
 </div>
