@@ -111,7 +111,7 @@
                 'status'               => 'Status',
                 'created_at'           => 'Created At',
                 'updated_at'           => 'Updated At',
-                'technition_id'        => 'Technition ID',
+                'technition_id'        => 'Technician ID',
             ];
         }
 

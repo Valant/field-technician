@@ -26,7 +26,7 @@
 ;
             return $element['Service_Tech_Id']." - ".$element['employee']['First_Name'].' '.$element['employee']['Last_Name'];
         } ),['value'=>$model->technition_id]
-    )->label( "Technition" ) ?>
+    )->label( "Technician" ) ?>
 
     <?= $form->field( $model, 'password_hash' )->textInput( [ 'maxlength' => 255, 'value'=>""] )->label( "Password" ) ?>
 
