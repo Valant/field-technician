@@ -154,21 +154,26 @@ var app = {
                 Notes: $('#resolution_notes').val()
             }
         }).always(function (dataResponse) {
-
-                jQuery.ajax({
-                    type: 'PUT',
-                    url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
-                    data: {
-                        Resolution_Id: parseInt($('#resolution_code').val())
-                    }
-                }).always(function (data) {
-                    $('#resolution_notes').val('');                         // clearing goback/resolved
-                    $('#resolution_code option').attr('selected',false);    // resolution notes
-                    $('#resolution_code').selectmenu( 'refresh', true );    // values
+                var endNotes = function (data) {
                     $('#task' + data.Service_Ticket_Id).remove();
                     $.mobile.loading('hide');
                     $.mobile.navigate('#tasks');
-                });
+
+                    $('#resolution_notes').val('');                         // clearing goback/resolved
+                    $('#resolution_code option').attr('selected', false);    // resolution notes
+                    $('#resolution_code').selectmenu('refresh', true);    // values
+                }
+                if ($('#resolution_code').is(':hidden')) {
+                    endNotes({Service_Ticket_Id:app.task_data[app.task_id].Service_Ticket_Id});
+                } else {
+                    jQuery.ajax({
+                        type: 'PUT',
+                        url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
+                        data: {
+                            Resolution_Id: parseInt($('#resolution_code').val())
+                        }
+                    }).always(endNotes({Service_Ticket_Id:app.task_data[app.task_id].Service_Ticket_Id}));
+                }
 
         });
         } else{
@@ -726,7 +731,6 @@ var app = {
             if (typeof dataResponse.id != 'undefined') {
                 if ('dispatch' == dataResponse.status) {
                     this.showLoader('Saving task status');
-                    console.info('dispatchong task status');
                     jQuery.ajax({
                         type: 'PUT',
                         url: app.apiUrl + 'dispatch/' + app.task_data[app.task_id].Dispatch_Id + ',' + app.task_id + '?access-token=' + app.access_token,
@@ -751,7 +755,6 @@ var app = {
                 if ('arrived' == dataResponse.status) {
 
                     this.showLoader('Saving task status');
-                    console.info('dispatchong task status');
                     jQuery.ajax({
                         type: 'PUT',
                         url: app.apiUrl + 'dispatch/' + app.task_data[app.task_id].Dispatch_Id + ',' + app.task_id + '?access-token=' + app.access_token,
@@ -786,16 +789,11 @@ var app = {
                         if (status) {
                             navigator.notification.confirm('Do you need to add material?',
                                 function (button) {
-
                                     if (1 == button) {
-                                        console.info('ok add material')
                                         $('#status_depart,button[id^="task_btn_"]').removeClass('ui-disabled');
                                         $.mobile.loading('hide');
                                     } else
                                     if (2 == button) {
-                                        console.info('cancel add material')
-
-                                        console.info('dispatchong task status');
                                         jQuery.ajax({
                                             type: 'PUT',
                                             url: app.apiUrl + 'dispatch/' + app.task_data[app.task_id].Dispatch_Id + ',' + app.task_id + '?access-token=' + app.access_token,
@@ -812,9 +810,28 @@ var app = {
                                             data: data
                                         }).always(function (data) {
                                             $('#task' + data.Service_Ticket_Id).remove();
-                                            $.mobile.loading('hide');
+
+                                            if(status=='RS'){
+                                                $('label[for=resolution_code]').show()
+                                                $('#resolution_code').attr('required',true)
+                                                $('#resolution_code').show();
+                                                $('#resolution_code').selectmenu();
+                                            }
+                                            else if(status=='GB'){
+                                                $('label[for=resolution_code]').hide()
+                                                $('#resolution_code').hide()
+                                                $('#resolution_code').attr('required',false)
+                                                $('#resolution_code').selectmenu();
+
+                                                $('#resolution_code').selectmenu('destroy');
+
+                                            }
+
                                             $.mobile.navigate('#gobacknotes');
                                         });
+                                    }else{
+                                        $('#status_depart,button[id^="task_btn_"]').removeClass('ui-disabled');
+                                        $.mobile.loading('hide');
                                     }
                                 },
                                 'Add material',
