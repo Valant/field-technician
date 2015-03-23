@@ -42,12 +42,16 @@
 <script type="text/javascript" src="js/index.js"></script>
 <script type="text/javascript">
     $( document ).on( "pageinit", "#partsearch", function() {
-        $( "#autocomplete" ).on( "filterablebeforefilter", function ( e, data ) {
+
+        $("#autocomplete").on("filterablebeforefilter", function (e, data) {
+
+
             var value = $(data.input).val();
-            if( value.length >2){
-                app.keywordSuggestParts(value,$('#partsearch').attr('data-searchbycode'));
+            if (value.length > 2) {
+                app.keywordSuggestParts(value, $('#partsearch').attr('data-searchbycode'));
             }
         });
+
     });
     app.initialize();
 </script>

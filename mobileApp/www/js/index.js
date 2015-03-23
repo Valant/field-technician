@@ -17,7 +17,7 @@
  * under the License.
  */
 var app = {
-    version: '0.10.15',
+    version: '0.10.16',
     db: false,
     task_id: false,
     uploaded: 0,
@@ -166,7 +166,7 @@ var app = {
                     $('#resolution_code option').attr('selected', false);    // resolution notes
                     $('#resolution_code').selectmenu('refresh', true);    // values
                 }
-                if (withcode) {
+                if (!withcode) {
                     endNotes({Service_Ticket_Id:app.task_data[app.task_id].Service_Ticket_Id});
                 } else {
                     jQuery.ajax({
@@ -223,18 +223,21 @@ var app = {
                         function (button) {
                             if (1 == button) {
                                 /*mobile_prompt(
-                                    'Please enter material code',  // message
-                                    function (results) {
-                                        if (2 != results.buttonIndex)
-                                            this.searchPart(results.input1)
-                                    }.bind(this)
-                                );*/
-                                $('#partsearch').attr('data-searchbycode',1);
+                                 'Please enter material code',  // message
+                                 function (results) {
+                                 if (2 != results.buttonIndex)
+                                 this.searchPart(results.input1)
+                                 }.bind(this)
+                                 );*/
+                                $('#partsearch').attr('data-searchbycode', 1);
                                 $.mobile.navigate('#partsearch')
+                                $('#partsearch input').attr('type', 'number')
                             }
                             else if (2 == button) {
                                 $('#partsearch').attr('data-searchbycode',0);
                                 $.mobile.navigate('#partsearch')
+                                $('#partsearch input').attr('type', 'text')
+
                             }
                         }.bind(this),
                         'Add material',
@@ -313,11 +316,15 @@ var app = {
         }.bind(this));
     },
     keywordSuggestParts: function (keyword,codesearch) {
+        console.info('kwdsuggest');
+        if(app.keywordAutocomplete){
+            app.keywordAutocomplete.abort()
+        }
         if(codesearch==undefined){
             codesearch = 0;
         }
-        this.showLoader('Searching part')
-        var self = this
+        this.showLoader('Searching part');
+        var self = this;
         var sugList = jQuery("#autocomplete");
         sugList.html("");
         var searchpath =  'part/keyword';
@@ -325,7 +332,7 @@ var app = {
             var searchpath =  'part/codesearch';
         }
         //$('input[data-type="search"]').val("")
-        jQuery.getJSON(app.apiUrl +searchpath, {
+        app.keywordAutocomplete = jQuery.getJSON(app.apiUrl +searchpath, {
             code: keyword,
             'access-token':app.access_token
         }, function (data) {
@@ -340,10 +347,11 @@ var app = {
                 );
             } else {
                 jQuery.each(data,function(key,val){
-                    sugList.append('<li onClick="app.addPartToTicket({Part_Id:\''+val.Part_Id+'\',Description:\''+val.Description+'\',Detail:\''+val.Detail+'\'})" >'+val.Description+'</li>');
+                    sugList.append('<li onClick="app.addPartToTicket({Part_Id:\''+val.Part_Id+'\',Description:\''+val.Description+'\',Detail:\''+val.Detail+'\'})" >'+val.Part_Code+'-'+val.Description+'</li>');
                 })
                 sugList.listview("refresh");
                 $('#autocomplete li').removeClass('ui-screen-hidden')
+                app.keywordAutocomplete.abort();
             }
         }.bind(this));
     },
