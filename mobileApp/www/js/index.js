@@ -17,7 +17,7 @@
  * under the License.
  */
 var app = {
-    version: '0.10.16',
+    version: '0.10.17',
     db: false,
     task_id: false,
     uploaded: 0,
@@ -193,9 +193,24 @@ var app = {
             $('#tasks #tasks_content table').table();
         }
         $('#tasks #tasks_content table tbody').empty();
+
+        var taskDay = null;
         $.each(data, function (index, value) {
+            console.info(value.Scheduled_For)
+
+            var curDay = moment(value.Scheduled_For, 'MMM DD YYYY HH:mm:ss0A').format('DD/MM/YYYY')
+            var rawCurDay = '';
+            if (curDay != taskDay)
+            {
+                taskDay = curDay;
+                rawCurDay = '<tr><td><b>'+ taskDay +'</b></td></tr>';
+            }
+            var taskTime = moment(value.Scheduled_For, 'MMM DD YYYY HH:mm:ss0A').format('HH:mm:ss');
+
             app.task_data[value.Service_Ticket_Id] = value;
-            $('<tr id="task'+value.Service_Ticket_Id+'">' +
+
+            $(rawCurDay+'<tr id="task'+value.Service_Ticket_Id+'">' +
+            '<td>' + taskTime + '</td>' +
             '<td>' + value.Ticket_Number + '</td>' +
             '<td><a href="javascript: app.showTaskDetail(' + value.Service_Ticket_Id + ');" data-rel="external">' + value.ProblemDescription + '</a></td>' +
             '<td>' + value.Customer_Name + '</td>' +
@@ -203,6 +218,7 @@ var app = {
             '<td>' + value.Ticket_Status + '</td>' +
             '<td><button data-icon="info" onclick="app.showTaskDetail(' + value.Service_Ticket_Id + ')">Details</button></td>' +
             '</tr>').appendTo('#tasks #tasks_content table tbody').closest('table#table-custom-2').table('refresh').trigger('create');
+            taskDay = curDay;
         });
         $('#tasks #tasks_content table').table('refresh');
         $.mobile.loading('hide');
@@ -347,7 +363,9 @@ var app = {
                 );
             } else {
                 jQuery.each(data,function(key,val){
-                    sugList.append('<li onClick="app.addPartToTicket({Part_Id:\''+val.Part_Id+'\',Description:\''+val.Description+'\',Detail:\''+val.Detail+'\'})" >'+val.Part_Code+'-'+val.Description+'</li>');
+
+                    sugList.append('<li ' +
+                    'onClick="app.addPartToTicket({Part_Code:\''+val.Part_Code+'\',Part_Id:\''+val.Part_Id+'\',Description:\''+val.Description.replace(/"/g, '&quot;')+'\',Detail:\''+val.Detail.replace(/"/g, '&quot;')+'\'})" >'+val.Part_Code+'-'+val.Description+'</li>');
                 })
                 sugList.listview("refresh");
                 $('#autocomplete li').removeClass('ui-screen-hidden')
