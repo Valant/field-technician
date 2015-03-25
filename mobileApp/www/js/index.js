@@ -198,7 +198,7 @@ var app = {
         $.each(data, function (index, value) {
             console.info(value.Scheduled_For)
 
-            var curDay = moment(value.Scheduled_For, 'MMM DD YYYY HH:mm:ss0A').format('DD/MM/YYYY')
+            var curDay = moment(value.Scheduled_For, 'MMM DD YYYY HH:mm:ss0A').format('MM/DD/YYYY');
             var rawCurDay = '';
             if (curDay != taskDay)
             {
