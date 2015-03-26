@@ -21,7 +21,7 @@ class UpdateAction extends Action
      * Updates an existing model.
      * @param string $id the primary key of the model.
      * @return \yii\db\ActiveRecordInterface the model being updated
-     * @throws ServerErrorHttpException if there is any error when updating the model
+     * @throws ServerErrorHttpException if thereясно, ну мне Вованыч is any error when updating the model
      */
     public function run($id)
     {   $modelClass = $this->modelClass;
@@ -44,12 +44,13 @@ class UpdateAction extends Action
 
         $model->scenario = $this->scenario;
         $requestParams = Yii::$app->getRequest()->getBodyParams();
+
         if(isset($requestParams['Arrival_Time'])&&empty($requestParams['Arrival_Time']));
         $requestParams['Arrival_Time']='1899-12-30 00:00:00.000';
 
         if(isset($requestParams['Departure_Time'])&&empty($requestParams['Departure_Time']));
         $requestParams['Departure_Time']='1899-12-30 00:00:00.000';
-        $model->load(Yii::$app->getRequest()->getBodyParams(), '');
+        $model->load($requestParams, '');
 
         if ($model->save() === false && !$model->hasErrors()) {
             throw new ServerErrorHttpException('Failed to update the object for unknown reason.');
