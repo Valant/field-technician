@@ -45,11 +45,16 @@ class UpdateAction extends Action
         $model->scenario = $this->scenario;
         $requestParams = Yii::$app->getRequest()->getBodyParams();
 
-        if(isset($requestParams['Arrival_Time'])&&empty($requestParams['Arrival_Time']));
-        $requestParams['Arrival_Time']='1899-12-30 00:00:00.000';
 
-        if(isset($requestParams['Departure_Time'])&&empty($requestParams['Departure_Time']));
-        $requestParams['Departure_Time']='1899-12-30 00:00:00.000';
+        if ($requestParams['Arrival_Time'] === '0')
+        {
+            $requestParams['Arrival_Time'] = '1899-12-30 00:00:00.000';
+        }
+
+        if ($requestParams['Departure_Time'] === '0')
+        {
+            $requestParams['Departure_Time'] = '1899-12-30 00:00:00.000';
+        }
         $model->load($requestParams, '');
 
         if ($model->save() === false && !$model->hasErrors()) {
