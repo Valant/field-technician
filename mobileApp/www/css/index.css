@@ -160,3 +160,7 @@ h1 {
 #tasks_content{
     overflow-x: scroll;
 }
+#taskDescription{
+    background-color: #deebf7;
+    color: #000;
+}
