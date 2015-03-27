@@ -79,13 +79,13 @@
                data-column-btn-text="Columns to display..." data-column-popup-theme="a">
             <thead>
             <tr class="ui-bar-d">
-                <th data-priority="1"><abbr title="Date">Date</abbr></th>
+                <th><abbr title="Date">Scheduled</abbr></th>
                 <th data-priority="1"><abbr title="Ticket Number">ID</abbr></th>
                 <th><abbr title="Problem detail">Problem</abbr></th>
                 <th data-priority="1"><abbr title="Customer name">Name</abbr></th>
                 <th data-priority="1"><abbr title="Customer city">City</abbr></th>
                 <th data-priority="1"><abbr title="Ticket status">Status</abbr></th>
-                <th data-priority="1"><abbr title="Go to task">Details</abbr></th>
+
             </tr>
             </thead>
             <tbody>
@@ -136,6 +136,7 @@
 </div>
 <div data-role="page" id="gobacknotes">
     <div data-role="header">
+        <button data-icon="back" data-iconpos="notext" onclick="app.goBack();"></button>
         <h2>Resolution</h2>
     </div>
     <div role="main" class="ui-content" id="gobacknotesContent">
@@ -147,6 +148,8 @@
 </div>
 <div data-role="page" id="gobacknoteswithcode">
     <div data-role="header">
+        <button data-icon="back" data-iconpos="notext" onclick="app.goBack();"></button>
+
         <h2>Resolution</h2>
     </div>
     <div role="main" class="ui-content" id="gobacknoteswithcodeContent">
@@ -161,6 +164,7 @@
 </div>
 <div data-role="page" id="partsearch">
     <div data-role="header">
+        <button data-icon="back" data-iconpos="notext" onclick="app.goBack();"></button>
         <h2>Search part</h2>
     </div>
     <div role="main" class="ui-content" id="partsearchContent">

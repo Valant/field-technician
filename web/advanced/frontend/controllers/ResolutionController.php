@@ -22,4 +22,16 @@ class ResolutionController extends ActiveController {
         ];
         return $behaviors;
     }
+    public function actions() {
+
+        $actions = [
+            'index' => [
+                'class' => 'frontend\controllers\Resolution\IndexAction',
+                'modelClass' => $this->modelClass,
+                'checkAccess' => [$this, 'checkAccess'],
+            ],
+        ];
+
+        return array_merge(parent::actions(), $actions);
+    }
 }

@@ -17,13 +17,13 @@
  * under the License.
  */
 var app = {
-    version: '0.10.17',
+    version: '0.10.18',
     db: false,
     task_id: false,
     uploaded: 0,
     needToUpload: 0,
-    //apiUrl: 'http://api.field-technician.loc/',
-    apiUrl: 'http://api.afa.valant.com.ua/',
+    apiUrl: 'http://api.field-technician.loc/',
+    //apiUrl: 'http://api.afa.valant.com.ua/',
     user_id: 0,
     user_code: '',
     user_data: {},
@@ -79,6 +79,7 @@ var app = {
                     if (data) {
                         if (typeof data.id != 'undefined') {
                             app.user_data = data;
+                            app.user_code = data.usercode;
                             app.access_token = data.auth_key;
                             app.loadTask();
                         } else {
@@ -128,7 +129,7 @@ var app = {
             'access-token':app.access_token
         }, this.drawTask);
 
-        jQuery.getJSON(app.apiUrl+'/resolution/',{'per-page':200,'access-token':window.localStorage.getItem('access_token')},
+        jQuery.getJSON(app.apiUrl+'/resolution/',{'access-token':window.localStorage.getItem('access_token')},
             function(data){
                 if(data){
                     $('select#resolution_code').empty();
@@ -196,8 +197,6 @@ var app = {
 
         var taskDay = null;
         $.each(data, function (index, value) {
-            console.info(value.Scheduled_For)
-
             var curDay = moment(value.Scheduled_For, 'MMM DD YYYY HH:mm:ss0A').format('MM/DD/YYYY');
             var rawCurDay = '';
             if (curDay != taskDay)
@@ -209,14 +208,14 @@ var app = {
 
             app.task_data[value.Service_Ticket_Id] = value;
 
-            $(rawCurDay+'<tr id="task'+value.Service_Ticket_Id+'">' +
+            $(rawCurDay+'<tr id="task'+value.Service_Ticket_Id+'" onClick="app.showTaskDetail('+ value.Service_Ticket_Id + ');">' +
             '<td>' + taskTime + '</td>' +
             '<td>' + value.Ticket_Number + '</td>' +
-            '<td><a href="javascript: app.showTaskDetail(' + value.Service_Ticket_Id + ');" data-rel="external">' + value.ProblemDescription + '</a></td>' +
+            '<td><b>' + value.ProblemDescription + '</b></td>' +
             '<td>' + value.Customer_Name + '</td>' +
             '<td>' + value.City + '</td>' +
             '<td>' + value.Ticket_Status + '</td>' +
-            '<td><button data-icon="info" onclick="app.showTaskDetail(' + value.Service_Ticket_Id + ')">Details</button></td>' +
+            //'<td><button data-icon="info" onclick="app.showTaskDetail(' + value.Service_Ticket_Id + ')">Details</button></td>' +
             '</tr>').appendTo('#tasks #tasks_content table tbody').closest('table#table-custom-2').table('refresh').trigger('create');
             taskDay = curDay;
         });
@@ -332,7 +331,6 @@ var app = {
         }.bind(this));
     },
     keywordSuggestParts: function (keyword,codesearch) {
-        console.info('kwdsuggest');
         if(app.keywordAutocomplete){
             app.keywordAutocomplete.abort()
         }
@@ -807,59 +805,42 @@ var app = {
                 if ('depart' == dataResponse.status) {
                     $('#status_dispatch,#status_arrived,#status_depart,button[id^="task_btn_"]').addClass('ui-disabled');
                     this.showLoader('Saving task status');
+                    var departType = false;
+                    navigator.notification.confirm('Do you need to add material?',
+                        function (button) {
 
-                    navigator.notification.confirm('Select depart type', function (button) {
-                        var status = false;
-                        if (1 == button) {
-                            status = 'GB';
-                        } else if (2 == button) {
-                            status = 'RS';
-                        }
-                        if (status) {
-                            navigator.notification.confirm('Do you need to add material?',
-                                function (button) {
+                            if (1 == button) {
+                                $('#status_depart,button[id^="task_btn_"]').removeClass('ui-disabled');
+                                $.mobile.loading('hide');
+                            } else
+                            if (2 == button) {
+
+                                navigator.notification.confirm('Select depart type', function (button) {
+
                                     if (1 == button) {
-                                        $('#status_depart,button[id^="task_btn_"]').removeClass('ui-disabled');
-                                        $.mobile.loading('hide');
-                                    } else
-                                    if (2 == button) {
-                                        jQuery.ajax({
-                                            type: 'PUT',
-                                            url: app.apiUrl + 'dispatch/' + app.task_data[app.task_id].Dispatch_Id + ',' + app.task_id + '?access-token=' + app.access_token,
-                                            data: taskStatusData.data
-                                        }).always(function (dataResponse) {
-                                            console.log(dataResponse);
-                                        });
-
-                                        var data = taskStatusData.data;
-                                        data.Ticket_Status = status;
-                                        jQuery.ajax({
-                                            type: 'PUT',
-                                            url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
-                                            data: data
-                                        }).always(function (data) {
-                                            $('#task' + data.Service_Ticket_Id).remove();
-
-                                            if(status=='RS'){
-                                                $.mobile.navigate('#gobacknoteswithcode');
-
-                                            }
-                                            else if(status=='GB'){
-                                                $.mobile.navigate('#gobacknotes');
-
-                                            }
-                                        });
-                                    }else{
+                                        departType = 'GB';
+                                        app.depart(departType);
+                                    } else if (2 == button) {
+                                        app.depart(departType);
+                                        departType = 'RS';
+                                    }else if(3 == button){
+                                        departType = false;
                                         $('#status_depart,button[id^="task_btn_"]').removeClass('ui-disabled');
                                         $.mobile.loading('hide');
                                     }
-                                },
-                                'Add material',
-                                ['Yes', 'No']
-                            );
-                        }
 
-                    }, 'Depart type', ['Go back', 'Resolved'])
+                                }, 'Depart type', ['Go back', 'Resolved', 'Cancel'])
+
+
+                            } else {
+                                $('#status_depart,button[id^="task_btn_"]').removeClass('ui-disabled');
+                                $.mobile.loading('hide');
+                            }
+                        },
+                        'Add material',
+                        ['Yes', 'No']
+                    );
+
                 }
             } else {
                 navigator.notification.alert(
@@ -871,6 +852,36 @@ var app = {
             }
 
         }.bind(this));
+    },
+    depart:function(departType){
+        if (departType) {
+            jQuery.ajax({
+                type: 'PUT',
+                url: app.apiUrl + 'dispatch/' + app.task_data[app.task_id].Dispatch_Id + ',' + app.task_id + '?access-token=' + app.access_token,
+                data: taskStatusData.data
+            }).always(function (dataResponse) {
+                console.log(dataResponse);
+            });
+
+            var data = taskStatusData.data;
+            data.Ticket_Status = status;
+            jQuery.ajax({
+                type: 'PUT',
+                url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
+                data: data
+            }).always(function (data) {
+                $('#task' + data.Service_Ticket_Id).remove();
+
+                if (status == 'RS') {
+                    $.mobile.navigate('#gobacknoteswithcode');
+
+                }
+                else if (status == 'GB') {
+                    $.mobile.navigate('#gobacknotes');
+
+                }
+            });
+        }
     },
     launchMASMobile: function(){
         if('android'==cordova.platformId)
@@ -888,9 +899,10 @@ var app = {
                     function (button) {
                         if (1 == button) {
                             canSetStatus = true;
-                            data.Dispatch_Time = moment().format('MMM DD YYYY HH:mm:ss A');
-                            data.Arrival_Time = null;
-                            data.Departure_Time = null;
+                            //data.Dispatch_Time = moment().format('MMM DD YYYY HH:mm:ss A');
+                            data.Dispatch_Time = moment().format('YYYY-MM-DD HH:mm:ss.000');
+                            data.Arrival_Time = 0;
+                            data.Departure_Time = 0;
                             data.Ticket_Status = 'IP';
                             this.saveTaskStatus({status: status, data: data, taskId: app.task_id});
                         } else {
@@ -907,8 +919,9 @@ var app = {
                     function (button) {
                         if (button == 1) {
                             canSetStatus = true;
-                            data.Arrival_Time = moment().format('MMM DD YYYY HH:mm:ss A');
-                            data.Departure_Time = null;
+                            //data.Arrival_Time = moment().format('MMM DD YYYY HH:mm:ss A');
+                            data.Arrival_Time = moment().format('YYYY-MM-DD HH:mm:ss.000');
+                            data.Departure_Time = 0;
                             this.saveTaskStatus({status:status,data:data, taskId:app.task_id});
                             navigator.notification.confirm(
                                 'Place system on test?', // message
@@ -932,6 +945,7 @@ var app = {
                     function (button) {
                         if (1 == button) {
                             data.Departure_Time = moment().format('MMM DD YYYY HH:mm:ss A');
+                            data.Departure_Time = moment().format('YYYY-MM-DD HH:mm:ss.000');
                             this.saveTaskStatus({status:status,data:data, taskId:app.task_id});
                         }
                     }.bind(this),
