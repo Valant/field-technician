@@ -13,6 +13,7 @@
     use yii\log\Logger;
     use yii\rest\ActiveController;
     use yii\filters\auth\QueryParamAuth;
+    use common\behaviors\SYEditLog;
 
 
 
@@ -56,6 +57,9 @@
             $behaviors = parent::behaviors();
             $behaviors['authenticator'] = [
                 'class' => QueryParamAuth::className(),
+            ];
+            $behaviors['syeditlogger'] = [
+                'class' => SYEditLog::className()
             ];
             return $behaviors;
         }

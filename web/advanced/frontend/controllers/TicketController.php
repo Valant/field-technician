@@ -15,6 +15,7 @@
     use yii\rest\ActiveController;
     use yii\filters\auth\QueryParamAuth;
     use yii\helpers\ArrayHelper;
+    use common\behaviors\SYEditLog;
 
 
     class TicketController extends ActiveController
@@ -36,6 +37,9 @@
             $behaviors = parent::behaviors();
             $behaviors['authenticator'] = [
                 'class' => QueryParamAuth::className(),
+            ];
+            $behaviors['syeditlogger'] = [
+                'class' => SYEditLog::className()
             ];
             return $behaviors;
         }

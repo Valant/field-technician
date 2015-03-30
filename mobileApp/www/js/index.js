@@ -17,13 +17,13 @@
  * under the License.
  */
 var app = {
-    version: '0.10.18',
+    version: '0.10.19',
     db: false,
     task_id: false,
     uploaded: 0,
     needToUpload: 0,
-    apiUrl: 'http://api.field-technician.loc/',
-    //apiUrl: 'http://api.afa.valant.com.ua/',
+    //apiUrl: 'http://api.field-technician.loc/',
+    apiUrl: 'http://api.afa.valant.com.ua/',
     user_id: 0,
     user_code: '',
     user_data: {},
@@ -174,7 +174,8 @@ var app = {
                         type: 'PUT',
                         url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
                         data: {
-                            Resolution_Id: parseInt($('#resolution_code').val())
+                            'Resolution_Id': parseInt($('#resolution_code').val()),
+                            'UserCode':app.user_code
                         }
                     }).always(endNotes({Service_Ticket_Id:app.task_data[app.task_id].Service_Ticket_Id}));
                 }
@@ -420,7 +421,7 @@ var app = {
                 self.setProgressBarValue('slider_' + id, perc);
             }
         };
-        ft.upload(imageURI, encodeURI(app.apiUrl + 'taskattachment/upload?access-token='+app.access_token), this.uploadPhotoWin.bind(this), this.uploadPhotoFail.bind(this), options);
+        ft.upload(imageURI, encodeURI(app.apiUrl + 'taskattachment/upload?access-token='+app.access_token+'&UserCode='+app.user_code), this.uploadPhotoWin.bind(this), this.uploadPhotoFail.bind(this), options);
     },
     createProgressBar: function (id, text) {
         var cont = $('<div>');
@@ -538,7 +539,9 @@ var app = {
             for (var i in this.attachmentToDelete) {
                 jQuery.ajax({
                     type: 'DELETE',
-                    url: app.apiUrl + 'taskattachment/' + app.attachmentToDelete[i] + '?access-token=' + app.access_token
+                    url: app.apiUrl + 'taskattachment/' + app.attachmentToDelete[i] + '?access-token=' + app.access_token,
+                    UserCode: app.user_code
+
                 }).always(function(data){
 
                     delete app.attachmentToDelete[i];
@@ -555,18 +558,26 @@ var app = {
             $.when(jQuery.ajax({
                     type: 'GET',
                     url: app.apiUrl + 'taskpart/empty',
-                    data: {'access-token': app.access_token,'Service_Ticket_Id': app.task_id}
+                    data: {
+                        'access-token': app.access_token,
+                        'Service_Ticket_Id': app.task_id,
+                        'UserCode':app.user_code
+                    }
                 })
             ).done(function () {
+                    console.info('addParts')
                     for (var part_id in app.usedParts) {
+                        console.info(part_id);
                         jQuery.ajax({
                             type: 'POST',
                             url: app.apiUrl + 'taskpart/create?access-token=' + app.access_token,
                             data: {
-                                Service_Tech_ID: app.user_id,
-                                Service_Ticket_Id: app.task_id,
-                                Part_Id: part_id,
-                                Quantity: app.usedParts[part_id]
+                                'Service_Tech_ID': app.user_id,
+                                'Service_Ticket_Id': app.task_id,
+                                'Part_Id': part_id,
+                                'Quantity': app.usedParts[part_id],
+                                'UserCode':app.user_code
+
                             }
                         })
                     }
@@ -604,7 +615,8 @@ var app = {
 
         $.when(jQuery.getJSON(app.apiUrl + '/ticket/find', {
             'id': app.task_id,
-            'access-token':app.access_token
+            'access-token':app.access_token,
+            'UserCode':app.user_code
         }, this.drawTaskDetails.bind(this))).done(function (res) {
             $.mobile.loading('hide');
             if(res.length)
@@ -653,7 +665,7 @@ var app = {
         }.bind(this));
 
         jQuery.getJSON(app.apiUrl+'ticket/getdispatch',{
-            task_id: app.task_id,
+            'task_id': app.task_id,
             'access-token':app.access_token
         },function(data){
             app.task_data[data.Service_Ticket_Id]['Dispatch_Id'] = data.Dispatch_Id;
@@ -744,14 +756,15 @@ var app = {
     },
     saveTaskStatus: function (taskStatusData) {
 
+        taskStatusData.data.UserCode = app.user_code;
 
         jQuery.ajax({
             type: 'POST',
             url: app.apiUrl + 'taskhistory/create?access-token=' + app.access_token,
             data: {
-                task_id: app.task_id,
-                tech_id: app.user_id,
-                status: taskStatusData.status
+                'task_id': app.task_id,
+                'tech_id': app.user_id,
+                'status': taskStatusData.status
             }
         }).always(function (dataResponse) {
             $.mobile.loading('hide');
@@ -772,7 +785,8 @@ var app = {
                         type: 'PUT',
                         url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
                         data: {
-                            Ticket_Status: 'IP'
+                            'Ticket_Status': 'IP',
+                            'UserCode':app.user_code
                         }
                     }).always(function (data) {
                         //$('#task' + data.Service_Ticket_Id).remove();
@@ -796,7 +810,9 @@ var app = {
                         type: 'PUT',
                         url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
                         data: {
-                            Ticket_Status: 'IP'
+                            'Ticket_Status': 'IP',
+                            'UserCode':app.user_code
+
                         }
                     }).always(function (data) {
                         $.mobile.loading('hide');
@@ -819,10 +835,10 @@ var app = {
 
                                     if (1 == button) {
                                         departType = 'GB';
-                                        app.depart(departType);
+                                        app.depart(taskStatusData, departType);
                                     } else if (2 == button) {
-                                        app.depart(departType);
                                         departType = 'RS';
+                                        app.depart(taskStatusData, departType);
                                     }else if(3 == button){
                                         departType = false;
                                         $('#status_depart,button[id^="task_btn_"]').removeClass('ui-disabled');
@@ -853,30 +869,32 @@ var app = {
 
         }.bind(this));
     },
-    depart:function(departType){
+    depart:function(taskStatusData, departType){
         if (departType) {
+            var data = taskStatusData.data;
+
             jQuery.ajax({
                 type: 'PUT',
                 url: app.apiUrl + 'dispatch/' + app.task_data[app.task_id].Dispatch_Id + ',' + app.task_id + '?access-token=' + app.access_token,
-                data: taskStatusData.data
+                data: data
             }).always(function (dataResponse) {
                 console.log(dataResponse);
             });
 
-            var data = taskStatusData.data;
             data.Ticket_Status = status;
             jQuery.ajax({
                 type: 'PUT',
+                UserCode:app.user_code,
                 url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
                 data: data
             }).always(function (data) {
                 $('#task' + data.Service_Ticket_Id).remove();
 
-                if (status == 'RS') {
+                if (departType == 'RS') {
                     $.mobile.navigate('#gobacknoteswithcode');
 
                 }
-                else if (status == 'GB') {
+                else if (departType == 'GB') {
                     $.mobile.navigate('#gobacknotes');
 
                 }

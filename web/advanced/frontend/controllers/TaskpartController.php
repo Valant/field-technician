@@ -12,6 +12,8 @@ namespace frontend\controllers;
 use common\models\SVServiceTicketParts;
 use common\models\TaskPart;
 use yii\filters\auth\QueryParamAuth;
+use common\behaviors\SYEditLog;
+
 
 
 class TaskpartController extends \yii\rest\ActiveController {
@@ -45,6 +47,9 @@ class TaskpartController extends \yii\rest\ActiveController {
         $behaviors = parent::behaviors();
         $behaviors['authenticator'] = [
             'class' => QueryParamAuth::className(),
+        ];
+        $behaviors['syeditlogger'] = [
+            'class' => SYEditLog::className()
         ];
         return $behaviors;
     }

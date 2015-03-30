@@ -12,7 +12,7 @@ use common\models\INPart;
 use Yii;
 use yii\rest\ActiveController;
 use yii\filters\auth\QueryParamAuth;
-
+use common\behaviors\SYEditLog;
 use yii\data\ActiveDataProvider;
 use yii\filters\Cors;
 use yii\helpers\ArrayHelper;
@@ -46,6 +46,9 @@ class PartController extends ActiveController{
         $behaviors = parent::behaviors();
         $behaviors['authenticator'] = [
             'class' => QueryParamAuth::className()
+        ];
+        $behaviors['syeditlogger'] = [
+            'class' => SYEditLog::className()
         ];
         return $behaviors;
     }
