@@ -17,17 +17,18 @@
  * under the License.
  */
 var app = {
-    version: '0.10.19',
+    version: '0.11.1',
     db: false,
     task_id: false,
     uploaded: 0,
     needToUpload: 0,
-    //apiUrl: 'http://api.field-technician.loc/',
-    apiUrl: 'http://api.afa.valant.com.ua/',
+    apiUrl: 'http://api.field-technician.loc/',
+    //apiUrl: 'http://api.afa.valant.com.ua/',
     user_id: 0,
     user_code: '',
     user_data: {},
     task_data: [],
+    taskLocked:[],
     usedParts: {},
     attachmentToDelete: [],
     part_to_delete: 0,
@@ -574,6 +575,7 @@ var app = {
                             data: {
                                 'Service_Tech_ID': app.user_id,
                                 'Service_Ticket_Id': app.task_id,
+                                'ticket_number':app.task_data[app.task_id].Ticket_Number,
                                 'Part_Id': part_id,
                                 'Quantity': app.usedParts[part_id],
                                 'UserCode':app.user_code
@@ -615,9 +617,11 @@ var app = {
 
         $.when(jQuery.getJSON(app.apiUrl + '/ticket/find', {
             'id': app.task_id,
+            'ticket_number':app.task_data[app.task_id].Ticket_Number,
             'access-token':app.access_token,
             'UserCode':app.user_code
         }, this.drawTaskDetails.bind(this))).done(function (res) {
+
             $.mobile.loading('hide');
             if(res.length)
             {$.mobile.navigate('#taskDetails');}
@@ -628,7 +632,7 @@ var app = {
         alert(err.code + '\n' + err.message);
     },
     getTaskData: function (tx) {
-
+        if(app.taskLocked[app.task_id]==false)
         jQuery.getJSON(app.apiUrl + '/taskattachment/search', {task_id: app.task_id,'access-token':app.access_token}, function (data) {
             if(data){
                 for(var i in data){
@@ -644,7 +648,7 @@ var app = {
             }
 
         });
-
+        if(!app.taskLocked[app.task_id]==false)
         jQuery.getJSON(app.apiUrl + '/taskpart/search', {
             'Service_Ticket_Id': app.task_id,
             'expand': 'part',
@@ -663,13 +667,23 @@ var app = {
                 $('#parts').listview('refresh');
             }
         }.bind(this));
-
         jQuery.getJSON(app.apiUrl+'ticket/getdispatch',{
             'task_id': app.task_id,
             'access-token':app.access_token
         },function(data){
             app.task_data[data.Service_Ticket_Id]['Dispatch_Id'] = data.Dispatch_Id;
-            if(moment(data.Dispatch_Time, 'MMM DD YYYY HH:mm:ss0A').unix() > 0){
+            console.info('locked', app.taskLocked[app.task_id])
+            if(app.taskLocked[app.task_id]){
+                navigator.notification.alert(
+                    'Task Locked by user '+data.LockedByUser,  // message
+                    function(res){},         // callback
+                    'Task Locked',            // title
+                    'OK'                  // buttonName
+                );
+
+                $('#status_dispatch,#status_arrived,#status_depart,button[id^="task_btn_"]').addClass('ui-disabled');
+
+            }else if(moment(data.Dispatch_Time, 'MMM DD YYYY HH:mm:ss0A').unix() > 0){
 
                 $('#status_dispatch').addClass('ui-disabled');
 
@@ -692,11 +706,22 @@ var app = {
 
     },
     drawTaskDetails: function (data) {
-        data = data.shift();
+        console.info(data);
+        data = data[0];
 
         if (undefined!=data) {
         //this.task_data[this.task_id] = data; // here was error with rewriting task custom params
         $.extend(this.task_data[this.task_id], data);
+
+            if(app.user_code != data.LockedByUser && data.LockedByUser!=undefined){
+
+                app.taskLocked[this.task_id]=true;
+            }else{
+                app.taskLocked[this.task_id]=false;
+            }
+            console.info(app.user_code != data.LockedByUser && data.LockedByUser!=undefined)
+            console.info(app.user_code)
+            console.info(data.LockedByUser);
         var task = data;
 
             $('#taskName').text(task.ProblemDescription + ' - ' + task.Customer_Name);
@@ -757,8 +782,10 @@ var app = {
     saveTaskStatus: function (taskStatusData) {
 
         taskStatusData.data.UserCode = app.user_code;
+        taskStatusData.data.ticket_number = app.task_data[app.task_id].Ticket_Number,
 
-        jQuery.ajax({
+
+            jQuery.ajax({
             type: 'POST',
             url: app.apiUrl + 'taskhistory/create?access-token=' + app.access_token,
             data: {
