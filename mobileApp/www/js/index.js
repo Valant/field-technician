@@ -872,6 +872,7 @@ var app = {
     depart:function(taskStatusData, departType){
         if (departType) {
             var data = taskStatusData.data;
+            data.Ticket_Status = departType;
 
             jQuery.ajax({
                 type: 'PUT',
@@ -881,7 +882,6 @@ var app = {
                 console.log(dataResponse);
             });
 
-            data.Ticket_Status = status;
             jQuery.ajax({
                 type: 'PUT',
                 UserCode:app.user_code,
