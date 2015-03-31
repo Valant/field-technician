@@ -8,6 +8,7 @@
 
 namespace frontend\controllers;
 
+use common\behaviors\SSLock;
 use common\behaviors\SYEditLog;
 use Yii;
 use yii\rest\ActiveController;
@@ -23,6 +24,9 @@ class DispatchController extends ActiveController {
         ];
         $behaviors['syeditlogger'] = [
             'class' => SYEditLog::className()
+        ];
+        $behaviors['sslock'] = [
+            'class' => SSLock::className()
         ];
         return $behaviors;
     }

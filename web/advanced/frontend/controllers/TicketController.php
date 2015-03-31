@@ -8,6 +8,7 @@
 
     namespace frontend\controllers;
 
+    use common\behaviors\SSLock;
     use common\models\SVServiceTech;
     use common\models\SVServiceTicket;
     use common\models\SVServiceTicketDispatch;
@@ -40,6 +41,9 @@
             ];
             $behaviors['syeditlogger'] = [
                 'class' => SYEditLog::className()
+            ];
+            $behaviors['sslock'] = [
+                'class' => SSLock::className()
             ];
             return $behaviors;
         }

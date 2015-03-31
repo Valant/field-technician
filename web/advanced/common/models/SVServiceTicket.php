@@ -335,7 +335,7 @@
                 ar_customer_site.ge2_short as Customer_Site_Ge2_Short, ar_customer_site.ge3_description as Customer_Site_Ge3_Description,
                 ar_customer_system.alarm_account, sy_system.description as System_Description, sy_panel_type.description as System_Panel_Description,
                 ar_customer_site.phone_1, ar_customer_site.cross_street, ar_customer_system.system_comments, sv_service_ticket.ticket_status,
-                sv_service_ticket.entered_by, sv_service_ticket.requested_by_phone
+                sv_service_ticket.entered_by, sv_service_ticket.requested_by_phone,SS_LockTable.LockTable_Id,SS_LockTable.LockedByUser,SS_LockTable.LockedTime
                 ' )->from( 'SV_Service_Ticket' )
                                  ->innerJoin( 'AR_Customer', 'AR_Customer.Customer_Id = SV_Service_Ticket.Customer_Id' )
                                  ->innerJoin( 'AR_Customer_Bill',
@@ -351,10 +351,12 @@
                                      'SV_Service_Tech_Routes.Route_Id = SV_Service_Ticket.Route_Id' )
                                  ->innerJoin( 'SV_Problem', 'SV_Service_Ticket.Problem_Id = SV_Problem.Problem_Id' )
                                  ->innerJoin( 'SV_Routes', 'SV_Routes.Route_Id = SV_Service_Tech_Routes.Route_Id' )
+                                 ->leftJoin( 'SS_LockTable', 'SV_Service_Ticket.Ticket_Number = SS_LockTable.Code' )
                                  ->where( "SV_Service_Ticket.Service_Ticket_Id = :Service_Ticket_Id",
                                      [":Service_Ticket_Id"=>$ticket_id] )
                                  ->limit( 1 )
-            ] );
+            ,'pagination'=>false
+            ]);
         }
 
     }
