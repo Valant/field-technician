@@ -70,7 +70,7 @@ class SSLock extends Behavior
             $lock->Table_Name = 'SV_Service_Ticket';
 
             $lock->LockedByUser = $userCode;
-            $lock->LockedTime = date('Y-m-d H:i:s.000');
+            $lock->LockedTime = new yii\db\Expression( " GETDATE()" );
             $lock->Code = $ticketNumber;
             $lock->Form = 'Mobile';
             $lock->Description = 'User:' . $userCode;
@@ -84,7 +84,6 @@ class SSLock extends Behavior
                 SSLockTable::deleteAll(['Code' => $ticketNumber]);
                 $lock->save();
             }
-//        var_dump($tickedLocked);die('<<<<tickedLocked');
         }
     }
 }
