@@ -14,7 +14,7 @@ class SSLockController extends Controller {
      */
     public function actionIndex() {return;}
     public function actionClear() {
-        SSLockTable::deleteAll( "LockedTime > (CURRENT_TIMESTAMP - 300) and Form = 'mobile'" );
+        SSLockTable::deleteAll( "LockedTime < (CURRENT_TIMESTAMP - 300) and Form = 'mobile'" );
     }
 
 }
