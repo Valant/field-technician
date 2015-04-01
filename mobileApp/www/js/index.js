@@ -17,13 +17,13 @@
  * under the License.
  */
 var app = {
-    version: '0.11.1',
+    version: '0.11.2',
     db: false,
     task_id: false,
     uploaded: 0,
     needToUpload: 0,
-    apiUrl: 'http://api.field-technician.loc/',
-    //apiUrl: 'http://api.afa.valant.com.ua/',
+    //apiUrl: 'http://api.field-technician.loc/',
+    apiUrl: 'http://api.afa.valant.com.ua/',
     user_id: 0,
     user_code: '',
     user_data: {},
@@ -34,6 +34,8 @@ var app = {
     part_to_delete: 0,
     image_to_remove: false,
     access_token: false,
+    departType: false,
+    taskStatusData: null,
     // Application Constructor
     initialize: function () {
         this.bindEvents();
@@ -144,52 +146,56 @@ var app = {
         if(withcode == undefined){
             withcode = 0;
         }
-        if($('#resolution_notes'+(withcode?'_withcode':'')).val())
-        {
-            app.showLoader('Saving task status');
-            jQuery.ajax({
-            type: 'POST',
-            url: app.apiUrl+'/ticketnotes/create?access-token='+app.access_token,
-            data:{
-                Service_Ticket_Id:app.task_data[app.task_id].Service_Ticket_Id,
-                UserCode: app.user_code,
-                Edit_UserCode: app.user_code,
-                Entered_Date: moment().format('MMM DD YYYY HH:mm:ss A'),
-                Edit_Date: moment().format('MMM DD YYYY HH:mm:ss A'),
-                Notes: $('#resolution_notes'+(withcode?'_withcode':'')).val()
+        if(app.taskStatusData){
+            app.depart(app.taskStatusData);
+
+            if ($('#resolution_notes' + (withcode ? '_withcode' : '')).val()) {
+                app.showLoader('Saving task status');
+                jQuery.ajax({
+                    type: 'POST',
+                    url: app.apiUrl + '/ticketnotes/create?access-token=' + app.access_token,
+                    data: {
+                        Service_Ticket_Id: app.task_data[app.task_id].Service_Ticket_Id,
+                        UserCode: app.user_code,
+                        Edit_UserCode: app.user_code,
+                        Entered_Date: moment().format('MMM DD YYYY HH:mm:ss A'),
+                        Edit_Date: moment().format('MMM DD YYYY HH:mm:ss A'),
+                        Notes: $('#resolution_notes' + (withcode ? '_withcode' : '')).val()
+                    }
+                }).always(function (dataResponse) {
+                    var endNotes = function (data) {
+                        $('#task' + data.Service_Ticket_Id).remove();
+                        $.mobile.loading('hide');
+                        $.mobile.navigate('#tasks');
+
+                        $('#resolution_notes' + (withcode ? '_withcode' : '')).val('');                         // clearing goback/resolved
+                        $('#resolution_code option').attr('selected', false);    // resolution notes
+                        $('#resolution_code').selectmenu('refresh', true);    // values
+                    }
+                    if (!withcode) {
+                        endNotes({Service_Ticket_Id: app.task_data[app.task_id].Service_Ticket_Id});
+                    } else {
+                        jQuery.ajax({
+                            type: 'PUT',
+                            url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
+                            data: {
+                                'Resolution_Id': parseInt($('#resolution_code').val()),
+                                'UserCode': app.user_code
+                            }
+                        }).always(endNotes({Service_Ticket_Id: app.task_data[app.task_id].Service_Ticket_Id}));
+                    }
+
+                });
+            } else {
+                navigator.notification.alert(
+                    'Required fields are empty',                    // message
+                    false,                                          // callback
+                    'Please select resolution status and add notes',// title
+                    'OK'                                            // buttonName
+                );
             }
-        }).always(function (dataResponse) {
-                var endNotes = function (data) {
-                    $('#task' + data.Service_Ticket_Id).remove();
-                    $.mobile.loading('hide');
-                    $.mobile.navigate('#tasks');
-
-                    $('#resolution_notes'+(withcode?'_withcode':'')).val('');                         // clearing goback/resolved
-                    $('#resolution_code option').attr('selected', false);    // resolution notes
-                    $('#resolution_code').selectmenu('refresh', true);    // values
-                }
-                if (!withcode) {
-                    endNotes({Service_Ticket_Id:app.task_data[app.task_id].Service_Ticket_Id});
-                } else {
-                    jQuery.ajax({
-                        type: 'PUT',
-                        url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
-                        data: {
-                            'Resolution_Id': parseInt($('#resolution_code').val()),
-                            'UserCode':app.user_code
-                        }
-                    }).always(endNotes({Service_Ticket_Id:app.task_data[app.task_id].Service_Ticket_Id}));
-                }
-
-        });
-        } else{
-            navigator.notification.alert(
-                'Required fields are empty',                    // message
-                false,                                          // callback
-                'Please select resolution status and add notes',// title
-                'OK'                                            // buttonName
-            );
         }
+
     },
     drawTask: function (data) {
         if($('#tasks #tasks_content table')) {
@@ -784,7 +790,7 @@ var app = {
         taskStatusData.data.UserCode = app.user_code;
         taskStatusData.data.ticket_number = app.task_data[app.task_id].Ticket_Number,
 
-
+app.taskStatusData = taskStatusData;
             jQuery.ajax({
             type: 'POST',
             url: app.apiUrl + 'taskhistory/create?access-token=' + app.access_token,
@@ -846,9 +852,9 @@ var app = {
                     });
                 }else
                 if ('depart' == dataResponse.status) {
-                    $('#status_dispatch,#status_arrived,#status_depart,button[id^="task_btn_"]').addClass('ui-disabled');
+                    //$('#status_dispatch,#status_arrived,#status_depart,button[id^="task_btn_"]').addClass('ui-disabled');
                     this.showLoader('Saving task status');
-                    var departType = false;
+
                     navigator.notification.confirm('Do you need to add material?',
                         function (button) {
 
@@ -861,15 +867,22 @@ var app = {
                                 navigator.notification.confirm('Select depart type', function (button) {
 
                                     if (1 == button) {
-                                        departType = 'GB';
-                                        app.depart(taskStatusData, departType);
+                                        app.departType = 'GB';
                                     } else if (2 == button) {
-                                        departType = 'RS';
-                                        app.depart(taskStatusData, departType);
+                                        app.departType = 'RS';
+                                        //app.depart(taskStatusData);
                                     }else if(3 == button){
                                         departType = false;
                                         $('#status_depart,button[id^="task_btn_"]').removeClass('ui-disabled');
                                         $.mobile.loading('hide');
+                                    }
+                                    if (app.departType == 'RS') {
+                                        $.mobile.navigate('#gobacknoteswithcode');
+
+                                    }
+                                    else if (app.departType == 'GB') {
+                                        $.mobile.navigate('#gobacknotes');
+
                                     }
 
                                 }, 'Depart type', ['Go back', 'Resolved', 'Cancel'])
@@ -896,10 +909,10 @@ var app = {
 
         }.bind(this));
     },
-    depart:function(taskStatusData, departType){
-        if (departType) {
+    depart:function(taskStatusData){
+        if (app.departType) {
             var data = taskStatusData.data;
-            data.Ticket_Status = departType;
+            data.Ticket_Status = app.departType;
 
             jQuery.ajax({
                 type: 'PUT',
@@ -916,15 +929,6 @@ var app = {
                 data: data
             }).always(function (data) {
                 $('#task' + data.Service_Ticket_Id).remove();
-
-                if (departType == 'RS') {
-                    $.mobile.navigate('#gobacknoteswithcode');
-
-                }
-                else if (departType == 'GB') {
-                    $.mobile.navigate('#gobacknotes');
-
-                }
             });
         }
     },
