@@ -10,6 +10,7 @@ namespace common\behaviors;
 use yii;
 use yii\base\Behavior;
 use yii\db\ActiveRecord;
+use \common\models\SYEditLog as SYEditLogModel;
 
 class SYEditLog extends Behavior
 {
@@ -126,7 +127,7 @@ class SYEditLog extends Behavior
                 'ip' => $request->getUserIp()]);
             $log = new \common\models\SYEditLog();
             $log->UserCode = $userCode;
-            $log->Edit_Timestamp = date('Y-m-d H:i:s');
+            $log->Edit_Timestamp =  new yii\db\Expression( " GETDATE()" );
             $log->SystemComments = $json;
             $log->UserComments = $userComments;
             $log->TableName = $tableName;
