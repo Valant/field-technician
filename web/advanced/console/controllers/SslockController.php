@@ -8,7 +8,7 @@ use yii\console\Controller;
 /**
  * SSLockTable clear
  */
-class SSLockController extends Controller {
+class SslockController extends Controller {
 
     public function actionIndex()
     {
