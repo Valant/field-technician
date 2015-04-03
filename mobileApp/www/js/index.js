@@ -17,7 +17,7 @@
  * under the License.
  */
 var app = {
-    version: '0.11.2',
+    version: '0.11.3',
     db: false,
     task_id: false,
     uploaded: 0,
@@ -84,7 +84,9 @@ var app = {
                             app.user_data = data;
                             app.user_code = data.usercode;
                             app.access_token = data.auth_key;
-                            app.loadTask();
+                            app.loadTasks();
+                            app.loadResolitons();
+
                         } else {
                             app.logout();
                         }
@@ -118,7 +120,8 @@ var app = {
                 app.user_id = data.technition_id;
                 app.user_code = data.usercode;
                 app.access_token = data.auth_key;
-                app.loadTask();
+                app.loadTasks();
+                app.loadResolitons();
             } else {
                 console.warn(data.message.password[0]);
                 $('#signin .errors').text(data.message.password[0]);
@@ -126,12 +129,16 @@ var app = {
             }
         });
     },
-    loadTask: function () {
+    loadTasks: function () {
         app.showLoader('Load tasks');
         jQuery.getJSON(app.apiUrl + '/ticket/list', {
-            'access-token':app.access_token
+            'access-token':app.access_token,
+            'UserCode':app.user_code
         }, this.drawTask);
 
+
+    },
+    loadResolitons: function(){
         jQuery.getJSON(app.apiUrl+'/resolution/',{'access-token':window.localStorage.getItem('access_token')},
             function(data){
                 if(data){
@@ -139,8 +146,8 @@ var app = {
                     $.each(data,function(key, el){
                         $('select#resolution_code').append('<option value="'+el.Resolution_Id+'">'+el.Description+'</option>')
                     });
-            }
-        });
+                }
+            });
     },
     saveGoBackNotes:function(withcode){
         if(withcode == undefined){
@@ -197,26 +204,36 @@ var app = {
         }
 
     },
+    toggletasks: function(el){
+      var $toggleRaw = $(el).parents('tbody');
+        $('tr:not(:first)',$toggleRaw).toggle();
+        $toggleRaw.find('a').toggleClass('ui-icon-plus','ui-icon-minus')
+
+    },
     drawTask: function (data) {
         if($('#tasks #tasks_content table')) {
             $('#tasks #tasks_content table').table();
         }
-        $('#tasks #tasks_content table tbody').empty();
+        $('#tasks #tasks_content table tbody').remove();
 
         var taskDay = null;
         $.each(data, function (index, value) {
             var curDay = moment(value.Scheduled_For, 'MMM DD YYYY HH:mm:ss0A').format('MM/DD/YYYY');
-            var rawCurDay = '';
+            var rawCurDayBegin = '';
+            var rawCurDayEnd = '';
+            var tglbtn = '<a data-role="button" data-icon="minus" data-iconpos="notext" data-theme="a" data-inline="true" class="ui-link ui-btn ui-btn-a ui-icon-minus ui-btn-icon-notext ui-btn-inline ui-shadow ui-corner-all" role="button">Show tasks</a>';
             if (curDay != taskDay)
             {
+
                 taskDay = curDay;
-                rawCurDay = '<tr><td><b>'+ taskDay +'</b></td></tr>';
+                rawCurDayBegin = '<tbody class="ui-collapsible" ><tr onclick="app.toggletasks(this)"><td><b>'+ taskDay +'</b>'+tglbtn+'</td></tr>';
+                rawCurDayEnd = '</tbody>';
             }
             var taskTime = moment(value.Scheduled_For, 'MMM DD YYYY HH:mm:ss0A').format('HH:mm:ss');
 
             app.task_data[value.Service_Ticket_Id] = value;
 
-            $(rawCurDay+'<tr id="task'+value.Service_Ticket_Id+'" onClick="app.showTaskDetail('+ value.Service_Ticket_Id + ');">' +
+            $(rawCurDayBegin+'<tr id="task'+value.Service_Ticket_Id+'" onClick="app.showTaskDetail('+ value.Service_Ticket_Id + ');">' +
             '<td>' + taskTime + '</td>' +
             '<td>' + value.Ticket_Number + '</td>' +
             '<td><b>' + value.ProblemDescription + '</b></td>' +
@@ -224,12 +241,14 @@ var app = {
             '<td>' + value.City + '</td>' +
             '<td>' + value.Ticket_Status + '</td>' +
             //'<td><button data-icon="info" onclick="app.showTaskDetail(' + value.Service_Ticket_Id + ')">Details</button></td>' +
-            '</tr>').appendTo('#tasks #tasks_content table tbody').closest('table#table-custom-2').table('refresh').trigger('create');
+            '</tr>'+rawCurDayEnd).appendTo('#tasks #tasks_content table ').closest('table#table-custom-2').table('refresh').trigger('create');
             taskDay = curDay;
         });
         $('#tasks #tasks_content table').table('refresh');
+
         $.mobile.loading('hide');
         $.mobile.navigate('#tasks');
+        $('.ui-collapsible').find('tr:not(:first)').toggle();
         navigator.notification && navigator.notification.vibrate(1000);
     },
     addMaterial: function () {

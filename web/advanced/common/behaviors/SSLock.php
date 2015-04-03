@@ -36,20 +36,25 @@ class SSLock extends Behavior
                     $userCode = $params['UserCode'];
                     break;
                 case 'update':
-                    if ($event->action->controller->id == 'dispatch') {
+                case 'create':
+                    if ($event->action->controller->id == 'dispatch'||$event->action->controller->id == 'taskpart') {
                         $params = Yii::$app->request->getBodyParams();
                         $ticketNumber = $params['ticket_number'];
                         $userCode = $params['UserCode'];
                     } else return;
-                case 'create':
 
+/*
                     if ($event->action->controller->id == 'taskpart') {
                         $params = Yii::$app->request->getBodyParams();
                         $ticketNumber = $params['ticket_number'];
                         $userCode = $params['UserCode'];
-                    } else return;
-
-
+                    } else return;*/
+                    break;
+                case 'list':
+                    $params = Yii::$app->request->getQueryParams();
+                    $userCode = $params['UserCode'];
+                    SSLockTable::deleteAll(['LockedByUser' => $userCode]);
+                    return;
                     break;
                 default:
                     return;
