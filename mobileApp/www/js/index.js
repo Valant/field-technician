@@ -207,7 +207,8 @@ var app = {
     toggletasks: function(el){
       var $toggleRaw = $(el).parents('tbody');
         $('tr:not(:first)',$toggleRaw).toggle();
-        $toggleRaw.find('a').toggleClass('ui-icon-plus','ui-icon-minus')
+        $toggleRaw.find('a').toggleClass('ui-icon-minus')
+        $toggleRaw.find('a').toggleClass('ui-icon-plus')
 
     },
     drawTask: function (data) {
@@ -221,7 +222,7 @@ var app = {
             var curDay = moment(value.Scheduled_For, 'MMM DD YYYY HH:mm:ss0A').format('MM/DD/YYYY');
             var rawCurDayBegin = '';
             var rawCurDayEnd = '';
-            var tglbtn = '<a data-role="button" data-icon="minus" data-iconpos="notext" data-theme="a" data-inline="true" class="ui-link ui-btn ui-btn-a ui-icon-minus ui-btn-icon-notext ui-btn-inline ui-shadow ui-corner-all" role="button">Show tasks</a>';
+            var tglbtn = '<a data-role="button" data-icon="plus" data-iconpos="notext" data-theme="a" data-inline="true" class="ui-link ui-btn ui-btn-a ui-icon-plus ui-btn-icon-notext ui-btn-inline ui-shadow ui-corner-all" role="button">Show tasks</a>';
             if (curDay != taskDay)
             {
 
