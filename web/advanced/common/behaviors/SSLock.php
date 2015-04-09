@@ -53,7 +53,7 @@ class SSLock extends Behavior
                 case 'list':
                     $params = Yii::$app->request->getQueryParams();
                     $userCode = $params['UserCode'];
-                    SSLockTable::deleteAll(['LockedByUser' => $userCode]);
+                    SSLockTable::deleteAll("LockedByUser ='".$userCode."' and Form = 'mobile'");
                     return;
                     break;
                 default:
@@ -86,7 +86,7 @@ class SSLock extends Behavior
 
                 $lock->save();
             } elseif ((time() - strtotime($tickedLocked['LockedTime'])) > 60 *5 || $tickedLocked['LockedByUser'] == $userCode) {
-                SSLockTable::deleteAll(['Code' => $ticketNumber]);
+                SSLockTable::deleteAll("Code ='".$ticketNumber."' and Form = 'mobile'");
                 $lock->save();
             }
         }

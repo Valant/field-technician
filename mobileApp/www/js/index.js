@@ -22,8 +22,8 @@ var app = {
     task_id: false,
     uploaded: 0,
     needToUpload: 0,
-    //apiUrl: 'http://api.field-technician.loc/',
-    apiUrl: 'http://api.afa.valant.com.ua/',
+    apiUrl: 'http://api.field-technician.loc/',
+    //apiUrl: 'http://api.afa.valant.com.ua/',
     user_id: 0,
     user_code: '',
     user_data: {},
@@ -104,13 +104,13 @@ var app = {
     signin: function () {
         //console.log('User login: ' + $('#login').val());
         //console.log('User password: ' + $('#password').val());
-        this.showLoader('Authorize')
+        this.showLoader('Authorize');
         jQuery.post(app.apiUrl + '/user/login', {
             'LoginForm[username]': $('#login').val(),
             'LoginForm[password]': $('#password').val()
         }, function (data) {
             if (data.id) {
-                console.log('user login [OK]')
+                console.log('user login [OK]');
                 app.user_data = data;
                 window.localStorage.setItem('tech_id',data.technition_id);
                 window.localStorage.setItem('user_id',data.id);
@@ -178,7 +178,7 @@ var app = {
                         $('#resolution_notes' + (withcode ? '_withcode' : '')).val('');                         // clearing goback/resolved
                         $('#resolution_code option').attr('selected', false);    // resolution notes
                         $('#resolution_code').selectmenu('refresh', true);    // values
-                    }
+                    };
                     if (!withcode) {
                         endNotes({Service_Ticket_Id: app.task_data[app.task_id].Service_Ticket_Id});
                     } else {
@@ -207,8 +207,8 @@ var app = {
     toggletasks: function(el){
       var $toggleRaw = $(el).parents('tbody');
         $('tr:not(:first)',$toggleRaw).toggle();
-        $toggleRaw.find('a').toggleClass('ui-icon-minus')
-        $toggleRaw.find('a').toggleClass('ui-icon-plus')
+        $toggleRaw.find('a').toggleClass('ui-icon-minus');
+        $toggleRaw.find('a').toggleClass('ui-icon-plus');
 
     },
     drawTask: function (data) {
@@ -219,13 +219,18 @@ var app = {
 
         var taskDay = null;
         $.each(data, function (index, value) {
+
+            if(value.LockedByUser!=null && app.user_code != value.LockedByUser || (app.user_code == value.LockedByUser && value.Form.toLowerCase()!='mobile')){
+                app.taskLocked[value.Service_Ticket_Id] = true;
+            }else {
+                app.taskLocked[value.Service_Ticket_Id] = false;
+            }
             var curDay = moment(value.Scheduled_For, 'MMM DD YYYY HH:mm:ss0A').format('MM/DD/YYYY');
             var rawCurDayBegin = '';
             var rawCurDayEnd = '';
             var tglbtn = '<a data-role="button" data-icon="plus" data-iconpos="notext" data-theme="a" data-inline="true" class="ui-link ui-btn ui-btn-a ui-icon-plus ui-btn-icon-notext ui-btn-inline ui-shadow ui-corner-all" role="button">Show tasks</a>';
             if (curDay != taskDay)
             {
-
                 taskDay = curDay;
                 rawCurDayBegin = '<tbody class="ui-collapsible" ><tr onclick="app.toggletasks(this)"><td><b>'+ taskDay +'</b>'+tglbtn+'</td></tr>';
                 rawCurDayEnd = '</tbody>';
@@ -265,21 +270,14 @@ var app = {
                         'Enter Material',
                         function (button) {
                             if (1 == button) {
-                                /*mobile_prompt(
-                                 'Please enter material code',  // message
-                                 function (results) {
-                                 if (2 != results.buttonIndex)
-                                 this.searchPart(results.input1)
-                                 }.bind(this)
-                                 );*/
                                 $('#partsearch').attr('data-searchbycode', 1);
-                                $.mobile.navigate('#partsearch')
-                                $('#partsearch input').attr('type', 'number')
+                                $.mobile.navigate('#partsearch');
+                                $('#partsearch input').attr('type', 'number');
                             }
                             else if (2 == button) {
                                 $('#partsearch').attr('data-searchbycode',0);
-                                $.mobile.navigate('#partsearch')
-                                $('#partsearch input').attr('type', 'text')
+                                $.mobile.navigate('#partsearch');
+                                $('#partsearch input').attr('type', 'text');
 
                             }
                         }.bind(this),
@@ -326,9 +324,9 @@ var app = {
                     }
                     $('#parts').listview('refresh');
                     jQuery("#autocomplete").html("");
-                    $('input[data-type="search"]').val("")
+                    $('input[data-type="search"]').val("");
                     $.mobile.loading('hide');
-                    $.mobile.navigate('#taskDetails')
+                    $.mobile.navigate('#taskDetails');
                     $.mobile.silentScroll($('#parts').offset().top);
                     app.uploadTaskData();
                 }
@@ -339,8 +337,8 @@ var app = {
         );
     },
     searchPart: function (materialCode) {
-        this.showLoader('Searching part')
-        var self = this
+        this.showLoader('Searching part');
+        var self = this;
         jQuery.getJSON(app.apiUrl + 'part/search', {
             code: materialCode,
             'access-token':app.access_token
@@ -378,7 +376,7 @@ var app = {
             code: keyword,
             'access-token':app.access_token
         }, function (data) {
-            $.mobile.loading('hide')
+            $.mobile.loading('hide');
             if ('error' == data.status) {
                 $.mobile.loading('hide');
                 navigator.notification.alert(
@@ -392,9 +390,9 @@ var app = {
 
                     sugList.append('<li ' +
                     'onClick="app.addPartToTicket({Part_Code:\''+val.Part_Code+'\',Part_Id:\''+val.Part_Id+'\',Description:\''+val.Description.replace(/"/g, '&quot;')+'\',Detail:\''+val.Detail.replace(/"/g, '&quot;')+'\'})" >'+val.Part_Code+'-'+val.Description+'</li>');
-                })
+                });
                 sugList.listview("refresh");
-                $('#autocomplete li').removeClass('ui-screen-hidden')
+                $('#autocomplete li').removeClass('ui-screen-hidden');
                 app.keywordAutocomplete.abort();
             }
         }.bind(this));
@@ -405,7 +403,7 @@ var app = {
             scanner.scan(
                 function (result) {
                     if (!result.cancelled) {
-                        var quantity = null
+                        var quantity = null;
                         this.searchPart(result.text);
                     }
                 }.bind(this),
@@ -592,25 +590,22 @@ var app = {
                     }
                 })
             ).done(function () {
-                    console.info('addParts')
                     for (var part_id in app.usedParts) {
-                        console.info(part_id);
                         jQuery.ajax({
                             type: 'POST',
                             url: app.apiUrl + 'taskpart/create?access-token=' + app.access_token,
                             data: {
                                 'Service_Tech_ID': app.user_id,
                                 'Service_Ticket_Id': app.task_id,
-                                'ticket_number':app.task_data[app.task_id].Ticket_Number,
+                                'ticket_number': app.task_data[app.task_id].Ticket_Number,
                                 'Part_Id': part_id,
                                 'Quantity': app.usedParts[part_id],
-                                'UserCode':app.user_code
+                                'UserCode': app.user_code
 
                             }
-                        })
+                        });
                     }
-
-                        $.mobile.loading('hide');
+                    $.mobile.loading('hide');
 
                 }.bind(this)
             );
@@ -632,7 +627,7 @@ var app = {
 
     },
     showTaskDetail: function (task_id, data) {
-        this.showLoader('Loading task data')
+        this.showLoader('Loading task data');
         this.clearTask();
         var task = app.task_data[task_id];
         app.usedParts = [];
@@ -658,47 +653,50 @@ var app = {
         alert(err.code + '\n' + err.message);
     },
     getTaskData: function (tx) {
-        if(app.taskLocked[app.task_id]==false)
-        jQuery.getJSON(app.apiUrl + '/taskattachment/search', {task_id: app.task_id,'access-token':app.access_token}, function (data) {
-            if(data){
-                for(var i in data){
-                    $('#photos').append(
-                        '<div class="newImage" data-attachment-id="' + data[i].id + '" >' +
+        if(app.taskLocked[app.task_id]==false) {
+            jQuery.getJSON(app.apiUrl + '/taskattachment/search', {
+                task_id: app.task_id,
+                'access-token': app.access_token
+            }, function (data) {
+                if (data) {
+                    for (var i in data) {
+                        $('#photos').append(
+                            '<div class="newImage" data-attachment-id="' + data[i].id + '" >' +
                             '<img class="photoPreview" ' +
-                                'data-on-server="true" ' +
-                                'src="' + app.apiUrl + '/uploads/' + data[i].task_id + '/' + data[i].path + '"/>' +
+                            'data-on-server="true" ' +
+                            'src="' + app.apiUrl + '/uploads/' + data[i].task_id + '/' + data[i].path + '"/>' +
                             '<button data-icon="delete" data-iconpos="notext" onclick="app.removeImage(this);"></button>' +
-                        '</div>');
-                    $('#photos').trigger('create');
+                            '</div>');
+                        $('#photos').trigger('create');
+                    }
                 }
-            }
 
-        });
-        if(!app.taskLocked[app.task_id]==false)
-        jQuery.getJSON(app.apiUrl + '/taskpart/search', {
-            'Service_Ticket_Id': app.task_id,
-            'expand': 'part',
-            'access-token': app.access_token
-        }, function (data) {
-            if (data) {
-                for (var i in data) {
-                    app.usedParts[data[i].part.Part_Id] = data[i].Quantity;
-                    $('#parts').append('<li data-icon="delete" id="part' + data[i].part.Part_Id + '">' +
-                    '<a onclick="app.removePart(' + data[i].part.Part_Id + ')">'
-                    + data[i].part.Part_Code + ' ' + data[i].part.Detail + ' ' + data[i].part.Description +
-                    '<span class="ui-li-count">' + data[i].Quantity + '</span>' +
-                    '</a>' +
-                    '</li>');
+            });
+
+            jQuery.getJSON(app.apiUrl + '/taskpart/search', {
+                'Service_Ticket_Id': app.task_id,
+                'expand': 'part',
+                'access-token': app.access_token
+            }, function (data) {
+                if (data) {
+                    for (var i in data) {
+                        app.usedParts[data[i].part.Part_Id] = data[i].Quantity;
+                        $('#parts').append('<li data-icon="delete" id="part' + data[i].part.Part_Id + '">' +
+                        '<a onclick="app.removePart(' + data[i].part.Part_Id + ')">'
+                        + data[i].part.Part_Code + ' ' + data[i].part.Detail + ' ' + data[i].part.Description +
+                        '<span class="ui-li-count">' + data[i].Quantity + '</span>' +
+                        '</a>' +
+                        '</li>');
+                    }
+                    $('#parts').listview('refresh');
                 }
-                $('#parts').listview('refresh');
-            }
-        }.bind(this));
+            }.bind(this));
+        }
         jQuery.getJSON(app.apiUrl+'ticket/getdispatch',{
             'task_id': app.task_id,
             'access-token':app.access_token
         },function(data){
             app.task_data[data.Service_Ticket_Id]['Dispatch_Id'] = data.Dispatch_Id;
-            console.info('locked', app.taskLocked[app.task_id])
             if(app.taskLocked[app.task_id]){
                 navigator.notification.alert(
                     'Task Locked by user '+data.LockedByUser,  // message
@@ -739,15 +737,7 @@ var app = {
         //this.task_data[this.task_id] = data; // here was error with rewriting task custom params
         $.extend(this.task_data[this.task_id], data);
 
-            if(app.user_code != data.LockedByUser && data.LockedByUser!=undefined){
 
-                app.taskLocked[this.task_id]=true;
-            }else{
-                app.taskLocked[this.task_id]=false;
-            }
-            console.info(app.user_code != data.LockedByUser && data.LockedByUser!=undefined)
-            console.info(app.user_code)
-            console.info(data.LockedByUser);
         var task = data;
 
             $('#taskName').text(task.ProblemDescription + ' - ' + task.Customer_Name);
