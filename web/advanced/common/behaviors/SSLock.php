@@ -65,6 +65,7 @@ class SSLock extends Behavior
         SV_Service_Ticket.Ticket_Number,
         SS_LockTable.LockTable_Id,
         SS_LockTable.LockedByUser,
+        SS_LockTable.Form,
         SS_LockTable.LockedTime')
                 ->from('SV_Service_Ticket')
                 ->leftJoin('SS_LockTable', 'SV_Service_Ticket.Ticket_Number = SS_LockTable.Code')
