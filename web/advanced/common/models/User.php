@@ -278,6 +278,9 @@
             $fields['usercode'] = function(){
                 return $this->technition->employee->UserCode;
             };
+            $fields['warehoise_id'] = function(){
+                return $this->technition->Warehouse_Id;
+            };
             return $fields;
         }
     }

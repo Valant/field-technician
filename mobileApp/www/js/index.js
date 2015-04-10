@@ -30,6 +30,7 @@ var app = {
     task_data: [],
     taskLocked:[],
     usedParts: {},
+    user_warehouse_id: null,
     attachmentToDelete: [],
     part_to_delete: 0,
     image_to_remove: false,
@@ -84,6 +85,7 @@ var app = {
                             app.user_data = data;
                             app.user_code = data.usercode;
                             app.access_token = data.auth_key;
+                            app.user_warehouse_id = data.warehoise_id;
                             app.loadTasks();
                             app.loadResolitons();
 
@@ -120,6 +122,7 @@ var app = {
                 app.user_id = data.technition_id;
                 app.user_code = data.usercode;
                 app.access_token = data.auth_key;
+                app.user_warehouse_id = data.warehoise_id;
                 app.loadTasks();
                 app.loadResolitons();
             } else {
@@ -600,7 +603,8 @@ var app = {
                                 'ticket_number': app.task_data[app.task_id].Ticket_Number,
                                 'Part_Id': part_id,
                                 'Quantity': app.usedParts[part_id],
-                                'UserCode': app.user_code
+                                'UserCode': app.user_code,
+                                'Warehouse_Id':app.user_warehouse_id
 
                             }
                         });
@@ -730,7 +734,7 @@ var app = {
 
     },
     drawTaskDetails: function (data) {
-        console.info(data);
+
         data = data[0];
 
         if (undefined!=data) {
