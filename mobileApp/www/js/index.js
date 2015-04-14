@@ -17,7 +17,7 @@
  * under the License.
  */
 var app = {
-    version: '0.11.4',
+    version: '0.11.5',
     db: false,
     task_id: false,
     uploaded: 0,
@@ -225,7 +225,7 @@ var app = {
         $.each(data, function (index, value) {
 
             if(value.LockedByUser!=null && app.user_code != value.LockedByUser || (app.user_code == value.LockedByUser && value.Form.toLowerCase()!='mobile')){
-                app.taskLocked[value.Service_Ticket_Id] = true;
+                app.taskLocked[value.Service_Ticket_Id] = value.LockedByUser;
             }else {
                 app.taskLocked[value.Service_Ticket_Id] = false;
             }
@@ -704,7 +704,7 @@ var app = {
             app.task_data[data.Service_Ticket_Id]['Dispatch_Id'] = data.Dispatch_Id;
             if(app.taskLocked[app.task_id]){
                 navigator.notification.alert(
-                    'Task Locked by user '+data.LockedByUser,  // message
+                    'Task Locked by user: "'+app.taskLocked[app.task_id]+'"',  // message
                     function(res){},         // callback
                     'Task Locked',            // title
                     'OK'                  // buttonName
