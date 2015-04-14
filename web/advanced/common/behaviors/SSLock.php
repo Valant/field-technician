@@ -32,23 +32,16 @@ class SSLock extends Behavior
             switch ($event->action->id) {
                 case 'find':
                     $params = Yii::$app->request->getQueryParams();
-                    $ticketNumber = $params['ticket_number'];
+                    $ticketNumber = $params['Ticket_Number'];
                     $userCode = $params['UserCode'];
                     break;
                 case 'update':
                 case 'create':
                     if ($event->action->controller->id == 'dispatch'||$event->action->controller->id == 'taskpart') {
                         $params = Yii::$app->request->getBodyParams();
-                        $ticketNumber = $params['ticket_number'];
+                        $ticketNumber = $params['Ticket_Number'];
                         $userCode = $params['UserCode'];
                     } else return;
-
-/*
-                    if ($event->action->controller->id == 'taskpart') {
-                        $params = Yii::$app->request->getBodyParams();
-                        $ticketNumber = $params['ticket_number'];
-                        $userCode = $params['UserCode'];
-                    } else return;*/
                     break;
                 case 'list':
                     $params = Yii::$app->request->getQueryParams();
@@ -88,7 +81,9 @@ class SSLock extends Behavior
                 $lock->save();
             } elseif ((time() - strtotime($tickedLocked['LockedTime'])) > 60 *5 || $tickedLocked['LockedByUser'] == $userCode) {
                 SSLockTable::deleteAll("Code ='".$ticketNumber."' and Form = 'mobile'");
-               if(strtolower($tickedLocked['Form'])=='mobile') $lock->save();
+               if(strtolower($tickedLocked['Form'])=='mobile') {
+                   $lock->save();
+               }
             }
         }
     }

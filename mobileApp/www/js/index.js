@@ -163,11 +163,12 @@ var app = {
                 app.showLoader('Saving task status');
                 jQuery.ajax({
                     type: 'POST',
-                    url: app.apiUrl + '/ticketnotes/create?access-token=' + app.access_token,
+                    url: app.apiUrl + '/ticketnotes/create?access-token=' + app.acces|s_token,
                     data: {
                         Service_Ticket_Id: app.task_data[app.task_id].Service_Ticket_Id,
                         UserCode: app.user_code,
                         Edit_UserCode: app.user_code,
+                        Ticket_Number : app.task_data[app.task_id].Ticket_Number,
                         Entered_Date: moment().format('MMM DD YYYY HH:mm:ss A'),
                         Edit_Date: moment().format('MMM DD YYYY HH:mm:ss A'),
                         Notes: $('#resolution_notes' + (withcode ? '_withcode' : '')).val()
@@ -600,7 +601,7 @@ var app = {
                             data: {
                                 'Service_Tech_ID': app.user_id,
                                 'Service_Ticket_Id': app.task_id,
-                                'ticket_number': app.task_data[app.task_id].Ticket_Number,
+                                'Ticket_Number': app.task_data[app.task_id].Ticket_Number,
                                 'Part_Id': part_id,
                                 'Quantity': app.usedParts[part_id],
                                 'UserCode': app.user_code,
@@ -642,7 +643,7 @@ var app = {
 
         $.when(jQuery.getJSON(app.apiUrl + '/ticket/find', {
             'id': app.task_id,
-            'ticket_number':app.task_data[app.task_id].Ticket_Number,
+            'Ticket_Number':app.task_data[app.task_id].Ticket_Number,
             'access-token':app.access_token,
             'UserCode':app.user_code
         }, this.drawTaskDetails.bind(this))).done(function (res) {
@@ -802,7 +803,7 @@ var app = {
     saveTaskStatus: function (taskStatusData) {
 
         taskStatusData.data.UserCode = app.user_code;
-        taskStatusData.data.ticket_number = app.task_data[app.task_id].Ticket_Number,
+        taskStatusData.data.Ticket_Number = app.task_data[app.task_id].Ticket_Number;
 
 app.taskStatusData = taskStatusData;
             jQuery.ajax({
@@ -811,6 +812,7 @@ app.taskStatusData = taskStatusData;
             data: {
                 'task_id': app.task_id,
                 'tech_id': app.user_id,
+                'Ticket_Number' : app.task_data[app.task_id].Ticket_Number,
                 'status': taskStatusData.status
             }
         }).always(function (dataResponse) {
@@ -832,8 +834,9 @@ app.taskStatusData = taskStatusData;
                         type: 'PUT',
                         url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
                         data: {
-                            'Ticket_Status': 'IP',
-                            'UserCode':app.user_code
+                            'Ticket_Status' : 'IP',
+                            'UserCode' : app.user_code,
+                            'Ticket_Number' : app.task_data[app.task_id].Ticket_Number
                         }
                     }).always(function (data) {
                         //$('#task' + data.Service_Ticket_Id).remove();
@@ -858,7 +861,9 @@ app.taskStatusData = taskStatusData;
                         url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
                         data: {
                             'Ticket_Status': 'IP',
-                            'UserCode':app.user_code
+                            'UserCode':app.user_code,
+                            'Ticket_Number' : app.task_data[app.task_id].Ticket_Number
+
 
                         }
                     }).always(function (data) {
@@ -927,6 +932,8 @@ app.taskStatusData = taskStatusData;
         if (app.departType) {
             var data = taskStatusData.data;
             data.Ticket_Status = app.departType;
+            data.Ticket_Number  = app.task_data[app.task_id].Ticket_Number
+
 
             jQuery.ajax({
                 type: 'PUT',

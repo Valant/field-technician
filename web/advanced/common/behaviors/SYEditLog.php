@@ -15,7 +15,6 @@ use \common\models\SYEditLog as SYEditLogModel;
 class SYEditLog extends Behavior
 {
 
-
     public function events()
     {
         return [
@@ -26,16 +25,7 @@ class SYEditLog extends Behavior
     public function saveSyEditLog($event)
     {
 
-        /*
-         * string(6) "action"
-        string(6) "result"
-        string(7) "isValid"
-        string(4) "name"
-        string(6) "sender"
-        string(7) "handled"
-        string(4) "data"
-         */
-
+        $ticketNumber = null;
         if (!in_array($event->action->id, ['list', 'getdispatch', 'search', 'keyword', 'empty'])) {
             $request = Yii::$app->request;
             $model = $event->result;
@@ -61,37 +51,20 @@ class SYEditLog extends Behavior
                         $type = 'ticket';
                         break;
                 }
-                if (is_array($model->getPrimaryKey())) {
-
-                    foreach ($model->getPrimaryKey() as $key => $val) {
-                        $keys[] = $key;
-                        $vals[] = $val;
-                    }
-                    $primaryKey = implode(',', $keys);
-                    $primaryKeyValue = implode(',', $vals);
-                } else {
-                    $primaryKey = $model->getPrimaryKey();
-                    $primaryKeyValue = $model->primaryKey()[0];
-                }
                 $tableName = $model->tableName();
-                $userCode = isset($request->getBodyParams()['UserCode']) ? $request->getBodyParams()['UserCode'] : '';
+                $userCode = $request->getBodyParam('UserCode', '');
+                $ticketNumber = $request->getBodyParam('Ticket_Number', '');
             } elseif ($model instanceof \yii\data\ActiveDataProvider) {
 
                 $type = 'ticket';
                 $model = new $event->action->controller->modelClass;
 
                 $tableName = $model->tableName();
-
-                $primaryKey = $model->primaryKey()[0];
-                $actionParams = $event->action->controller->actionParams;
-                $id = $actionParams['id'] ? $actionParams['id'] : $actionParams['task_id'];
-                $primaryKeyValue = $id;
-
+                $ticketNumber = $request->getQueryParam('Ticket_Number', null);
                 $userCode = $request->getQueryParam('UserCode', '');
             } else {
                 return;
             }
-
 
             switch ($event->action->id) {
                 case 'empty':
@@ -127,39 +100,15 @@ class SYEditLog extends Behavior
                 'ip' => $request->getUserIp()]);
             $log = new \common\models\SYEditLog();
             $log->UserCode = $userCode;
-            $log->Edit_Timestamp =  new yii\db\Expression( " GETDATE()" );
+            $log->Edit_Timestamp = new yii\db\Expression(" GETDATE()");
             $log->SystemComments = $json;
             $log->UserComments = $userComments;
             $log->TableName = $tableName;
-            $log->KeyField = $primaryKey;
-            $log->KeyData = $primaryKeyValue;
+            $log->KeyField = 'Ticket_Number';//$primaryKey;
+            $log->KeyData = $ticketNumber;//$primaryKeyValue;
             $log->Edit_Type_AUD = $editTypeAUD;
             $log->save();
         }
 
     }
 }
-
-/*
- * CREATE TABLE SY_Edit_Log
-(
-    Edit_Log_Id INT NOT NULL,
-    UserCode VARCHAR(25),
-    Edit_Timestamp DATETIME,
-    TableName VARCHAR(50),
-    Edit_Type_AUD CHAR(1),
-    KeyField VARCHAR(50),
-    KeyData VARCHAR(50),
-    UserComments VARCHAR(255),
-    SystemComments VARCHAR(255),
-    Edit_Column_Name VARCHAR(50),
-    OldData VARCHAR(255),
-    NewData VARCHAR(255)
-);
-CREATE UNIQUE INDEX fk_keydata ON SY_Edit_Log (KeyData);
-CREATE UNIQUE INDEX fk_keyfield ON SY_Edit_Log (KeyField);
-CREATE UNIQUE INDEX fk_tablename ON SY_Edit_Log (TableName);
-CREATE UNIQUE INDEX fk_usercode ON SY_Edit_Log (UserCode);
-CREATE UNIQUE INDEX pk_edit_log_id ON SY_Edit_Log (Edit_Log_Id);
-
- */
