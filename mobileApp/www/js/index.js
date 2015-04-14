@@ -64,7 +64,7 @@ var app = {
         }
         mobile_prompt = navigator.notification.prompt;
         if ('android' != cordova.platformId && undefined != window.plugins.iosNumpad)
-        {
+        {data.locked_length +' minutes ago'
             mobile_prompt = window.plugins.iosNumpad.prompt;
         }
 
@@ -225,7 +225,7 @@ var app = {
         $.each(data, function (index, value) {
 
             if(value.LockedByUser!=null && app.user_code != value.LockedByUser || (app.user_code == value.LockedByUser && value.Form.toLowerCase()!='mobile')){
-                app.taskLocked[value.Service_Ticket_Id] = value.LockedByUser;
+                app.taskLocked[value.Service_Ticket_Id] = {user:value.LockedByUser,time:''};
             }else {
                 app.taskLocked[value.Service_Ticket_Id] = false;
             }
@@ -658,6 +658,63 @@ var app = {
         alert(err.code + '\n' + err.message);
     },
     getTaskData: function (tx) {
+
+        jQuery.getJSON(app.apiUrl+'ticket/getdispatch',{
+            'task_id': app.task_id,
+            'access-token':app.access_token
+        },function(data){
+            console.info('dispatch data',data);
+            data = data[0]
+            if(data.LockedByUser)
+                if(data.form.toLowerCase()=='mobile' && data.LockedByUser ==app.user_code){
+                    app.taskLocked[app.task_id] = false;
+                }else{
+                    app.taskLocked[app.task_id] = data.LockedByUser;
+                }
+            else{
+                app.taskLocked[app.task_id] = false;
+            }
+            app.task_data[data.Service_Ticket_Id]['Dispatch_Id'] = data.Dispatch_Id;
+            if(data)
+                if(app.taskLocked[app.task_id]){
+                    var locked_time_message = ''
+                    if(data.locked_length<=1){
+                        locked_time_message = ' one minute ago';
+                    }else if(data.locked_length>1 && data.locked_length<=60){
+                        locked_time_message = data.locked_length +' minutes ago';
+                    }else {
+                        locked_time_message = ' about '+ Math.round(data.locked_length/60) +' hour(s) ago';
+                    }
+                    navigator.notification.alert(
+                        'Task Locked by user: "'+app.taskLocked[app.task_id]+'"'+locked_time_message,  // message
+                        function(res){},         // callback
+                        'Task Locked',            // title
+                        'OK'                  // buttonName
+                    );
+
+                    $('#status_dispatch,#status_arrived,#status_depart,button[id^="task_btn_"]').addClass('ui-disabled');
+
+                }else if(moment(data.Dispatch_Time, 'MMM DD YYYY HH:mm:ss0A').unix() > 0){
+
+                    $('#status_dispatch').addClass('ui-disabled');
+
+                    if(moment(data.Arrival_Time, 'MMM DD YYYY HH:mm:ss0A').unix() > 0){
+                        $('#status_arrived').addClass('ui-disabled');
+                        if(moment(data.Departure_Time, 'MMM DD YYYY HH:mm:ss0A').unix() > 0){
+                            $('#status_depart').addClass('ui-disabled');
+                        }else{
+                            $('#status_depart,button[id^="task_btn_"]').removeClass('ui-disabled');
+                        }
+                    }else{
+                        console.log('remove class for arrival');
+                        $('#status_arrived').removeClass('ui-disabled');
+                    }
+                }else{
+                    $('#status_dispatch').removeClass('ui-disabled');
+                }
+
+        }.bind(this));
+
         if(app.taskLocked[app.task_id]==false) {
             jQuery.getJSON(app.apiUrl + '/taskattachment/search', {
                 task_id: app.task_id,
@@ -697,41 +754,7 @@ var app = {
                 }
             }.bind(this));
         }
-        jQuery.getJSON(app.apiUrl+'ticket/getdispatch',{
-            'task_id': app.task_id,
-            'access-token':app.access_token
-        },function(data){
-            app.task_data[data.Service_Ticket_Id]['Dispatch_Id'] = data.Dispatch_Id;
-            if(app.taskLocked[app.task_id]){
-                navigator.notification.alert(
-                    'Task Locked by user: "'+app.taskLocked[app.task_id]+'"',  // message
-                    function(res){},         // callback
-                    'Task Locked',            // title
-                    'OK'                  // buttonName
-                );
 
-                $('#status_dispatch,#status_arrived,#status_depart,button[id^="task_btn_"]').addClass('ui-disabled');
-
-            }else if(moment(data.Dispatch_Time, 'MMM DD YYYY HH:mm:ss0A').unix() > 0){
-
-                $('#status_dispatch').addClass('ui-disabled');
-
-                if(moment(data.Arrival_Time, 'MMM DD YYYY HH:mm:ss0A').unix() > 0){
-                    $('#status_arrived').addClass('ui-disabled');
-                    if(moment(data.Departure_Time, 'MMM DD YYYY HH:mm:ss0A').unix() > 0){
-                        $('#status_depart').addClass('ui-disabled');
-                    }else{
-                        $('#status_depart,button[id^="task_btn_"]').removeClass('ui-disabled');
-                    }
-                }else{
-                    console.log('remove class for arrival');
-                    $('#status_arrived').removeClass('ui-disabled');
-                }
-            }else{
-                $('#status_dispatch').removeClass('ui-disabled');
-            }
-
-        }.bind(this));
 
     },
     drawTaskDetails: function (data) {
