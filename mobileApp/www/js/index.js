@@ -163,7 +163,7 @@ var app = {
                 app.showLoader('Saving task status');
                 jQuery.ajax({
                     type: 'POST',
-                    url: app.apiUrl + '/ticketnotes/create?access-token=' + app.acces|s_token,
+                    url: app.apiUrl + '/ticketnotes/create?access-token=' + app.access_token,
                     data: {
                         Service_Ticket_Id: app.task_data[app.task_id].Service_Ticket_Id,
                         UserCode: app.user_code,
