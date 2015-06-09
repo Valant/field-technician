@@ -46,4 +46,9 @@
                 'GL_Code'       => 'Gl  Code',
             ];
         }
+
+        public static function find()
+        {
+            return parent::find()->andWhere(['Inactive' => 'N']);
+        }
     }
