@@ -61,14 +61,15 @@
 
             $query = $modelClass::find();
             if (isset( $params['Category_Code'] )) {
-                $query->andWhere( "Category_Code LIKE :Category_Code" );
+                $query->where( "Category_Code LIKE :Category_Code" );
                 $query->addParams( [ ':Category_Code' => $params['Category_Code'] . "%" ] );
                 $query->addOrderBy( [ 'Category_Code' => SORT_ASC ] );
                 unset( $params['Category_Code'] );
             }
             if (isset( $params['q'] )) {
-                $query->andWhere( "GL_Code LIKE :q" );
+                $query->where( "GL_Code LIKE :q" );
                 $query->addParams( [ ':q' => $params['q'] . "%" ] );
+                $query->addOrderBy( [ 'GL_Code' => SORT_ASC ] );
                 unset( $params['q'] );
             }
 
