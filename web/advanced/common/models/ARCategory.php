@@ -29,7 +29,7 @@
         public function rules()
         {
             return [
-                [ [ 'Category_Code', 'Description', 'Inactive', 'GL_Code' ], 'string' ]
+                [ [ 'Category_Code', 'Description', 'Inactive', 'GL_Code','q' ], 'string' ]
             ];
         }
 
