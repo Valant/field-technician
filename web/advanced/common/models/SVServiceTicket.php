@@ -315,7 +315,7 @@ class SVServiceTicket extends \yii\db\ActiveRecord
                 ->innerJoin('AR_Customer', 'AR_Customer.Customer_Id = SV_Service_Ticket.Customer_Id')
                 ->innerJoin('AR_Customer_Site',
                     'AR_Customer_Site.Customer_Site_Id = SV_Service_Ticket.Customer_Site_Id')
-                ->leftJoin('SS_LockTable', 'SV_Service_Ticket.Ticket_Number = SS_LockTable.Code')
+                ->leftJoin('SS_LockTable', 'SV_Service_Ticket.Ticket_Number = SS_LockTable.Code and SS_LockTable.Table_Name = "sv_service_ticket"')
                 ->where(["SV_Service_Ticket.Service_Ticket_Id" => $ticketIds])
                 ->orderBy('SV_Service_Ticket.Scheduled_For', 'DESC')->limit(100)
         ]);
