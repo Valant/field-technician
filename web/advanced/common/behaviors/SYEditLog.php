@@ -94,14 +94,10 @@ class SYEditLog extends Behavior
 
             }
 
-            $json = json_encode([
-                'controller' => $event->action->controller->id,
-                'action' => $event->action->id,
-                'ip' => $request->getUserIp()]);
             $log = new \common\models\SYEditLog();
             $log->UserCode = $userCode;
             $log->Edit_Timestamp = new yii\db\Expression(" GETDATE()");
-            $log->SystemComments = $json;
+            $log->SystemComments = "mobile";
             $log->UserComments = $userComments;
             $log->TableName = $tableName;
             $log->KeyField = 'Ticket_Number';//$primaryKey;
