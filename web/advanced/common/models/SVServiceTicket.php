@@ -374,9 +374,9 @@
         {
             if ( ! $insert && isset( $changedAttributes['Resolution_Id'] )) {
                 if($dispatch = SVServiceTicketDispatch::find()
-                    ->where(['Service_Ticket_Id'=>$this->Service_Ticket_Id, 'Service_Tech_Id'=>Yii::$app->user->getIdentity()->technition_id])
+                    ->where(['SV_Service_Ticket_Dispatch.Service_Ticket_Id'=>$this->Service_Ticket_Id, 'SV_Service_Ticket_Dispatch.Service_Tech_Id'=>Yii::$app->user->getIdentity()->technition_id])
                     ->innerJoin('SV_Service_Ticket', 'SV_Service_Ticket.Service_Ticket_Id = SV_Service_Ticket_Dispatch.Service_Ticket_Id')
-                    ->leftJoin('SS_LockTable', 'SV_Service_Ticket.Ticket_Number = SS_LockTable.Code AND SS_LockTable.Table_Name = "sv_service_ticket"')
+                    ->leftJoin('SS_LockTable', "SV_Service_Ticket.Ticket_Number = SS_LockTable.Code AND SS_LockTable.Table_Name = 'sv_service_ticket'")
                     ->orderBy(['Dispatch_Id'=>SORT_DESC])
                     ->one()){
                     $dispatch->Resolution_Id = $this->Resolution_Id;
