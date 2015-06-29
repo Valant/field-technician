@@ -57,6 +57,17 @@ class UpdateAction extends Action
         }
         $model->load($requestParams, '');
 
+        if(isset($requestParams['Ticket_Status'])&&!empty($requestParams['Ticket_Status'])){
+            switch($requestParams['Ticket_Status']){
+                case "GB":
+                        $model->IsGoBack = 'Y';
+                    break;
+                case "RS":
+                        $model->Resolves_Ticket = 'Y';
+                    break;
+            }
+        }
+
         if ($model->save() === false && !$model->hasErrors()) {
             throw new ServerErrorHttpException('Failed to update the object for unknown reason.');
         }
