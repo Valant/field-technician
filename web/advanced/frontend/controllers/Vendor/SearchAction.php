@@ -60,7 +60,7 @@ class SearchAction extends  Action  {
             $query->where("Vendor_Code LIKE :vendnm AND inactive = :inact");
             $query->addParams([':vendnm'=>$params['VENDNM']."%"]);
             $query->addParams([':inact'=>'N']);
-            unset($params['Vendor_Code']);
+            unset($params['VENDNM']);
         }
 
         $dataProvider = new ActiveDataProvider([
