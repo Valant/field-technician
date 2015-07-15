@@ -57,9 +57,10 @@ class SearchAction extends  Action  {
 
         $query = $modelClass::find();
         if(isset($params['VENDNM'])){
-            $query->where("VENDNM LIKE :vendnm");
-            $query->addParams([':vendnm'=>$params['VENDNM']."%"]);
-            unset($params['VENDNM']);
+            $query->where("Vendor_Code LIKE :vendnm AND inactive = :inact");
+            $query->addParams([':vendnm'=>$params['Vendor_Code']."%"]);
+            $query->addParams([':inact'=>'N']);
+            unset($params['Vendor_Code']);
         }
 
         $dataProvider = new ActiveDataProvider([

@@ -14,7 +14,7 @@
 
     class VendorController extends ActiveController
     {
-        public $modelClass = 'common\models\Vendor';
+        public $modelClass = 'common\models\AP_Vendor';
 
         public function actions() {
 
