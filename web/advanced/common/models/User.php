@@ -262,10 +262,14 @@
         }
 
         public function getTechnitionName(){
-            return $this->technition->employee->First_Name." ".$this->technition->employee->Last_Name;
+            if($this->technition) {
+                return $this->technition->employee->First_Name . " " . $this->technition->employee->Last_Name;
+            }
         }
         public function getUserCode(){
-            return $this->technition->employee->UserCode;
+            if($this->technition) {
+                return $this->technition->employee->UserCode;
+            }
         }
         public function extraFields()
         {
