@@ -29,7 +29,13 @@ class TaskpartController extends \yii\rest\ActiveController {
                 'modelClass'  => $this->modelClass,
                 'checkAccess' => [$this, 'checkAccess'],
                 'params'      => \Yii::$app->request->get()
-            ]
+            ],
+            'create' => [
+                'class'       => 'frontend\controllers\Taskpart\CreateAction',
+                'modelClass'  => $this->modelClass,
+                'checkAccess' => [$this, 'checkAccess'],
+                'params'      => \Yii::$app->request->post()
+            ],
         ];
 
         return array_merge(parent::actions(), $actions);
