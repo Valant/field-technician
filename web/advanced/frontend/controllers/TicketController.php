@@ -9,6 +9,7 @@
     namespace frontend\controllers;
 
     use common\behaviors\SSLock;
+    use common\components\PageLoaderComponent;
     use common\models\SVServiceTech;
     use common\models\SVServiceTicket;
     use common\models\SVServiceTicketDispatch;
@@ -51,6 +52,7 @@
         }
 
         public function actionGetdispatch($task_id){
+//            return json_decode(PageLoaderComponent::load(Yii::$app->params['api.url']."/api/serviceticketdispatch/{$task_id}/byserviceticketid"));
 //            return SVServiceTicketDispatch::find()->where(['Service_Ticket_Id'=>$task_id, 'Service_Tech_Id'=>Yii::$app->user->getIdentity()->technition_id])->orderBy(['Dispatch_Id'=>SORT_DESC])->one();
             $query = new Query();
             return new ActiveDataProvider([
@@ -94,29 +96,29 @@
             ]);
         }
     }
-/*
- *
-<>344384</Dispatch_Id>
-<>1119097</Service_Ticket_Id>
-<>219</Service_Tech_Id>
-<>Mar 4 2015 08:00:00:000AM</Schedule_Time>
-<>Apr 14 2015 02:49:14:000PM</Dispatch_Time>
-<>Apr 14 2015 02:53:01:000PM</Arrival_Time>
-<>Dec 30 1899 12:00:00:000AM</Departure_Time>
-<>30</Estimated_Length>
-<>73</Resolution_Id>
-</>
-<>N</Resolves_Ticket>
-<>N</IsGoBack>
-<>dsurrency</UserCode>
-<>Mar 4 2015 10:26:48:403AM</Edit_Timestamp>
-</>
-<>1</Note_id>
-<>7676087</Register_Id>
-<>N</FSU_No_Signer_Available>
-<>6C9B83D5-82C2-E411-9894-002655D28484</rowguid>
-<>0</Send_To_FSU>
-<>0</Holiday>
-<>0</Overtime>
-<>0</Is_Firm>
- */
+    /*
+     *
+    <>344384</Dispatch_Id>
+    <>1119097</Service_Ticket_Id>
+    <>219</Service_Tech_Id>
+    <>Mar 4 2015 08:00:00:000AM</Schedule_Time>
+    <>Apr 14 2015 02:49:14:000PM</Dispatch_Time>
+    <>Apr 14 2015 02:53:01:000PM</Arrival_Time>
+    <>Dec 30 1899 12:00:00:000AM</Departure_Time>
+    <>30</Estimated_Length>
+    <>73</Resolution_Id>
+    </>
+    <>N</Resolves_Ticket>
+    <>N</IsGoBack>
+    <>dsurrency</UserCode>
+    <>Mar 4 2015 10:26:48:403AM</Edit_Timestamp>
+    </>
+    <>1</Note_id>
+    <>7676087</Register_Id>
+    <>N</FSU_No_Signer_Available>
+    <>6C9B83D5-82C2-E411-9894-002655D28484</rowguid>
+    <>0</Send_To_FSU>
+    <>0</Holiday>
+    <>0</Overtime>
+    <>0</Is_Firm>
+     */
