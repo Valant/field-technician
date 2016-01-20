@@ -50,8 +50,6 @@
             $img = str_replace('data:image/png;base64,', '', $img);
             $img = str_replace(' ', '+', $img);
             $fileData = base64_decode($img);
-            $tmpFileName =  tempnam(sys_get_temp_dir(),$postData['task_id']);
-            file_put_contents($tmpFileName, $fileData);
 
             $fileName = mt_rand( 0, PHP_INT_MAX ) . "_userSign" ;
             $fileUrl  = "/web/uploads/" . $postData['task_id'] . "/";
@@ -59,8 +57,8 @@
             if ( ! is_dir( Yii::getAlias( Yii::$app->params['filePath'] ) . $fileUrl )) {
                 mkdir( Yii::getAlias( Yii::$app->params['filePath'] ) . $fileUrl, 0777, true );
             }
-            copy( $tmpFileName, $filePath );
-            unlink($tmpFileName);
+            file_put_contents($filePath, $fileData);
+
             $model          = new TaskAttachment();
             $model->name    = 'User sign';
             $model->task_id = $postData['task_id'];
