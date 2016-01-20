@@ -17,18 +17,18 @@
  * under the License.
  */
 var app = {
-    version: '0.11.5',
+    version: '0.11.7',
     db: false,
     task_id: false,
     uploaded: 0,
     needToUpload: 0,
     //apiUrl: 'http://api.field-technician.loc/',
-    apiUrl: 'http://api.afa.valant.com.ua/',
+    apiUrl: 'http://ftapitest.afap.com/',
     user_id: 0,
     user_code: '',
     user_data: {},
     task_data: [],
-    taskLocked:[],
+    taskLocked: [],
     usedParts: {},
     user_warehouse_id: null,
     attachmentToDelete: [],
@@ -38,48 +38,54 @@ var app = {
     departType: false,
     taskStatusData: null,
     // Application Constructor
-    initialize: function () {
+    initialize: function ()
+    {
         this.bindEvents();
     },
     // Bind Event Listeners
     //
     // Bind any events that are required on startup. Common events are:
     // 'load', 'deviceready', 'offline', and 'online'.
-    bindEvents: function () {
-        document.addEventListener('deviceready', this.onDeviceReady, false);
+    bindEvents: function ()
+    {
+        document.addEventListener( 'deviceready', this.onDeviceReady, false );
         //this.onDeviceReady();
     },
     // deviceready Event Handler
     //
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicitly call 'app.receivedEvent(...);'
-    onDeviceReady: function () {
-        app.receivedEvent('deviceready');
+    onDeviceReady: function ()
+    {
+        app.receivedEvent( 'deviceready' );
     },
     // Update DOM on a Received Event
-    receivedEvent: function (id) {
+    receivedEvent: function ( id )
+    {
         if ('deviceready' == id) {
-            StatusBar.overlaysWebView(false);
+            StatusBar.overlaysWebView( false );
             this.prepareDB();
         }
         mobile_prompt = navigator.notification.prompt;
-        if ('android' != cordova.platformId && undefined != window.plugins.iosNumpad)
-        {data.locked_length +' minutes ago'
+        if ('android' != cordova.platformId && undefined != window.plugins.iosNumpad) {
+            data.locked_length + ' minutes ago'
             mobile_prompt = window.plugins.iosNumpad.prompt;
         }
 
-        console.log('Received Event: ' + id);
+        console.log( 'Received Event: ' + id );
     },
-    prepareDB: function () {
-        this.db = window.openDatabase("hello_app_db6.sqlite", "1.0", "Hello app db", 100000);
-        this.db.transaction(this.populateDB.bind(this), this.dbError.bind(this));
+    prepareDB: function ()
+    {
+        this.db = window.openDatabase( "hello_app_db6.sqlite", "1.0", "Hello app db", 100000 );
+        this.db.transaction( this.populateDB.bind( this ), this.dbError.bind( this ) );
 
-        if (window.localStorage.getItem('tech_id') && window.localStorage.getItem('access_token')) {
-            this.showLoader('Load user data');
-            app.user_id = window.localStorage.getItem('tech_id');
-            jQuery.getJSON(app.apiUrl + 'user/' + window.localStorage.getItem('user_id'),
-                {'access-token': window.localStorage.getItem('access_token')},
-                function (data) {
+        if (window.localStorage.getItem( 'tech_id' ) && window.localStorage.getItem( 'access_token' )) {
+            this.showLoader( 'Load user data' );
+            app.user_id = window.localStorage.getItem( 'tech_id' );
+            jQuery.getJSON( app.apiUrl + 'user/' + window.localStorage.getItem( 'user_id' ),
+                {'access-token': window.localStorage.getItem( 'access_token' )},
+                function ( data )
+                {
                     if (data) {
                         if (typeof data.id != 'undefined') {
                             app.user_data = data;
@@ -93,32 +99,35 @@ var app = {
                             app.logout();
                         }
                     }
-                }.bind(this)
+                }.bind( this )
             );
         }
     },
-    populateDB: function (tx) {
+    populateDB: function ( tx )
+    {
 
         //console.log('POPULATE DB');
         //tx.executeSql('CREATE TABLE IF NOT EXISTS taskData(task_id INTEGER, type VARCHAR(50), data TEXT)');
         //tx.executeSql('CREATE TABLE IF NOT EXISTS taskAttachment(task_id INTEGER, type VARCHAR(50), data TEXT, attachment_id INTEGER)');
     },
-    signin: function () {
+    signin: function ()
+    {
         //console.log('User login: ' + $('#login').val());
         //console.log('User password: ' + $('#password').val());
-        this.showLoader('Authorize');
-        jQuery.post(app.apiUrl + '/user/login', {
-            'LoginForm[username]': $('#login').val(),
-            'LoginForm[password]': $('#password').val()
-        }, function (data) {
+        this.showLoader( 'Authorize' );
+        jQuery.post( app.apiUrl + '/user/login', {
+            'LoginForm[username]': $( '#login' ).val(),
+            'LoginForm[password]': $( '#password' ).val()
+        }, function ( data )
+        {
             if (data.id) {
-                console.log('user login [OK]');
+                console.log( 'user login [OK]' );
                 app.user_data = data;
-                window.localStorage.setItem('tech_id',data.technition_id);
-                window.localStorage.setItem('user_id',data.id);
-                window.localStorage.setItem('user_code',data.usercode);
-                window.localStorage.setItem('access_token',data.auth_key);
-                $('#signin .errors').text('');
+                window.localStorage.setItem( 'tech_id', data.technition_id );
+                window.localStorage.setItem( 'user_id', data.id );
+                window.localStorage.setItem( 'user_code', data.usercode );
+                window.localStorage.setItem( 'access_token', data.auth_key );
+                $( '#signin .errors' ).text( '' );
                 app.user_id = data.technition_id;
                 app.user_code = data.usercode;
                 app.access_token = data.auth_key;
@@ -126,77 +135,91 @@ var app = {
                 app.loadTasks();
                 app.loadResolitons();
             } else {
-                console.warn(data.message.password[0]);
-                $('#signin .errors').text(data.message.password[0]);
-                $.mobile.loading('hide');
+                console.warn( data.message.password[0] );
+                $( '#signin .errors' ).text( data.message.password[0] );
+                $.mobile.loading( 'hide' );
             }
-        });
+        } );
     },
-    loadTasks: function () {
-        app.showLoader('Load tasks');
-        jQuery.getJSON(app.apiUrl + '/ticket/list', {
-            'access-token':app.access_token,
-            'UserCode':app.user_code
-        }, this.drawTask);
+    loadTasks: function ()
+    {
+        app.showLoader( 'Load tasks' );
+        jQuery.getJSON( app.apiUrl + '/ticket/list', {
+            'access-token': app.access_token,
+            'UserCode': app.user_code
+        }, this.drawTask );
 
 
     },
-    loadResolitons: function(){
-        jQuery.getJSON(app.apiUrl+'/resolution/',{'access-token':window.localStorage.getItem('access_token')},
-            function(data){
-                if(data){
-                    $('select#resolution_code').empty();
-                    $.each(data,function(key, el){
-                        $('select#resolution_code').append('<option value="'+el.Resolution_Id+'">'+el.Description+'</option>')
-                    });
+    loadResolitons: function ()
+    {
+        jQuery.getJSON( app.apiUrl + '/resolution/', {'access-token': window.localStorage.getItem( 'access_token' )},
+            function ( data )
+            {
+                if (data) {
+                    $( 'select#resolution_code' ).empty();
+                    $.each( data, function ( key, el )
+                    {
+                        $( 'select#resolution_code' ).append(
+                            '<option value="' + el.Resolution_Id + '">' + el.Description + '</option>' )
+                    } );
                 }
-            });
+            } );
     },
-    saveGoBackNotes:function(withcode){
-        if(withcode == undefined){
+    saveGoBackNotes: function ( withcode )
+    {
+        if (withcode == undefined) {
             withcode = 0;
         }
-        if(app.taskStatusData){
-            app.depart(app.taskStatusData);
+        if (app.taskStatusData) {
+            app.depart( app.taskStatusData );
 
-            if ($('#resolution_notes' + (withcode ? '_withcode' : '')).val()) {
-                app.showLoader('Saving task status');
-                jQuery.ajax({
+            if ($( '#resolution_notes' + (
+                        withcode ? '_withcode' : ''
+                    ) ).val()) {
+                app.showLoader( 'Saving task status' );
+                jQuery.ajax( {
                     type: 'POST',
                     url: app.apiUrl + '/ticketnotes/create?access-token=' + app.access_token,
                     data: {
                         Service_Ticket_Id: app.task_data[app.task_id].Service_Ticket_Id,
                         UserCode: app.user_code,
                         Edit_UserCode: app.user_code,
-                        Ticket_Number : app.task_data[app.task_id].Ticket_Number,
-                        Entered_Date: moment().format('MMM DD YYYY HH:mm:ss A'),
-                        Edit_Date: moment().format('MMM DD YYYY HH:mm:ss A'),
-                        Notes: $('#resolution_notes' + (withcode ? '_withcode' : '')).val()
+                        Ticket_Number: app.task_data[app.task_id].Ticket_Number,
+                        Entered_Date: moment().format( 'MMM DD YYYY HH:mm:ss A' ),
+                        Edit_Date: moment().format( 'MMM DD YYYY HH:mm:ss A' ),
+                        Notes: $( '#resolution_notes' + (
+                                withcode ? '_withcode' : ''
+                            ) ).val()
                     }
-                }).always(function (dataResponse) {
-                    var endNotes = function (data) {
-                        $('#task' + data.Service_Ticket_Id).remove();
-                        $.mobile.loading('hide');
-                        $.mobile.navigate('#tasks');
+                } ).always( function ( dataResponse )
+                {
+                    var endNotes = function ( data )
+                    {
+                        $( '#task' + data.Service_Ticket_Id ).remove();
+                        $.mobile.loading( 'hide' );
+                        $.mobile.navigate( '#tasks' );
 
-                        $('#resolution_notes' + (withcode ? '_withcode' : '')).val('');                         // clearing goback/resolved
-                        $('#resolution_code option').attr('selected', false);    // resolution notes
-                        $('#resolution_code').selectmenu('refresh', true);    // values
+                        $( '#resolution_notes' + (
+                                withcode ? '_withcode' : ''
+                            ) ).val( '' );                         // clearing goback/resolved
+                        $( '#resolution_code option' ).attr( 'selected', false );    // resolution notes
+                        $( '#resolution_code' ).selectmenu( 'refresh', true );    // values
                     };
-                    if (!withcode) {
-                        endNotes({Service_Ticket_Id: app.task_data[app.task_id].Service_Ticket_Id});
+                    if (! withcode) {
+                        endNotes( {Service_Ticket_Id: app.task_data[app.task_id].Service_Ticket_Id} );
                     } else {
-                        jQuery.ajax({
+                        jQuery.ajax( {
                             type: 'PUT',
                             url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
                             data: {
-                                'Resolution_Id': parseInt($('#resolution_code').val()),
+                                'Resolution_Id': parseInt( $( '#resolution_code' ).val() ),
                                 'UserCode': app.user_code
                             }
-                        }).always(endNotes({Service_Ticket_Id: app.task_data[app.task_id].Service_Ticket_Id}));
+                        } ).always( endNotes( {Service_Ticket_Id: app.task_data[app.task_id].Service_Ticket_Id} ) );
                     }
 
-                });
+                } );
             } else {
                 navigator.notification.alert(
                     'Required fields are empty',                    // message
@@ -208,63 +231,70 @@ var app = {
         }
 
     },
-    toggletasks: function(el){
-      var $toggleRaw = $(el).parents('tbody');
-        $('tr:not(:first)',$toggleRaw).toggle();
-        $toggleRaw.find('a').toggleClass('ui-icon-minus');
-        $toggleRaw.find('a').toggleClass('ui-icon-plus');
+    toggletasks: function ( el )
+    {
+        var $toggleRaw = $( el ).parents( 'tbody' );
+        $( 'tr:not(:first)', $toggleRaw ).toggle();
+        $toggleRaw.find( 'a' ).toggleClass( 'ui-icon-minus' );
+        $toggleRaw.find( 'a' ).toggleClass( 'ui-icon-plus' );
 
     },
-    drawTask: function (data) {
-        if($('#tasks #tasks_content table')) {
-            $('#tasks #tasks_content table').table();
+    drawTask: function ( data )
+    {
+        if ($( '#tasks #tasks_content table' )) {
+            $( '#tasks #tasks_content table' ).table();
         }
-        $('#tasks #tasks_content table tbody').remove();
+        $( '#tasks #tasks_content table tbody' ).remove();
 
         var taskDay = null;
-        $.each(data, function (index, value) {
+        $.each( data, function ( index, value )
+        {
 
-            if(value.LockedByUser!=null && app.user_code != value.LockedByUser || (app.user_code == value.LockedByUser && value.Form.toLowerCase()!='mobile')){
-                app.taskLocked[value.Service_Ticket_Id] = {user:value.LockedByUser,time:''};
-            }else {
+            if (value.LockedByUser != null && app.user_code != value.LockedByUser || (
+                    app.user_code == value.LockedByUser && value.Form.toLowerCase() != 'mobile'
+                )) {
+                app.taskLocked[value.Service_Ticket_Id] = {user: value.LockedByUser, time: ''};
+            } else {
                 app.taskLocked[value.Service_Ticket_Id] = false;
             }
-            var curDay = moment(value.Scheduled_For, 'MMM DD YYYY HH:mm:ss0A').format('MM/DD/YYYY');
+            var curDay = moment( value.Scheduled_For, 'MMM DD YYYY HH:mm:ss0A' ).format( 'MM/DD/YYYY' );
             var rawCurDayBegin = '';
             var rawCurDayEnd = '';
             var tglbtn = '<a data-role="button" data-icon="plus" data-iconpos="notext" data-theme="a" data-inline="true" class="ui-link ui-btn ui-btn-a ui-icon-plus ui-btn-icon-notext ui-btn-inline ui-shadow ui-corner-all" role="button">Show tasks</a>';
-            if (curDay != taskDay)
-            {
+            if (curDay != taskDay) {
                 taskDay = curDay;
-                rawCurDayBegin = '<tbody class="ui-collapsible" ><tr onclick="app.toggletasks(this)"><td><b>'+ taskDay +'</b>'+tglbtn+'</td></tr>';
+                rawCurDayBegin = '<tbody class="ui-collapsible" ><tr onclick="app.toggletasks(this)"><td><b>' + taskDay + '</b>' + tglbtn + '</td></tr>';
                 rawCurDayEnd = '</tbody>';
             }
-            var taskTime = moment(value.Scheduled_For, 'MMM DD YYYY HH:mm:ss0A').format('HH:mm:ss');
+            var taskTime = moment( value.Scheduled_For, 'MMM DD YYYY HH:mm:ss0A' ).format( 'HH:mm:ss' );
 
             app.task_data[value.Service_Ticket_Id] = value;
 
-            $(rawCurDayBegin+'<tr id="task'+value.Service_Ticket_Id+'" onClick="app.showTaskDetail('+ value.Service_Ticket_Id + ');">' +
-            '<td>' + taskTime + '</td>' +
-            '<td>' + value.Ticket_Number + '</td>' +
-            '<td><b>' + value.ProblemDescription + '</b></td>' +
-            '<td>' + value.Customer_Name + '</td>' +
-            '<td>' + value.City + '</td>' +
-            '<td>' + value.Ticket_Status + '</td>' +
-            //'<td><button data-icon="info" onclick="app.showTaskDetail(' + value.Service_Ticket_Id + ')">Details</button></td>' +
-            '</tr>'+rawCurDayEnd).appendTo('#tasks #tasks_content table ').closest('table#table-custom-2').table('refresh').trigger('create');
+            $( rawCurDayBegin + '<tr id="task' + value.Service_Ticket_Id + '" onClick="app.showTaskDetail(' + value.Service_Ticket_Id + ');">' +
+               '<td>' + taskTime + '</td>' +
+               '<td>' + value.Ticket_Number + '</td>' +
+               '<td><b>' + value.ProblemDescription + '</b></td>' +
+               '<td>' + value.Customer_Name + '</td>' +
+               '<td>' + value.City + '</td>' +
+               '<td>' + value.Ticket_Status + '</td>' +
+               //'<td><button data-icon="info" onclick="app.showTaskDetail(' + value.Service_Ticket_Id + ')">Details</button></td>' +
+               '</tr>' + rawCurDayEnd ).appendTo( '#tasks #tasks_content table ' ).closest(
+                'table#table-custom-2' ).table( 'refresh' ).trigger( 'create' );
             taskDay = curDay;
-        });
-        $('#tasks #tasks_content table').table('refresh');
+        } );
+        $( '#tasks #tasks_content table' ).table( 'refresh' );
 
-        $.mobile.loading('hide');
-        $.mobile.navigate('#tasks');
-        $('.ui-collapsible').find('tr:not(:first)').toggle();
-        navigator.notification && navigator.notification.vibrate(1000);
+        $.mobile.loading( 'hide' );
+        $.mobile.navigate( '#tasks' );
+        $( '.ui-collapsible' ).find( 'tr:not(:first)' ).toggle();
+        navigator.notification && navigator.notification.vibrate( 1000 );
     },
-    addMaterial: function () {
+    addMaterial: function ()
+    {
         navigator.notification.confirm(
             'Add Material',
-            function (button) {
+            function ( button )
+            {
                 if (1 == button) {
                     this.scanBarCode();
                 }
@@ -272,37 +302,40 @@ var app = {
 
                     navigator.notification.confirm(
                         'Enter Material',
-                        function (button) {
+                        function ( button )
+                        {
                             if (1 == button) {
-                                $('#partsearch').attr('data-searchbycode', 1);
-                                $.mobile.navigate('#partsearch');
-                                $('#partsearch input').attr('type', 'number');
+                                $( '#partsearch' ).attr( 'data-searchbycode', 1 );
+                                $.mobile.navigate( '#partsearch' );
+                                $( '#partsearch input' ).attr( 'type', 'number' );
                             }
                             else if (2 == button) {
-                                $('#partsearch').attr('data-searchbycode',0);
-                                $.mobile.navigate('#partsearch');
-                                $('#partsearch input').attr('type', 'text');
+                                $( '#partsearch' ).attr( 'data-searchbycode', 0 );
+                                $.mobile.navigate( '#partsearch' );
+                                $( '#partsearch input' ).attr( 'type', 'text' );
 
                             }
-                        }.bind(this),
+                        }.bind( this ),
                         'Add material',
                         ['Enter Part#', 'Enter Codeword'] // buttonLabels
                     );
 
                 }
-            }.bind(this),
+            }.bind( this ),
             'Add material',
             ['Scan barcode', 'Enter Material'] // buttonLabels
         );
     },
-    addPartToTicket: function (data) {
+    addPartToTicket: function ( data )
+    {
         mobile_prompt(
             'Please enter quantity',  // message
-            function (results) {
+            function ( results )
+            {
                 if (results.buttonIndex == 1) {
 
-                    if (parseInt(results.input1) != NaN) {
-                        quantity = parseInt(results.input1);
+                    if (parseInt( results.input1 ) != NaN) {
+                        quantity = parseInt( results.input1 );
                     } else {
                         navigator.notification.alert(
                             'Please enter only numbers',  // message
@@ -313,42 +346,47 @@ var app = {
                     }
 
                     if (app.usedParts[data.Part_Id]) {
-                        if (quantity)
+                        if (quantity) {
                             app.usedParts[data.Part_Id] += quantity;
-                        else
-                            app.usedParts[data.Part_Id]++;
-                        $('#part' + data.Part_Id + ' .ui-li-count').text(app.usedParts[data.Part_Id]);
+                        } else {
+                            app.usedParts[data.Part_Id] ++;
+                        }
+                        $( '#part' + data.Part_Id + ' .ui-li-count' ).text( app.usedParts[data.Part_Id] );
                     } else {
-                        $('<li data-icon="delete" id="part' + data.Part_Id + '">' +
-                        '<a onclick="app.removePart(' + data.Part_Id + ')">'
-                        + data.Part_Code + ' ' + data.Detail + ' ' + data.Description +
-                        '<span class="ui-li-count">' + (quantity ? quantity : 1) + '</span>' +
-                        '</a></li>').appendTo('#parts');
+                        $( '<li data-icon="delete" id="part' + data.Part_Id + '">' +
+                           '<a onclick="app.removePart(' + data.Part_Id + ')">'
+                           + data.Part_Code + ' ' + data.Detail + ' ' + data.Description +
+                           '<span class="ui-li-count">' + (
+                               quantity ? quantity : 1
+                           ) + '</span>' +
+                           '</a></li>' ).appendTo( '#parts' );
                         app.usedParts[data.Part_Id] = quantity ? quantity : 1;
                     }
-                    $('#parts').listview('refresh');
-                    jQuery("#autocomplete").html("");
-                    $('input[data-type="search"]').val("");
-                    $.mobile.loading('hide');
-                    $.mobile.navigate('#taskDetails');
-                    $.mobile.silentScroll($('#parts').offset().top);
+                    $( '#parts' ).listview( 'refresh' );
+                    jQuery( "#autocomplete" ).html( "" );
+                    $( 'input[data-type="search"]' ).val( "" );
+                    $.mobile.loading( 'hide' );
+                    $.mobile.navigate( '#taskDetails' );
+                    $.mobile.silentScroll( $( '#parts' ).offset().top );
                     app.uploadTaskData();
                 }
-            }.bind(this),                  // callback to invoke
+            }.bind( this ),                  // callback to invoke
             'Quantity',            // title
             ['Ok', 'Exit'],             // buttonLabels
             '1'                 // defaultText
         );
     },
-    searchPart: function (materialCode) {
-        this.showLoader('Searching part');
+    searchPart: function ( materialCode )
+    {
+        this.showLoader( 'Searching part' );
         var self = this;
-        jQuery.getJSON(app.apiUrl + 'part/search', {
+        jQuery.getJSON( app.apiUrl + 'part/search', {
             code: materialCode,
-            'access-token':app.access_token
-        }, function (data) {
+            'access-token': app.access_token
+        }, function ( data )
+        {
             if ('error' == data.status) {
-                $.mobile.loading('hide');
+                $.mobile.loading( 'hide' );
                 navigator.notification.alert(
                     'Part search',  // message
                     false,         // callback
@@ -356,33 +394,35 @@ var app = {
                     'OK'                  // buttonName
                 );
             } else {
-                app.addPartToTicket(data)
+                app.addPartToTicket( data )
             }
-        }.bind(this));
+        }.bind( this ) );
     },
-    keywordSuggestParts: function (keyword,codesearch) {
-        if(app.keywordAutocomplete){
+    keywordSuggestParts: function ( keyword, codesearch )
+    {
+        if (app.keywordAutocomplete) {
             app.keywordAutocomplete.abort()
         }
-        if(codesearch==undefined){
+        if (codesearch == undefined) {
             codesearch = 0;
         }
-        this.showLoader('Searching part');
+        this.showLoader( 'Searching part' );
         var self = this;
-        var sugList = jQuery("#autocomplete");
-        sugList.html("");
-        var searchpath =  'part/keyword';
-        if(codesearch==1){
-            var searchpath =  'part/codesearch';
+        var sugList = jQuery( "#autocomplete" );
+        sugList.html( "" );
+        var searchpath = 'part/keyword';
+        if (codesearch == 1) {
+            var searchpath = 'part/codesearch';
         }
         //$('input[data-type="search"]').val("")
-        app.keywordAutocomplete = jQuery.getJSON(app.apiUrl +searchpath, {
+        app.keywordAutocomplete = jQuery.getJSON( app.apiUrl + searchpath, {
             code: keyword,
-            'access-token':app.access_token
-        }, function (data) {
-            $.mobile.loading('hide');
+            'access-token': app.access_token
+        }, function ( data )
+        {
+            $.mobile.loading( 'hide' );
             if ('error' == data.status) {
-                $.mobile.loading('hide');
+                $.mobile.loading( 'hide' );
                 navigator.notification.alert(
                     'Part search',  // message
                     false,         // callback
@@ -390,28 +430,34 @@ var app = {
                     'OK'                  // buttonName
                 );
             } else {
-                jQuery.each(data,function(key,val){
+                jQuery.each( data, function ( key, val )
+                {
 
-                    sugList.append('<li ' +
-                    'onClick="app.addPartToTicket({Part_Code:\''+val.Part_Code+'\',Part_Id:\''+val.Part_Id+'\',Description:\''+val.Description.replace(/"/g, '&quot;')+'\',Detail:\''+val.Detail.replace(/"/g, '&quot;')+'\'})" >'+val.Part_Code+'-'+val.Description+'</li>');
-                });
-                sugList.listview("refresh");
-                $('#autocomplete li').removeClass('ui-screen-hidden');
+                    sugList.append( '<li ' +
+                                    'onClick="app.addPartToTicket({Part_Code:\'' + val.Part_Code + '\',Part_Id:\'' + val.Part_Id + '\',Description:\'' + val.Description.replace(
+                            /"/g, '&quot;' ) + '\',Detail:\'' + val.Detail.replace( /"/g,
+                            '&quot;' ) + '\'})" >' + val.Part_Code + '-' + val.Description + '</li>' );
+                } );
+                sugList.listview( "refresh" );
+                $( '#autocomplete li' ).removeClass( 'ui-screen-hidden' );
                 app.keywordAutocomplete.abort();
             }
-        }.bind(this));
+        }.bind( this ) );
     },
-    scanBarCode: function () {
-        var scanner = cordova.require('com.phonegap.plugins.barcodescanner.barcodescanner'); // ver.0.6.0
+    scanBarCode: function ()
+    {
+        var scanner = cordova.require( 'com.phonegap.plugins.barcodescanner.barcodescanner' ); // ver.0.6.0
         try {
             scanner.scan(
-                function (result) {
-                    if (!result.cancelled) {
+                function ( result )
+                {
+                    if (! result.cancelled) {
                         var quantity = null;
-                        this.searchPart(result.text);
+                        this.searchPart( result.text );
                     }
-                }.bind(this),
-                function (error) {
+                }.bind( this ),
+                function ( error )
+                {
                     navigator.notification.alert(
                         'Scanning',  // message
                         false,         // callback
@@ -421,15 +467,16 @@ var app = {
                 }
             );
 
-        } catch (e) {
-            console.log(e);
+        } catch ( e ) {
+            console.log( e );
         }
     },
-    uploadPhoto: function (imageURI, id) {
+    uploadPhoto: function ( imageURI, id )
+    {
 
         var options = new FileUploadOptions();
         options.fileKey = 'path';
-        options.fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1);
+        options.fileName = imageURI.substr( imageURI.lastIndexOf( '/' ) + 1 );
         options.mimeType = 'image/jpeg';
         options.chunkedMode = false;
 
@@ -438,24 +485,28 @@ var app = {
         params.name = options.fileName;
         params['access-token'] = app.access_token;
         options.params = params;
-        console.log('options', options, imageURI );
+        console.log( 'options', options, imageURI );
 
-        this.createProgressBar(id, options.fileName);
-        $('img[src="'+imageURI+'"]').attr('data-on-server',true);
+        this.createProgressBar( id, options.fileName );
+        $( 'img[src="' + imageURI + '"]' ).attr( 'data-on-server', true );
         var ft = new FileTransfer();
         var self = this;
-        ft.onprogress = function (progressEvent) {
+        ft.onprogress = function ( progressEvent )
+        {
             if (progressEvent.lengthComputable) {
-                var perc = Math.floor(progressEvent.loaded / progressEvent.total * 100);
-                self.setProgressBarValue('slider_' + id, perc);
+                var perc = Math.floor( progressEvent.loaded / progressEvent.total * 100 );
+                self.setProgressBarValue( 'slider_' + id, perc );
             }
         };
-        ft.upload(imageURI, encodeURI(app.apiUrl + 'taskattachment/upload?access-token='+app.access_token+'&UserCode='+app.user_code), this.uploadPhotoWin.bind(this), this.uploadPhotoFail.bind(this), options);
+        ft.upload( imageURI, encodeURI(
+                app.apiUrl + 'taskattachment/upload?access-token=' + app.access_token + '&UserCode=' + app.user_code ),
+            this.uploadPhotoWin.bind( this ), this.uploadPhotoFail.bind( this ), options );
     },
-    createProgressBar: function (id, text) {
-        var cont = $('<div>');
-        $('<p>').appendTo(cont).text(text);
-        $('<input>').appendTo(cont).attr({
+    createProgressBar: function ( id, text )
+    {
+        var cont = $( '<div>' );
+        $( '<p>' ).appendTo( cont ).text( text );
+        $( '<input>' ).appendTo( cont ).attr( {
             'name': 'slider_' + id,
             'id': 'slider_' + id,
             'data-highlight': 'true',
@@ -463,28 +514,31 @@ var app = {
             'max': '100',
             'value': '50',
             'type': 'range'
-        }).slider({
-            create: function (event, ui) {
-                $(this).parent().find('input').hide();
-                $(this).parent().find('input').css('margin-left', '-9999px'); // Fix for some FF versions
-                $(this).parent().find('.ui-slider-track').css('margin', '0 15px 0 15px');
-                $(this).parent().find('.ui-slider-handle').hide();
+        } ).slider( {
+            create: function ( event, ui )
+            {
+                $( this ).parent().find( 'input' ).hide();
+                $( this ).parent().find( 'input' ).css( 'margin-left', '-9999px' ); // Fix for some FF versions
+                $( this ).parent().find( '.ui-slider-track' ).css( 'margin', '0 15px 0 15px' );
+                $( this ).parent().find( '.ui-slider-handle' ).hide();
             }
-        }).slider('refresh');
-        cont.appendTo('#progressBars');
+        } ).slider( 'refresh' );
+        cont.appendTo( '#progressBars' );
     },
-    uploadPhotoWin: function (r) {
-        var data = JSON.parse(r.response);
-        console.log(JSON.parse(r.response));
-        console.log('Code = ' + r.responseCode);
-        console.log('Response = ' + r.response);
-        console.log('Sent = ' + r.bytesSent);
+    uploadPhotoWin: function ( r )
+    {
+        var data = JSON.parse( r.response );
+        console.log( JSON.parse( r.response ) );
+        console.log( 'Code = ' + r.responseCode );
+        console.log( 'Response = ' + r.response );
+        console.log( 'Sent = ' + r.bytesSent );
         //this.db.transaction(function (tx) {
         //    tx.executeSql('INSERT INTO taskAttachment (task_id, type, data, attachment_id) VALUES (?, ?, ?, ?)', [data.task_id, 'photos', data.path, data.id]);
         //});
         this.checkUploadFinish();
     },
-    uploadPhotoFail: function (error) {
+    uploadPhotoFail: function ( error )
+    {
         navigator.notification.alert(
             'Upload error',  // message
             false,         // callback
@@ -492,20 +546,22 @@ var app = {
             'OK'                  // buttonName
         );
         //alert('An error has occurred: Code = ' + error.code);
-        console.log(error);
-        console.log('upload error source ' + error.source);
-        console.log('upload error target ' + error.target);
+        console.log( error );
+        console.log( 'upload error source ' + error.source );
+        console.log( 'upload error target ' + error.target );
         this.checkUploadFinish();
     },
-    checkUploadFinish: function () {
+    checkUploadFinish: function ()
+    {
         //if (this.uploaded == this.needToUpload) {
         //$.mobile.navigate('#tasks');
         //}
-        this.uploaded++;
-        $.mobile.navigate('#taskDetails');
+        this.uploaded ++;
+        $.mobile.navigate( '#taskDetails' );
     },
-    choiseFile: function () {
-        navigator.camera.getPicture(this.onSuccessMakePhoto, this.onFailMakePhoto,
+    choiseFile: function ()
+    {
+        navigator.camera.getPicture( this.onSuccessMakePhoto, this.onFailMakePhoto,
             {
                 quality: 50,
                 destinationType: navigator.camera.DestinationType.FILE_URI,
@@ -513,89 +569,99 @@ var app = {
             }
         );
     },
-    makePhoto: function () {
-        navigator.camera.getPicture(this.onSuccessMakePhoto, this.onFailMakePhoto, {
+    makePhoto: function ()
+    {
+        navigator.camera.getPicture( this.onSuccessMakePhoto, this.onFailMakePhoto, {
             quality: 50,
             destinationType: navigator.camera.DestinationType.FILE_URI,
             encodingType: navigator.camera.EncodingType.JPEG,
             sourceType: navigator.camera.PictureSourceType.CAMERA,
             saveToPhotoAlbum: true,
-            allowEdit:true
-        });
+            allowEdit: true
+        } );
     },
     /*onSuccessChoiseFile: function (imageURI) {
-        console.info('choise', imageURI);
-        $('#files').append('<div class="newImage">' +
-        '<img class="photoPreview"  src="' + imageURI + '"/>' +
-        '<button data-icon="delete" data-iconpos="notext" onclick="app.removeImage(this);"></button>' +
-        '</div>');
-        $('#files').trigger('create');
-    },*/
-    onSuccessMakePhoto: function (imageURI) {
+     console.info('choise', imageURI);
+     $('#files').append('<div class="newImage">' +
+     '<img class="photoPreview"  src="' + imageURI + '"/>' +
+     '<button data-icon="delete" data-iconpos="notext" onclick="app.removeImage(this);"></button>' +
+     '</div>');
+     $('#files').trigger('create');
+     },*/
+    onSuccessMakePhoto: function ( imageURI )
+    {
 
         //new Parse.File('myfile.txt', { base64: imageURI });
-        $('#files').append('<div class="newImage"><img class="photoPreview"  src="' + imageURI + '"/>' +
-        '<button data-icon="delete" data-iconpos="notext" onclick="app.removeImage(this);"></button>' +
-        '</div>');
-        $('#files').trigger('create');
+        $( '#files' ).append( '<div class="newImage"><img class="photoPreview"  src="' + imageURI + '"/>' +
+                              '<button data-icon="delete" data-iconpos="notext" onclick="app.removeImage(this);"></button>' +
+                              '</div>' );
+        $( '#files' ).trigger( 'create' );
         app.uploadTaskData();
     },
-    onFailMakePhoto: function (message) {
+    onFailMakePhoto: function ( message )
+    {
         //alert('Failed because: ' + message);
     },
-    uploadTaskData: function () {
-        this.db && this.db.transaction(this.saveTaskData.bind(this), this.dbError.bind(this));
+    uploadTaskData: function ()
+    {
+        this.db && this.db.transaction( this.saveTaskData.bind( this ), this.dbError.bind( this ) );
     },
-    saveAndExit: function () {
+    saveAndExit: function ()
+    {
         this.saveTaskData();
         //this.checkUploadFinish();
 
     },
-    saveTaskData: function () {
+    saveTaskData: function ()
+    {
         var self = this;
         var filesList = [];
 
-        $('#photos > div > img:not([data-on-server])').each(function () {
-            filesList.push($(this).attr('src'));
-        });
-        $('#files > div > img:not([data-on-server])').each(function () {
-            filesList.push($(this).attr('src'));
-        });
+        $( '#photos > div > img:not([data-on-server])' ).each( function ()
+        {
+            filesList.push( $( this ).attr( 'src' ) );
+        } );
+        $( '#files > div > img:not([data-on-server])' ).each( function ()
+        {
+            filesList.push( $( this ).attr( 'src' ) );
+        } );
 
         if (this.attachmentToDelete) {
-            this.showLoader('Saving...');
+            this.showLoader( 'Saving...' );
 
             for (var i in this.attachmentToDelete) {
-                jQuery.ajax({
+                jQuery.ajax( {
                     type: 'DELETE',
                     url: app.apiUrl + 'taskattachment/' + app.attachmentToDelete[i] + '?access-token=' + app.access_token,
                     UserCode: app.user_code
 
-                }).always(function(data){
+                } ).always( function ( data )
+                {
 
                     delete app.attachmentToDelete[i];
-                        $.mobile.loading('hide');
-                })
+                    $.mobile.loading( 'hide' );
+                } )
 
 
             }
         }
 
         if (this.usedParts) {
-            this.showLoader('Saving...');
+            this.showLoader( 'Saving...' );
 
-            $.when(jQuery.ajax({
+            $.when( jQuery.ajax( {
                     type: 'GET',
                     url: app.apiUrl + 'taskpart/empty',
                     data: {
                         'access-token': app.access_token,
                         'Service_Ticket_Id': app.task_id,
-                        'UserCode':app.user_code
+                        'UserCode': app.user_code
                     }
-                })
-            ).done(function () {
+                } )
+            ).done( function ()
+                {
                     for (var part_id in app.usedParts) {
-                        jQuery.ajax({
+                        jQuery.ajax( {
                             type: 'POST',
                             url: app.apiUrl + 'taskpart/create?access-token=' + app.access_token,
                             data: {
@@ -605,334 +671,359 @@ var app = {
                                 'Part_Id': part_id,
                                 'Quantity': app.usedParts[part_id],
                                 'UserCode': app.user_code,
-                                'Warehouse_Id':app.user_warehouse_id
+                                'Warehouse_Id': app.user_warehouse_id
 
                             }
-                        });
+                        } );
                     }
-                    $.mobile.loading('hide');
+                    $.mobile.loading( 'hide' );
 
-                }.bind(this)
+                }.bind( this )
             );
         }
-        this.setProgressBarValue(0);
-        $('#progressBars').empty();
+        this.setProgressBarValue( 0 );
+        $( '#progressBars' ).empty();
 
         this.needToUpload = filesList.length;
 
         if (this.needToUpload) {
 
-            $.mobile.navigate("#progress");
-            $.each(filesList, function (key, val) {
-                self.uploadPhoto(val, key);
-            });
+            $.mobile.navigate( "#progress" );
+            $.each( filesList, function ( key, val )
+            {
+                self.uploadPhoto( val, key );
+            } );
             this.uploaded = 0;
 
         }
 
     },
-    showTaskDetail: function (task_id, data) {
-        this.showLoader('Loading task data');
+    showTaskDetail: function ( task_id, data )
+    {
+        this.showLoader( 'Loading task data' );
         this.clearTask();
         var task = app.task_data[task_id];
         app.usedParts = [];
         app.attachmentToDelete = [];
-        console.log(task);
         app.task_id = task_id;
-        this.db && this.db.transaction(this.getTaskData, this.dbError);
+        this.db && this.db.transaction( this.getTaskData, this.dbError );
 
-        $.when(jQuery.getJSON(app.apiUrl + '/ticket/find', {
+        $.when( jQuery.getJSON( app.apiUrl + '/ticket/find', {
             'id': app.task_id,
-            'Ticket_Number':app.task_data[app.task_id].Ticket_Number,
-            'access-token':app.access_token,
-            'UserCode':app.user_code
-        }, this.drawTaskDetails.bind(this))).done(function (res) {
+            'Ticket_Number': app.task_data[app.task_id].Ticket_Number,
+            'access-token': app.access_token,
+            'UserCode': app.user_code
+        }, this.drawTaskDetails.bind( this ) ) ).done( function ( res )
+        {
 
-            $.mobile.loading('hide');
-            if(res.length)
-            {$.mobile.navigate('#taskDetails');}
-        })
+            $.mobile.loading( 'hide' );
+            if (res.length) {
+                $.mobile.navigate( '#taskDetails' );
+            }
+
+        } )
 
     },
-    dbError: function (err) {
-        alert(err.code + '\n' + err.message);
+    dbError: function ( err )
+    {
+        alert( err.code + '\n' + err.message );
     },
-    getTaskData: function (tx) {
+    getTaskData: function ( tx )
+    {
 
-        jQuery.getJSON(app.apiUrl+'ticket/getdispatch',{
+        jQuery.getJSON( app.apiUrl + 'ticket/getdispatch', {
             'task_id': app.task_id,
-            'access-token':app.access_token
-        },function(data){
-            console.info('dispatch data',data);
+            'access-token': app.access_token
+        }, function ( data )
+        {
+            console.info( 'dispatch data', data );
             data = data[0]
-            if(data.LockedByUser)
-                if(data.form.toLowerCase()=='mobile' && data.LockedByUser ==app.user_code){
+            if (data.LockedByUser) {
+                if (data.form.toLowerCase() == 'mobile' && data.LockedByUser == app.user_code) {
                     app.taskLocked[app.task_id] = false;
-                }else{
+                } else {
                     app.taskLocked[app.task_id] = data.LockedByUser;
                 }
-            else{
+            } else {
                 app.taskLocked[app.task_id] = false;
             }
             app.task_data[data.Service_Ticket_Id]['Dispatch_Id'] = data.Dispatch_Id;
-            if(data)
-                if(app.taskLocked[app.task_id]){
+            if (data) {
+                if (app.taskLocked[app.task_id]) {
                     var locked_time_message = ''
-                    if(data.locked_length<=1){
+                    if (data.locked_length <= 1) {
                         locked_time_message = ' one minute ago';
-                    }else if(data.locked_length>1 && data.locked_length<=60){
-                        locked_time_message = data.locked_length +' minutes ago';
-                    }else {
-                        locked_time_message = ' about '+ Math.round(data.locked_length/60) +' hour(s) ago';
+                    } else if (data.locked_length > 1 && data.locked_length <= 60) {
+                        locked_time_message = data.locked_length + ' minutes ago';
+                    } else {
+                        locked_time_message = ' about ' + Math.round( data.locked_length / 60 ) + ' hour(s) ago';
                     }
                     navigator.notification.alert(
-                        'Task Locked by user: "'+app.taskLocked[app.task_id]+'"'+locked_time_message,  // message
-                        function(res){},         // callback
+                        'Task Locked by user: "' + app.taskLocked[app.task_id] + '"' + locked_time_message,  // message
+                        function ( res )
+                        {
+                        },         // callback
                         'Task Locked',            // title
                         'OK'                  // buttonName
                     );
 
-                    $('#status_dispatch,#status_arrived,#status_depart,button[id^="task_btn_"]').addClass('ui-disabled');
+                    $( '#status_dispatch,#status_arrived,#status_depart,button[id^="task_btn_"]' ).addClass(
+                        'ui-disabled' );
 
-                }else if(moment(data.Dispatch_Time, 'MMM DD YYYY HH:mm:ss0A').unix() > 0){
+                } else if (moment( data.Dispatch_Time, 'MMM DD YYYY HH:mm:ss0A' ).unix() > 0) {
 
-                    $('#status_dispatch').addClass('ui-disabled');
+                    $( '#status_dispatch' ).addClass( 'ui-disabled' );
 
-                    if(moment(data.Arrival_Time, 'MMM DD YYYY HH:mm:ss0A').unix() > 0){
-                        $('#status_arrived').addClass('ui-disabled');
-                        if(moment(data.Departure_Time, 'MMM DD YYYY HH:mm:ss0A').unix() > 0){
-                            $('#status_depart').addClass('ui-disabled');
-                        }else{
-                            $('#status_depart,button[id^="task_btn_"]').removeClass('ui-disabled');
+                    if (moment( data.Arrival_Time, 'MMM DD YYYY HH:mm:ss0A' ).unix() > 0) {
+                        $( '#status_arrived' ).addClass( 'ui-disabled' );
+                        if (moment( data.Departure_Time, 'MMM DD YYYY HH:mm:ss0A' ).unix() > 0) {
+                            $( '#status_depart' ).addClass( 'ui-disabled' );
+                        } else {
+                            $( '#status_depart,button[id^="task_btn_"]' ).removeClass( 'ui-disabled' );
                         }
-                    }else{
-                        console.log('remove class for arrival');
-                        $('#status_arrived').removeClass('ui-disabled');
+                    } else {
+                        $( '#status_arrived' ).removeClass( 'ui-disabled' );
                     }
-                }else{
-                    $('#status_dispatch').removeClass('ui-disabled');
+                } else {
+                    $( '#status_dispatch' ).removeClass( 'ui-disabled' );
                 }
+            }
 
-        }.bind(this));
+        }.bind( this ) );
 
-        if(app.taskLocked[app.task_id]==false) {
-            jQuery.getJSON(app.apiUrl + '/taskattachment/search', {
+        if (app.taskLocked[app.task_id] == false) {
+            jQuery.getJSON( app.apiUrl + '/taskattachment/search', {
                 task_id: app.task_id,
                 'access-token': app.access_token
-            }, function (data) {
+            }, function ( data )
+            {
                 if (data) {
                     for (var i in data) {
-                        $('#photos').append(
+                        $( '#photos' ).append(
                             '<div class="newImage" data-attachment-id="' + data[i].id + '" >' +
                             '<img class="photoPreview" ' +
                             'data-on-server="true" ' +
                             'src="' + app.apiUrl + '/uploads/' + data[i].task_id + '/' + data[i].path + '"/>' +
                             '<button data-icon="delete" data-iconpos="notext" onclick="app.removeImage(this);"></button>' +
-                            '</div>');
-                        $('#photos').trigger('create');
+                            '</div>' );
+                        $( '#photos' ).trigger( 'create' );
                     }
                 }
 
-            });
+            } );
 
-            jQuery.getJSON(app.apiUrl + '/taskpart/search', {
+            jQuery.getJSON( app.apiUrl + '/taskpart/search', {
                 'Service_Ticket_Id': app.task_id,
                 'expand': 'part',
                 'access-token': app.access_token
-            }, function (data) {
+            }, function ( data )
+            {
                 if (data) {
                     for (var i in data) {
                         app.usedParts[data[i].part.Part_Id] = data[i].Quantity;
-                        $('#parts').append('<li data-icon="delete" id="part' + data[i].part.Part_Id + '">' +
-                        '<a onclick="app.removePart(' + data[i].part.Part_Id + ')">'
-                        + data[i].part.Part_Code + ' ' + data[i].part.Detail + ' ' + data[i].part.Description +
-                        '<span class="ui-li-count">' + data[i].Quantity + '</span>' +
-                        '</a>' +
-                        '</li>');
+                        $( '#parts' ).append( '<li data-icon="delete" id="part' + data[i].part.Part_Id + '">' +
+                                              '<a onclick="app.removePart(' + data[i].part.Part_Id + ')">'
+                                              + data[i].part.Part_Code + ' ' + data[i].part.Detail + ' ' + data[i].part.Description +
+                                              '<span class="ui-li-count">' + data[i].Quantity + '</span>' +
+                                              '</a>' +
+                                              '</li>' );
                     }
-                    $('#parts').listview('refresh');
+                    $( '#parts' ).listview( 'refresh' );
                 }
-            }.bind(this));
+            }.bind( this ) );
         }
 
 
     },
-    drawTaskDetails: function (data) {
-
+    drawTaskDetails: function ( data )
+    {
         data = data[0];
 
-        if (undefined!=data) {
-        //this.task_data[this.task_id] = data; // here was error with rewriting task custom params
-        $.extend(this.task_data[this.task_id], data);
+        if (undefined != data) {
+            //this.task_data[this.task_id] = data; // here was error with rewriting task custom params
+            $.extend( this.task_data[this.task_id], data );
 
 
-        var task = data;
+            var task = data;
 
-            $('#taskName').text(task.ProblemDescription + ' - ' + task.Customer_Name);
+            $( '#taskName' ).text( task.ProblemDescription + ' - ' + task.Customer_Name );
 
-            $('<h4>Customer</h4>').appendTo('#taskDescription');
-            $('<p><pre>' + task.business_name + '</pre></p>').appendTo('#taskDescription');
-            $('<p><pre>' + task.Customer_Name + '</pre></p>').appendTo('#taskDescription');
-            $('<p><pre>' + task.address_1 + '</pre></p>').appendTo('#taskDescription');
-            $('<p><pre>' + task.ge1_description + '</pre></p>').appendTo('#taskDescription');
-            $('<p><pre>' + task.ge2_short + '</pre></p>').appendTo('#taskDescription');
-            $('<p><pre>' + task.ge3_description + '</pre></p>').appendTo('#taskDescription');
+            $( '<h4>Customer</h4>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>' + task.business_name + '</pre></p>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>' + task.Customer_Name + '</pre></p>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>' + task.address_1 + '</pre></p>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>' + task.ge1_description + '</pre></p>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>' + task.ge2_short + '</pre></p>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>' + task.ge3_description + '</pre></p>' ).appendTo( '#taskDescription' );
 
-            $('<h4>Site</h4>').appendTo('#taskDescription');
-            $('<p><pre>' + task.customer_number + '</pre></p>').appendTo('#taskDescription');
-            $('<p><pre>' + task.Customer_Site_Address + '</pre></p>').appendTo('#taskDescription');
-            $('<p><pre>' + task.Customer_Site_Ge1_Description + '</pre></p>').appendTo('#taskDescription');
-            $('<p><pre>' + task.Customer_Site_Ge2_Short + '</pre></p>').appendTo('#taskDescription');
-            $('<p><pre>' + task.Customer_Site_Ge3_Description + '</pre></p>').appendTo('#taskDescription');
+            $( '<h4>Site</h4>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>' + task.customer_number + '</pre></p>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>' + task.Customer_Site_Address + '</pre></p>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>' + task.Customer_Site_Ge1_Description + '</pre></p>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>' + task.Customer_Site_Ge2_Short + '</pre></p>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>' + task.Customer_Site_Ge3_Description + '</pre></p>' ).appendTo( '#taskDescription' );
 
-            $('<h4>System Information</h4>').appendTo('#taskDescription');
-            $('<p><pre>System Account: ' + task.alarm_account + '</pre></p>').appendTo('#taskDescription');
-            $('<p><pre>System Type: ' + task.System_Description + '</pre></p>').appendTo('#taskDescription');
-            $('<p><pre>Panel Type: ' + task.System_Panel_Description + '</pre></p>').appendTo('#taskDescription');
-            $('<p><pre>Site Phone: ' + task.phone_1 + '</pre></p>').appendTo('#taskDescription');
-            $('<p><pre>Cross Street: ' + task.cross_street + '</pre></p>').appendTo('#taskDescription');
-            $('<p><pre>System Comments: ' + task.system_comments + '</pre></p>').appendTo('#taskDescription');
+            $( '<h4>System Information</h4>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>System Account: ' + task.alarm_account + '</pre></p>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>System Type: ' + task.System_Description + '</pre></p>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>Panel Type: ' + task.System_Panel_Description + '</pre></p>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>Site Phone: ' + task.phone_1 + '</pre></p>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>Cross Street: ' + task.cross_street + '</pre></p>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>System Comments: ' + task.system_comments + '</pre></p>' ).appendTo( '#taskDescription' );
 
-            $('<h4>Ticket Information</h4>').appendTo('#taskDescription');
-            $('<p><pre>Ticket number: ' + task.Ticket_Number + '</pre></p>').appendTo('#taskDescription');
-            $('<p><pre>Status: ' + task.ticket_status + '</pre></p>').appendTo('#taskDescription');
-            $('<p><pre>Created on: ' + task.Creation_Date + '</pre></p>').appendTo('#taskDescription');
-            $('<p><pre>Created by: ' + task.entered_by + '</pre></p>').appendTo('#taskDescription');
-            $('<p><pre>Contact: ' + task.Requested_By + '</pre></p>').appendTo('#taskDescription');
-            $('<p><pre>Phone: ' + task.requested_by_phone + '</pre></p>').appendTo('#taskDescription');
-            $('<p><pre>Problem: ' + task.ProblemDescription + '</pre></p>').appendTo('#taskDescription');
-            $('<p><pre>Customer Comment : </pre>' + task.CustomerComments + '</p>').appendTo('#taskDescription');
+            $( '<h4>Ticket Information</h4>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>Ticket number: ' + task.Ticket_Number + '</pre></p>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>Status: ' + task.ticket_status + '</pre></p>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>Created on: ' + task.Creation_Date + '</pre></p>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>Created by: ' + task.entered_by + '</pre></p>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>Contact: ' + task.Requested_By + '</pre></p>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>Phone: ' + task.requested_by_phone + '</pre></p>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>Problem: ' + task.ProblemDescription + '</pre></p>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>Customer Comment : </pre>' + task.CustomerComments + '</p>' ).appendTo( '#taskDescription' );
+
+
         } else {
 
             navigator.notification.alert(
                 'There is no data for this task',  // message
-                function(res){
-                    $.mobile.navigate('#tasks');
+                function ( res )
+                {
+                    $.mobile.navigate( '#tasks' );
                 },         // callback
                 'Task loading error',            // title
                 'OK'                  // buttonName
             );
         }
     },
-    clearTask: function () {
-        $('#taskName, #taskDescription, #photos, #files, #parts').empty();
+    clearTask: function ()
+    {
+        $( '#taskName, #taskDescription, #photos, #files, #parts' ).empty();
 
-        $('#status_dispatch,#status_arrived,#status_depart,button[id^="task_btn_"]').addClass('ui-disabled');
+        $( '#status_dispatch,#status_arrived,#status_depart,button[id^="task_btn_"]' ).addClass( 'ui-disabled' );
     },
-    setProgressBarValue: function (id, value) {
-        $('#' + id).val(value);
-        $('#' + id).slider('refresh');
+    setProgressBarValue: function ( id, value )
+    {
+        $( '#' + id ).val( value );
+        $( '#' + id ).slider( 'refresh' );
     },
-    saveTaskStatus: function (taskStatusData) {
+    saveTaskStatus: function ( taskStatusData )
+    {
 
         taskStatusData.data.UserCode = app.user_code;
         taskStatusData.data.Ticket_Number = app.task_data[app.task_id].Ticket_Number;
 
-app.taskStatusData = taskStatusData;
-            jQuery.ajax({
+        app.taskStatusData = taskStatusData;
+        jQuery.ajax( {
             type: 'POST',
             url: app.apiUrl + 'taskhistory/create?access-token=' + app.access_token,
             data: {
                 'task_id': app.task_id,
                 'tech_id': app.user_id,
-                'Ticket_Number' : app.task_data[app.task_id].Ticket_Number,
+                'Ticket_Number': app.task_data[app.task_id].Ticket_Number,
                 'status': taskStatusData.status
             }
-        }).always(function (dataResponse) {
-            $.mobile.loading('hide');
+        } ).always( function ( dataResponse )
+        {
+            $.mobile.loading( 'hide' );
             if (typeof dataResponse.id != 'undefined') {
                 if ('dispatch' == dataResponse.status) {
-                    this.showLoader('Saving task status');
-                    jQuery.ajax({
+                    this.showLoader( 'Saving task status' );
+                    jQuery.ajax( {
                         type: 'PUT',
                         url: app.apiUrl + 'dispatch/' + app.task_data[app.task_id].Dispatch_Id + ',' + app.task_id + '?access-token=' + app.access_token,
                         data: taskStatusData.data
-                    }).always(function (dataResponse) {
-                        console.log(dataResponse);
-                    });
-                    this.showLoader('Saving task status');
-                    $('#status_dispatch,#status_depart,button[id^="task_btn_"]').addClass('ui-disabled');
-                    $('#status_arrived').removeClass('ui-disabled');
-                    jQuery.ajax({
-                        type: 'PUT',
-                        url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
-                        data: {
-                            'Ticket_Status' : 'IP',
-                            'UserCode' : app.user_code,
-                            'Ticket_Number' : app.task_data[app.task_id].Ticket_Number
-                        }
-                    }).always(function (data) {
-                        //$('#task' + data.Service_Ticket_Id).remove();
-                        $.mobile.loading('hide');
-                    });
-                }else
-                if ('arrived' == dataResponse.status) {
-
-                    this.showLoader('Saving task status');
-                    jQuery.ajax({
-                        type: 'PUT',
-                        url: app.apiUrl + 'dispatch/' + app.task_data[app.task_id].Dispatch_Id + ',' + app.task_id + '?access-token=' + app.access_token,
-                        data: taskStatusData.data
-                    }).always(function (dataResponse) {
-                        console.log(dataResponse);
-                    });
-                    $('#status_dispatch, #status_arrived').addClass('ui-disabled');
-                    $('#status_depart,button[id^="task_btn_"]').removeClass('ui-disabled');
-
-                    jQuery.ajax({
+                    } ).always( function ( dataResponse )
+                    {
+                        console.log( dataResponse );
+                    } );
+                    this.showLoader( 'Saving task status' );
+                    $( '#status_dispatch,#status_depart,button[id^="task_btn_"]' ).addClass( 'ui-disabled' );
+                    $( '#status_arrived' ).removeClass( 'ui-disabled' );
+                    jQuery.ajax( {
                         type: 'PUT',
                         url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
                         data: {
                             'Ticket_Status': 'IP',
-                            'UserCode':app.user_code,
-                            'Ticket_Number' : app.task_data[app.task_id].Ticket_Number
+                            'UserCode': app.user_code,
+                            'Ticket_Number': app.task_data[app.task_id].Ticket_Number
+                        }
+                    } ).always( function ( data )
+                    {
+                        //$('#task' + data.Service_Ticket_Id).remove();
+                        $.mobile.loading( 'hide' );
+                    } );
+                } else if ('arrived' == dataResponse.status) {
+
+                    this.showLoader( 'Saving task status' );
+                    jQuery.ajax( {
+                        type: 'PUT',
+                        url: app.apiUrl + 'dispatch/' + app.task_data[app.task_id].Dispatch_Id + ',' + app.task_id + '?access-token=' + app.access_token,
+                        data: taskStatusData.data
+                    } ).always( function ( dataResponse )
+                    {
+                        console.log( dataResponse );
+                    } );
+                    $( '#status_dispatch, #status_arrived' ).addClass( 'ui-disabled' );
+                    $( '#status_depart,button[id^="task_btn_"]' ).removeClass( 'ui-disabled' );
+
+                    jQuery.ajax( {
+                        type: 'PUT',
+                        url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
+                        data: {
+                            'Ticket_Status': 'IP',
+                            'UserCode': app.user_code,
+                            'Ticket_Number': app.task_data[app.task_id].Ticket_Number
 
 
                         }
-                    }).always(function (data) {
-                        $.mobile.loading('hide');
-                    });
-                }else
-                if ('depart' == dataResponse.status) {
+                    } ).always( function ( data )
+                    {
+                        $.mobile.loading( 'hide' );
+                    } );
+                } else if ('depart' == dataResponse.status) {
                     //$('#status_dispatch,#status_arrived,#status_depart,button[id^="task_btn_"]').addClass('ui-disabled');
-                    this.showLoader('Saving task status');
+                    this.showLoader( 'Saving task status' );
 
-                    navigator.notification.confirm('Do you need to add material?',
-                        function (button) {
+                    navigator.notification.confirm( 'Do you need to add material?',
+                        function ( button )
+                        {
 
                             if (1 == button) {
-                                $('#status_depart,button[id^="task_btn_"]').removeClass('ui-disabled');
-                                $.mobile.loading('hide');
-                            } else
-                            if (2 == button) {
+                                $( '#status_depart,button[id^="task_btn_"]' ).removeClass( 'ui-disabled' );
+                                $.mobile.loading( 'hide' );
+                            } else if (2 == button) {
 
-                                navigator.notification.confirm('Select depart type', function (button) {
+                                navigator.notification.confirm( 'Select depart type', function ( button )
+                                {
 
                                     if (1 == button) {
                                         app.departType = 'GB';
                                     } else if (2 == button) {
                                         app.departType = 'RS';
                                         //app.depart(taskStatusData);
-                                    }else if(3 == button){
+                                    } else if (3 == button) {
                                         departType = false;
-                                        $('#status_depart,button[id^="task_btn_"]').removeClass('ui-disabled');
-                                        $.mobile.loading('hide');
-                                    }
-                                    if (app.departType == 'RS') {
-                                        $.mobile.navigate('#gobacknoteswithcode');
-
-                                    }
-                                    else if (app.departType == 'GB') {
-                                        $.mobile.navigate('#gobacknotes');
-
+                                        $( '#status_depart,button[id^="task_btn_"]' ).removeClass( 'ui-disabled' );
+                                        $.mobile.loading( 'hide' );
                                     }
 
-                                }, 'Depart type', ['Go back', 'Resolved', 'Cancel'])
+                                    app.showReceiptPage();
+
+//                                    if (app.departType == 'RS') {
+//                                        $.mobile.navigate( '#gobacknoteswithcode' );
+//
+//                                    }
+//                                    else if (app.departType == 'GB') {
+//                                        $.mobile.navigate( '#gobacknotes' );
+//
+//                                    }
+
+                                }, 'Depart type', ['Go back', 'Resolved', 'Cancel'] )
 
 
                             } else {
-                                $('#status_depart,button[id^="task_btn_"]').removeClass('ui-disabled');
-                                $.mobile.loading('hide');
+                                $( '#status_depart,button[id^="task_btn_"]' ).removeClass( 'ui-disabled' );
+                                $.mobile.loading( 'hide' );
                             }
                         },
                         'Add material',
@@ -949,59 +1040,78 @@ app.taskStatusData = taskStatusData;
                 );
             }
 
-        }.bind(this));
+        }.bind( this ) );
     },
-    depart:function(taskStatusData){
+    depart: function ( taskStatusData )
+    {
         if (app.departType) {
             var data = taskStatusData.data;
             data.Ticket_Status = app.departType;
-            data.Ticket_Number  = app.task_data[app.task_id].Ticket_Number
+            data.Ticket_Number = app.task_data[app.task_id].Ticket_Number
 
 
-            jQuery.ajax({
+            jQuery.ajax( {
                 type: 'PUT',
                 url: app.apiUrl + 'dispatch/' + app.task_data[app.task_id].Dispatch_Id + ',' + app.task_id + '?access-token=' + app.access_token,
                 data: data
-            }).always(function (dataResponse) {
-                console.log(dataResponse);
-            });
+            } ).always( function ( dataResponse )
+            {
+                console.log( dataResponse );
+            } );
 
-            jQuery.ajax({
+            jQuery.ajax( {
                 type: 'PUT',
-                UserCode:app.user_code,
+                UserCode: app.user_code,
                 url: app.apiUrl + 'ticket/' + app.task_id + '?access-token=' + app.access_token,
                 data: data
-            }).always(function (data) {
-                $('#task' + data.Service_Ticket_Id).remove();
-            });
+            } ).always( function ( data )
+            {
+                $( '#task' + data.Service_Ticket_Id ).remove();
+            } );
         }
     },
-    launchMASMobile: function(){
-        if('android'==cordova.platformId)
-            window.plugins.launcher.launch({packageName:'com.mas.masmobile'},function(data){console.log(data)},function(data){console.log(data)});
-        else
-            window.plugins.launcher.launch({packageName:'com.mas.masmobile'},function(data){console.log(data)},function(data){console.log(data)});
+    launchMASMobile: function ()
+    {
+        if ('android' == cordova.platformId) {
+            window.plugins.launcher.launch( {packageName: 'com.mas.masmobile'}, function ( data )
+            {
+                console.log( data )
+            }, function ( data )
+            {
+                console.log( data )
+            } );
+        } else {
+            window.plugins.launcher.launch( {packageName: 'com.mas.masmobile'}, function ( data )
+            {
+                console.log( data )
+            }, function ( data )
+            {
+                console.log( data )
+            } );
+        }
     },
-    setTaskStatus: function (status) {
+    setTaskStatus: function ( status )
+    {
         var canSetStatus = false;
         var data = {};
         switch (status) {
             case 'dispatch':
                 navigator.notification.confirm(
                     'Ready to go to ' + app.task_data[app.task_id].address_1, // message
-                    function (button) {
+                    function ( button )
+                    {
                         if (1 == button) {
                             canSetStatus = true;
                             //data.Dispatch_Time = moment().format('MMM DD YYYY HH:mm:ss A');
-                            data.Dispatch_Time = moment().format('YYYY-MM-DD HH:mm:ss.000');
+                            data.Dispatch_Time = moment().format( 'YYYY-MM-DD HH:mm:ss.000' );
                             data.Arrival_Time = 0;
                             data.Departure_Time = 0;
                             data.Ticket_Status = 'IP';
-                            this.saveTaskStatus({status: status, data: data, taskId: app.task_id});
+                            this.saveTaskStatus( {status: status, data: data, taskId: app.task_id} );
                         } else {
-                            $.mobile.navigate('#tasks');
+                            $.mobile.navigate( '#tasks' );
                         }
-                    }.bind(this),            // callback to invoke with index of button pressed
+                    }.bind( this ),            // callback to invoke with index of button pressed
                     'Dispatch?',           // title
                     ['Yes', 'No'] // buttonLabels
                 );
@@ -1009,16 +1119,18 @@ app.taskStatusData = taskStatusData;
             case 'arrived':
                 navigator.notification.confirm(
                     'Arrived to ' + app.task_data[app.task_id].address_1, // message
-                    function (button) {
+                    function ( button )
+                    {
                         if (button == 1) {
                             canSetStatus = true;
                             //data.Arrival_Time = moment().format('MMM DD YYYY HH:mm:ss A');
-                            data.Arrival_Time = moment().format('YYYY-MM-DD HH:mm:ss.000');
+                            data.Arrival_Time = moment().format( 'YYYY-MM-DD HH:mm:ss.000' );
                             data.Departure_Time = 0;
-                            this.saveTaskStatus({status:status,data:data, taskId:app.task_id});
+                            this.saveTaskStatus( {status: status, data: data, taskId: app.task_id} );
                             navigator.notification.confirm(
                                 'Place system on test?', // message
-                                function (button) {
+                                function ( button )
+                                {
                                     if (1 == button) {
                                         this.launchMASMobile();
                                     }
@@ -1027,7 +1139,7 @@ app.taskStatusData = taskStatusData;
                                 ['Yes', 'No'] // buttonLabels
                             );
                         }
-                    }.bind(this),
+                    }.bind( this ),
                     'Arrived?',
                     ['Yes', 'No']
                 );
@@ -1035,29 +1147,31 @@ app.taskStatusData = taskStatusData;
             case 'depart':
                 navigator.notification.confirm(
                     'Departure from ' + app.task_data[app.task_id].address_1, // message
-                    function (button) {
+                    function ( button )
+                    {
                         if (1 == button) {
-                            data.Departure_Time = moment().format('MMM DD YYYY HH:mm:ss A');
-                            data.Departure_Time = moment().format('YYYY-MM-DD HH:mm:ss.000');
-                            this.saveTaskStatus({status:status,data:data, taskId:app.task_id});
+                            data.Departure_Time = moment().format( 'MMM DD YYYY HH:mm:ss A' );
+                            data.Departure_Time = moment().format( 'YYYY-MM-DD HH:mm:ss.000' );
+                            this.saveTaskStatus( {status: status, data: data, taskId: app.task_id} );
                         }
-                    }.bind(this),
+                    }.bind( this ),
                     'Departure?',
                     ['Yes', 'No']
                 );
                 break;
         }
     },
-    goBack: function () {
-        if ($.mobile.activePage.is('#tasks') || $.mobile.activePage.is('#signin')) {
+    goBack: function ()
+    {
+        if ($.mobile.activePage.is( '#tasks' ) || $.mobile.activePage.is( '#signin' )) {
             if (navigator.app) {
                 navigator.app.exitApp();
             }
             else if (navigator.device) {
                 navigator.device.exitApp();
-            }else{
+            } else {
                 window.localStorage.clear();
-                $.mobile.navigate('#signin');
+                $.mobile.navigate( '#signin' );
             }
         }
         else {
@@ -1065,32 +1179,36 @@ app.taskStatusData = taskStatusData;
             return false;
         }
     },
-    removePart: function (part_id) {
+    removePart: function ( part_id )
+    {
         app.part_to_delete = part_id;
         navigator.notification.confirm(
             'Remove part from list', // message
-            function(index){
-                if(1 == index){
+            function ( index )
+            {
+                if (1 == index) {
                     delete app.usedParts[app.part_to_delete];
-                    $('#part' + app.part_to_delete).remove();
+                    $( '#part' + app.part_to_delete ).remove();
                     app.saveTaskData();
                 }
             },            // callback to invoke with index of button pressed
             'Part removing',           // title
-            ['Yes','No']         // buttonLabels
+            ['Yes', 'No']         // buttonLabels
         );
 
     },
-    removeImage: function(obj){
+    removeImage: function ( obj )
+    {
         app.image_to_remove = obj;
         navigator.notification.confirm(
             'Remove photo from task', // message
-            function(index){
-                if(1 == index){
+            function ( index )
+            {
+                if (1 == index) {
                     var obj = app.image_to_remove;
-                    var cont = $(obj).closest('div');
-                    if(cont.data('attachment-id')){
-                        app.attachmentToDelete.push(cont.data('attachment-id'));
+                    var cont = $( obj ).closest( 'div' );
+                    if (cont.data( 'attachment-id' )) {
+                        app.attachmentToDelete.push( cont.data( 'attachment-id' ) );
                     }
                     cont.remove();
                     app.uploadTaskData();
@@ -1098,55 +1216,60 @@ app.taskStatusData = taskStatusData;
                 }
             },            // callback to invoke with index of button pressed
             'Photo removing',           // title
-            ['Yes','No']         // buttonLabels
+            ['Yes', 'No']         // buttonLabels
         );
 
 
     },
-    settings: function(){
-        $('#username').val(app.user_data.username);
-        $('#email').val(app.user_data.email);
-        $('#appversion').html('version: '+app.version);
+    settings: function ()
+    {
+        $( '#username' ).val( app.user_data.username );
+        $( '#email' ).val( app.user_data.email );
+        $( '#appversion' ).html( 'version: ' + app.version );
 
 
         //$('#newpassword').val('');
-        $.mobile.navigate('#profile');
+        $.mobile.navigate( '#profile' );
     },
-    saveProfile:function(){
+    saveProfile: function ()
+    {
         var data = {};
-        if($('#username').val()){
-            data.username = $('#username').val();
+        if ($( '#username' ).val()) {
+            data.username = $( '#username' ).val();
         }
-        if($('#email').val()){
-            data.email = $('#email').val();
+        if ($( '#email' ).val()) {
+            data.email = $( '#email' ).val();
         }
-        if($('#newpassword').val()){
-            data.password_hash = $('#newpassword').val();
+        if ($( '#newpassword' ).val()) {
+            data.password_hash = $( '#newpassword' ).val();
         }
-        jQuery.ajax({
+        jQuery.ajax( {
             type: 'PUT',
-            url: app.apiUrl + 'user/'+app.user_data.id+'?access-token='+app.access_token,
+            url: app.apiUrl + 'user/' + app.user_data.id + '?access-token=' + app.access_token,
             data: data
-        }).always(function (data) {
+        } ).always( function ( data )
+        {
             app.user_data = data;
-            $.mobile.navigate('#tasks');
+            $.mobile.navigate( '#tasks' );
             navigator.notification.alert(
                 'Profile was saved',  // message
                 false,         // callback
                 'Profile',            // title
                 'OK'                  // buttonName
             );
-        });
+        } );
     },
-    logout: function(){
+    logout: function ()
+    {
         window.localStorage.clear();
-        $('#login').val('');
-        $('#password').val('');
-        $('#tasks #tasks_content table tbody').empty();
-        $('#table-custom-2').table('refresh');
-        $.mobile.navigate('#signin');
+        $( '#login' ).val( '' );
+        $( '#password' ).val( '' );
+        $( '#tasks #tasks_content table tbody' ).empty();
+        $( '#table-custom-2' ).table( 'refresh' );
+        $.mobile.navigate( '#signin' );
     },
-    showLoader: function(message){
+    showLoader: function ( message )
+    {
         $.mobile.loading( 'show', {
             text: message,
             textVisible: true,
@@ -1154,6 +1277,166 @@ app.taskStatusData = taskStatusData;
             inline: true,
             theme: 'b',
             html: ''
+        } );
+    },
+    showReceiptPage: function ()
+    {
+        console.log( "App data" );
+        console.log( app );
+
+
+        jQuery.getJSON( app.apiUrl + '/taskpart/search', {
+            'Service_Ticket_Id': app.task_id,
+            'expand': 'part',
+            'access-token': app.access_token
+        }, function ( data )
+        {
+            $( '#receiptData .parts' ).empty();
+            if (data) {
+                for (var i in data) {
+                    $( '#receiptData .parts' ).append(
+                        '<p>' + data[i].part.Part_Code + ' ' + data[i].part.Detail + ' ' +
+                        '(' + data[i].Quantity + ')' +
+                        '</p>' );
+                }
+            }
+        }.bind( this ) );
+
+        jQuery.getJSON( app.apiUrl + 'ticket/getdispatch', {
+            'task_id': app.task_id,
+            'access-token': app.access_token
+        }, function ( data )
+        {
+
+            data = data[0]
+
+            if (data) {
+                if (moment( data.Dispatch_Time, 'MMM DD YYYY HH:mm:ss0A' ).unix() > 0) {
+                    jQuery("#receiptData .timing" ).append('<p><b>Dispatch time: </b>'+moment( data.Dispatch_Time, 'MMM DD YYYY HH:mm:ss0A' ).format("YYYY-MM-DD HH:mm:ss")+'</p>')
+                }
+                if (moment( data.Arrival_Time, 'MMM DD YYYY HH:mm:ss0A' ).unix() > 0) {
+                    jQuery("#receiptData .timing" ).append('<p><b>Arrival time: </b>'+moment(data.Arrival_Time, 'MMM DD YYYY HH:mm:ss0A' ).format("YYYY-MM-DD HH:mm:ss")+'</p>')
+                }
+                if (moment( data.Departure_Time, 'MMM DD YYYY HH:mm:ss0A' ).unix() > 0) {
+                    jQuery("#receiptData .timing" ).append('<p><b>Departure time: </b>'+moment(data.Departure_Time, 'MMM DD YYYY HH:mm:ss0A' ).format("YYYY-MM-DD HH:mm:ss")+'</p>')
+                }
+
+            }
+
+        }.bind( this ) );
+
+        $.mobile.navigate( '#signature' );
+        app.initCanvas();
+    },
+    initCanvas: function ()
+    {
+//        var margin = $("#signature div[data-role='header']" ).height()+$("#signature #emailHolder" ).height()+$("#signature #canvasControl" ).height()+$("#signature div[data-role='footer']" ).height();
+        var margin = 260;
+
+        $( "#contentCanvas" ).height( $( window ).height() - margin );
+        var canvas = '<canvas id="canvas" width="' + (
+            $( window ).width() - 8
+            ) + '" height="' + (
+                         $( window ).height() - margin
+                     ) + '"></canvas>';
+        $( "#contentCanvas" ).html( canvas );
+
+
+        var context = document.getElementById( "canvas" ).getContext( "2d" );
+        var canvasObj = document.getElementById( "canvas" );
+
+        var clickX = new Array();
+        var clickY = new Array();
+        var clickDrag = new Array();
+        var paint;
+
+        function addClick( x, y, dragging )
+        {
+            clickX.push( x );
+            clickY.push( y );
+            clickDrag.push( dragging );
+        }
+
+
+        canvasObj.addEventListener( 'touchstart', function ( evt )
+        {
+            paint = true;
+            addClick( evt.touches[0].pageX - canvasObj.offsetLeft, evt.touches[0].pageY - canvasObj.offsetTop );
+            redraw();
+            evt.preventDefault();
+        }, false );
+
+        canvasObj.addEventListener( 'touchmove', function ( evt )
+        {
+
+            if (paint) {
+                addClick( evt.touches[0].pageX - canvasObj.offsetLeft, evt.touches[0].pageY - canvasObj.offsetTop,
+                    true );
+                redraw();
+            }
+        }, false );
+
+        canvasObj.addEventListener( 'touchend', function ()
+        {
+            paint = false;
+        }, false );
+
+        function redraw()
+        {
+            context.clearRect( 0, 0, context.canvas.width, context.canvas.height ); // Clears the canvas
+
+            context.strokeStyle = "#df4b26";
+            context.lineJoin = "round";
+            context.lineWidth = 5;
+
+            for (var i = 0; i < clickX.length; i ++) {
+                context.beginPath();
+                if (clickDrag[i] && i) {
+                    context.moveTo( clickX[i - 1], clickY[i - 1] );
+                } else {
+                    context.moveTo( clickX[i] - 1, clickY[i] );
+                }
+                context.lineTo( clickX[i], clickY[i] );
+                context.closePath();
+                context.stroke();
+            }
+        }
+
+    },
+    clearCanvas: function ()
+    {
+        var canvas = document.getElementById( "canvas" );
+        var context = canvas.getContext( "2d" );
+        context.clearRect( 0, 0, canvas.width, canvas.height );
+        app.initCanvas();
+    },
+    taskDeparture: function ()
+    {
+
+        this.showLoader( 'Sending receipt' );
+        var canvas = document.getElementById( "canvas" );
+
+        var data = {};
+        data.sign = canvas.toDataURL();
+        data.email = jQuery("#userEmail" ).val();
+        data.parts = jQuery("#receiptData .parts" ).html();
+        data.time = jQuery("#receiptData .timing" ).html();
+        data.task_id = app.task_id;
+
+        jQuery.ajax({
+            type: 'PUT',
+            url: app.apiUrl + 'user/sendreceipt?access-token=' + app.access_token,
+            data: data
+        } ).then(function(data){
+            $.mobile.loading( 'hide' );
+            if (app.departType == 'RS') {
+                $.mobile.navigate( '#gobacknoteswithcode' );
+
+            }
+            else if (app.departType == 'GB') {
+                $.mobile.navigate( '#gobacknotes' );
+
+            }
         });
     }
 };

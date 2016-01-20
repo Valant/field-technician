@@ -65,7 +65,7 @@
         <input type="password" style="password" id="password" placeholder="Password"/>
         <button data-icon="home" onclick="app.signin()">Sign In</button>
     </div>
-    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective System</h3></div>
+    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
 </div>
 <div data-role="page" id="tasks">
     <div data-role="header">
@@ -91,7 +91,7 @@
 
         </table>
     </div>
-    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective System</h3></div>
+    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
 </div>
 <div data-role="page" id="taskDetails">
     <div data-role="header">
@@ -118,7 +118,7 @@
             <button id="task_btn_cam" class="ui-disabled" data-icon="camera" onclick="app.makePhoto()">Take a photo</button>
         </div>
     </div>
-    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective System</h3></div>
+    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
 </div>
 <div data-role="page" id="progress">
     <div data-role="header">
@@ -131,7 +131,7 @@
 
         <div id="progressBars"></div>
     </div>
-    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective System</h3></div>
+    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
 </div>
 <div data-role="page" id="gobacknotes">
     <div data-role="header">
@@ -143,7 +143,30 @@
         <textarea name="resolution_notes" id="resolution_notes" cols="30" rows="10" required="required"></textarea>
         <button data-icon="check" onclick="app.saveGoBackNotes(0)">Save</button>
     </div>
-    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective System</h3></div>
+    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
+</div>
+<div data-role="page" id="signature">
+    <div data-role="header">
+        <button data-icon="back" data-iconpos="notext" onclick="app.goBack();"></button>
+        <h2>Receipt</h2>
+    </div>
+    <div id="receiptData">
+        <h3>Used parts</h3>
+        <div class="parts"></div>
+        <h3>Timing</h3>
+        <div class="timing"></div>
+    </div>
+    <div id="emailHolder">
+        <input type="email" id="userEmail" placeholder="Email"/>
+    </div>
+    <div id="contentCanvas">
+
+    </div>
+    <div id="canvasControl">
+        <button onclick="app.clearCanvas()">Clear</button>
+        <button onclick="app.taskDeparture()">Ok</button>
+    </div>
+    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
 </div>
 <div data-role="page" id="gobacknoteswithcode">
     <div data-role="header">
@@ -159,7 +182,7 @@
         <textarea name="resolution_notes_withcode" id="resolution_notes_withcode" cols="30" rows="10" required="required"></textarea>
         <button data-icon="check" onclick="app.saveGoBackNotes(1)">Save</button>
     </div>
-    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective System</h3></div>
+    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
 </div>
 <div data-role="page" id="partsearch">
     <div data-role="header">
@@ -171,7 +194,7 @@
         <ul id="autocomplete" data-role="listview" data-inset="true" data-filter="true" data-filter-placeholder="Find material"
              data-filter-theme="a"  ></ul>
     </div>
-    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective System</h3></div>
+    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
 </div>
 <div data-role="page" id="profile">
     <div data-role="header">
@@ -186,7 +209,7 @@
         <button data-icon="action" onclick="app.logout()">Logout</button>
     </div>
     <div data-role="footer" position="fixed">
-        <h3>&copy; AFA Protective System</h3>
+        <h3>&copy; AFA Protective Systems</h3>
         <h5 id="appversion"></h5>
     </div>
 </div>
