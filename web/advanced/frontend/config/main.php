@@ -52,7 +52,18 @@
                         ]
                     ],
                 ],
-            ]
+            ],
+            'mail' => [
+                'class' => 'yii\swiftmailer\Mailer',
+                'transport' => [
+                    'class' => 'Swift_SmtpTransport',
+                    'host' => 'smtp.office365.com',  // e.g. smtp.mandrillapp.com or smtp.gmail.com
+                    'username' => 'no-reply@afap.com',
+                    'password' => 'Butu9682',
+                    'port' => '587', // Port 25 is a very common port too
+                    'encryption' => 'tls', // It is often used, check your provider or mail server specs
+                ],
+            ],
         ],
         'params'              => $params,
     ];
