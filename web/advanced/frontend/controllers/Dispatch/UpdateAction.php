@@ -78,6 +78,7 @@
                 }
                 if(!empty($requestParams['Resolution_Notes'])){
                     $preparedRequest['ResolutionNote'] = $requestParams['Resolution_Notes'];
+                    $preparedRequest['ResolutionAccessLevel'] = 2;
                 }
             }
 
