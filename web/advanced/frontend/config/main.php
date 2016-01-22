@@ -55,6 +55,7 @@
             ],
             'mail' => [
                 'class' => 'yii\swiftmailer\Mailer',
+                'useFileTransport' => false,
                 'transport' => [
                     'class' => 'Swift_SmtpTransport',
                     'host' => 'smtp.office365.com',  // e.g. smtp.mandrillapp.com or smtp.gmail.com
