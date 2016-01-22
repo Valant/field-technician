@@ -71,7 +71,7 @@
                         break;
                     case "RS":
                         $preparedRequest['ResolvesTicket'] = true;
-                        if(!emptu($requestParams['Resolution_Code'])){
+                        if(!empty($requestParams['Resolution_Code'])){
                             $preparedRequest['ResolutionCode'] = $requestParams['Resolution_Code'];
                         }
                         break;
