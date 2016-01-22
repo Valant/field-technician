@@ -76,6 +76,9 @@
                         }
                         break;
                 }
+                if(!empty($requestParams['Resolution_Notes'])){
+                    $preparedRequest['ResolutionNote'] = $requestParams['Resolution_Notes'];
+                }
             }
 
             return json_decode( PageLoaderComponent::load(
