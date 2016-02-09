@@ -21,18 +21,18 @@
         {
             if ($part = INPart::findOne( $this->params['Part_Id'] )) {
 
-                return json_decode( PageLoaderComponent::load( \Yii::$app->params['api.url']."/api/ServiceTicketPart", [
-                    "ServiceTicketNumber" => $this->params['Ticket_Number'],
-                    "PartCode"            => $part->Part_Code,
-                    "Quantity"            => $this->params['Quantity'],
-                    "Rate"                => $part->Service_Price * 3.5
-                ], true, false ) );
+                return json_decode( PageLoaderComponent::load( \Yii::$app->params['api.url'] . "/api/ServiceTicketPart",
+                    [
+                        "ServiceTicketNumber" => $this->params['Ticket_Number'],
+                        "PartCode"            => $part->Part_Code,
+                        "Quantity"            => $this->params['Quantity'],
+                        "Rate"                => $part->Service_Price * 3.5,
+                        "WarehouseCode"       => $this->params['Warehouse_Code']
+                    ], true, false ) );
             } else {
                 return $this->params;
             }
-//                $this->Rate = $part->Service_Price * 3.5;
 
-//            return $this->params;
         }
 
     }

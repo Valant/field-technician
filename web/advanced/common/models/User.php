@@ -285,6 +285,9 @@
             $fields['warehoise_id'] = function(){
                 return $this->technition->Warehouse_Id;
             };
+            $fields['warehouse_code'] = function(){
+                return $this->technition->warehouse->Warehouse_Code;
+            };
             return $fields;
         }
     }

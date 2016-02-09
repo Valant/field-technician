@@ -17,7 +17,7 @@
  * under the License.
  */
 var app = {
-    version: '0.11.8',
+    version: '0.12.4',
     db: false,
     task_id: false,
     uploaded: 0,
@@ -31,6 +31,7 @@ var app = {
     taskLocked: [],
     usedParts: {},
     user_warehouse_id: null,
+    user_warehouse_code: null,
     attachmentToDelete: [],
     part_to_delete: 0,
     image_to_remove: false,
@@ -92,6 +93,7 @@ var app = {
                             app.user_code = data.usercode;
                             app.access_token = data.auth_key;
                             app.user_warehouse_id = data.warehoise_id;
+                            app.user_warehouse_code = data.warehouse_code;
                             app.loadTasks();
                             app.loadResolitons();
 
@@ -132,6 +134,7 @@ var app = {
                 app.user_code = data.usercode;
                 app.access_token = data.auth_key;
                 app.user_warehouse_id = data.warehoise_id;
+                app.user_warehouse_code = data.warehoise_code;
                 app.loadTasks();
                 app.loadResolitons();
             } else {
@@ -172,6 +175,10 @@ var app = {
             withcode = 0;
         }
         if (app.taskStatusData) {
+            if(withcode) {
+                app.taskStatusData.data.Resolution_Code = $( '#resolution_code option:selected' ).text();
+            }
+            app.taskStatusData.data.Resolution_Notes = $( '#resolution_notes' + (withcode ? '_withcode' : '') ).val();
             app.depart( app.taskStatusData );
 
             if ($( '#resolution_notes' + (
@@ -196,9 +203,12 @@ var app = {
                 {
                     var endNotes = function ( data )
                     {
+
+                        app.showReceiptPage();
+
                         $( '#task' + data.Service_Ticket_Id ).remove();
                         $.mobile.loading( 'hide' );
-                        $.mobile.navigate( '#tasks' );
+//                        $.mobile.navigate( '#tasks' );
 
                         $( '#resolution_notes' + (
                                 withcode ? '_withcode' : ''
@@ -671,7 +681,8 @@ var app = {
                                 'Part_Id': part_id,
                                 'Quantity': app.usedParts[part_id],
                                 'UserCode': app.user_code,
-                                'Warehouse_Id': app.user_warehouse_id
+                                'Warehouse_Id': app.user_warehouse_id,
+                                'Warehouse_Code': app.user_warehouse_code
 
                             }
                         } );
@@ -1007,16 +1018,14 @@ var app = {
                                         $.mobile.loading( 'hide' );
                                     }
 
-                                    app.showReceiptPage();
+                                    if (app.departType == 'RS') {
+                                        $.mobile.navigate( '#gobacknoteswithcode' );
 
-//                                    if (app.departType == 'RS') {
-//                                        $.mobile.navigate( '#gobacknoteswithcode' );
-//
-//                                    }
-//                                    else if (app.departType == 'GB') {
-//                                        $.mobile.navigate( '#gobacknotes' );
-//
-//                                    }
+                                    }
+                                    else if (app.departType == 'GB') {
+                                        $.mobile.navigate( '#gobacknotes' );
+
+                                    }
 
                                 }, 'Depart type', ['Go back', 'Resolved', 'Cancel'] )
 
@@ -1283,6 +1292,8 @@ var app = {
     {
         console.log( "App data" );
         console.log( app );
+        jQuery("#receiptData .timing" ).empty();
+        jQuery( '#receiptData .parts' ).empty();
 
 
         jQuery.getJSON( app.apiUrl + '/taskpart/search', {
@@ -1292,8 +1303,10 @@ var app = {
         }, function ( data )
         {
             $( '#receiptData .parts' ).empty();
-            if (data) {
+            if (data.length) {
+                $('#usedPartsLabel' ).show();
                 for (var i in data) {
+
                     $( '#receiptData .parts' ).append(
                         '<p>' + data[i].part.Part_Code + ' ' + data[i].part.Detail + ' ' +
                         '(' + data[i].Quantity + ')' +
@@ -1307,7 +1320,6 @@ var app = {
             'access-token': app.access_token
         }, function ( data )
         {
-
             data = data[0]
 
             if (data) {
@@ -1410,8 +1422,12 @@ var app = {
         context.clearRect( 0, 0, canvas.width, canvas.height );
         app.initCanvas();
     },
-    taskDeparture: function ()
+    sendReceipt: function ()
     {
+
+        if(!jQuery("#userEmail" ).val()){
+            return false;
+        }
 
         this.showLoader( 'Sending receipt' );
         var canvas = document.getElementById( "canvas" );
@@ -1429,14 +1445,7 @@ var app = {
             data: data
         } ).then(function(data){
             $.mobile.loading( 'hide' );
-            if (app.departType == 'RS') {
-                $.mobile.navigate( '#gobacknoteswithcode' );
-
-            }
-            else if (app.departType == 'GB') {
-                $.mobile.navigate( '#gobacknotes' );
-
-            }
+            $.mobile.navigate( '#tasks' );
         });
     }
 };

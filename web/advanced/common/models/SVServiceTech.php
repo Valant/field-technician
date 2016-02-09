@@ -127,6 +127,9 @@
         public function getEmployee(){
             return $this->hasOne( SYEmployee::className(), [ 'Employee_Id' => 'Employee_Id' ] );
         }
+        public function getWarehouse(){
+            return $this->hasOne( INWarehouse::className(), [ 'Warehouse_Id' => 'Warehouse_Id' ] );
+        }
         public function fields()
         {
             $fields = parent::fields();
