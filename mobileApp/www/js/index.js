@@ -17,7 +17,7 @@
  * under the License.
  */
 var app = {
-    version: '0.12.4',
+    version: '0.12.5',
     db: false,
     task_id: false,
     uploaded: 0,
@@ -204,7 +204,11 @@ var app = {
                     var endNotes = function ( data )
                     {
 
-                        app.showReceiptPage();
+                        if(data.resolved) {
+                            app.showReceiptPage();
+                        }else{
+                            $.mobile.navigate( '#tasks' );
+                        }
 
                         $( '#task' + data.Service_Ticket_Id ).remove();
                         $.mobile.loading( 'hide' );
@@ -217,7 +221,7 @@ var app = {
                         $( '#resolution_code' ).selectmenu( 'refresh', true );    // values
                     };
                     if (! withcode) {
-                        endNotes( {Service_Ticket_Id: app.task_data[app.task_id].Service_Ticket_Id} );
+                        endNotes( {Service_Ticket_Id: app.task_data[app.task_id].Service_Ticket_Id, resolved: withcode} );
                     } else {
                         jQuery.ajax( {
                             type: 'PUT',
@@ -226,7 +230,7 @@ var app = {
                                 'Resolution_Id': parseInt( $( '#resolution_code' ).val() ),
                                 'UserCode': app.user_code
                             }
-                        } ).always( endNotes( {Service_Ticket_Id: app.task_data[app.task_id].Service_Ticket_Id} ) );
+                        } ).always( endNotes( {Service_Ticket_Id: app.task_data[app.task_id].Service_Ticket_Id, resolved: withcode} ) );
                     }
 
                 } );
