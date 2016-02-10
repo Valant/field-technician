@@ -17,7 +17,7 @@
  * under the License.
  */
 var app = {
-    version: '0.12.5',
+    version: '0.12.6',
     db: false,
     task_id: false,
     uploaded: 0,
@@ -156,7 +156,7 @@ var app = {
     },
     loadResolitons: function ()
     {
-        jQuery.getJSON( app.apiUrl + '/resolution/', {'access-token': window.localStorage.getItem( 'access_token' )},
+        jQuery.getJSON( app.apiUrl + '/resolution/', {'access-token': window.localStorage.getItem( 'access_token' ), 'sort':'Resolution_Code'},
             function ( data )
             {
                 if (data) {
@@ -204,11 +204,7 @@ var app = {
                     var endNotes = function ( data )
                     {
 
-                        if(data.resolved) {
-                            app.showReceiptPage();
-                        }else{
-                            $.mobile.navigate( '#tasks' );
-                        }
+                        app.showReceiptPage();
 
                         $( '#task' + data.Service_Ticket_Id ).remove();
                         $.mobile.loading( 'hide' );
@@ -1451,5 +1447,8 @@ var app = {
             $.mobile.loading( 'hide' );
             $.mobile.navigate( '#tasks' );
         });
+    },
+    showTasksList: function(){
+        $.mobile.navigate( '#tasks' );
     }
 };

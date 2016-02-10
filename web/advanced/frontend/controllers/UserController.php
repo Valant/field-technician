@@ -47,10 +47,10 @@
         {
             $postData = Yii::$app->request->post();
 
-            if(empty($postData['email'])){
-                throw new HttpException('503', 'No email');
+            if (empty( $postData['email'] )) {
+                throw new HttpException( '503', 'No email' );
             }
-            if(filter_var($postData['email'], FILTER_VALIDATE_EMAIL)) {
+            if (filter_var( $postData['email'], FILTER_VALIDATE_EMAIL )) {
                 $img      = $postData['sign'];
                 $img      = str_replace( 'data:image/png;base64,', '', $img );
                 $img      = str_replace( ' ', '+', $img );
@@ -74,8 +74,9 @@
                 $signUrl = Yii::$app->params['domainName'] . "/uploads/" . $model->task_id . "/" . $fileName;
 
                 Yii::$app->mail->compose( [ 'html' => '@frontend/views/mail-templates/receipt' ], [
-                    'timing' => $postData['time'],
-                    'parts'  => $postData['parts']
+                    'timing'  => $postData['time'],
+                    'parts'   => $postData['parts'],
+                    'signUrl' => $signUrl
                 ] )
                                ->setFrom( 'no-reply@afap.com' )
                                ->setTo( $postData['email'] )
@@ -83,8 +84,8 @@
                                ->send();
 
                 return [ 'file' => $signUrl, 'sign' => $signUrl ];
-            }else{
-                throw new HttpException('503', 'Not valid email');
+            } else {
+                throw new HttpException( '503', 'Not valid email' );
             }
         }
     }

@@ -163,6 +163,7 @@
 
     </div>
     <div id="canvasControl">
+        <button onclick="app.showTasksList()">No Signer Available</button>
         <button onclick="app.clearCanvas()">Clear</button>
         <button onclick="app.sendReceipt()">Ok</button>
     </div>
@@ -203,8 +204,8 @@
     </div>
     <div role="main" class="ui-content" id="profile_content">
         <pre class="errors"></pre>
-        <input disabled="disabled" style="text" id="username" placeholder="Login"/>
-        <input disabled="disabled" style="text" id="email" placeholder="email@domain.zone"/>
+        <input disabled="disabled" type="text" id="username" placeholder="Login"/>
+        <input disabled="disabled" type="email" id="email" placeholder="email@domain.zone"/>
 
         <button data-icon="action" onclick="app.logout()">Logout</button>
     </div>
