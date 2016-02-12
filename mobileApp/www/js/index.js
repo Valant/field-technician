@@ -17,7 +17,7 @@
  * under the License.
  */
 var app = {
-    version: '0.12.6',
+    version: '0.12.8',
     db: false,
     task_id: false,
     uploaded: 0,
@@ -26,6 +26,7 @@ var app = {
     apiUrl: 'http://ftapitest.afap.com/',
     user_id: 0,
     user_code: '',
+    service_tech_code: '',
     user_data: {},
     task_data: [],
     taskLocked: [],
@@ -91,6 +92,7 @@ var app = {
                         if (typeof data.id != 'undefined') {
                             app.user_data = data;
                             app.user_code = data.usercode;
+                            app.service_tech_code = data.servicetechcode;
                             app.access_token = data.auth_key;
                             app.user_warehouse_id = data.warehoise_id;
                             app.user_warehouse_code = data.warehouse_code;
@@ -132,6 +134,7 @@ var app = {
                 $( '#signin .errors' ).text( '' );
                 app.user_id = data.technition_id;
                 app.user_code = data.usercode;
+                app.service_tech_code = data.servicetechcode;
                 app.access_token = data.auth_key;
                 app.user_warehouse_id = data.warehoise_id;
                 app.user_warehouse_code = data.warehoise_code;
@@ -681,6 +684,7 @@ var app = {
                                 'Part_Id': part_id,
                                 'Quantity': app.usedParts[part_id],
                                 'UserCode': app.user_code,
+                                'ServiceTechCode': app.service_tech_code,
                                 'Warehouse_Id': app.user_warehouse_id,
                                 'Warehouse_Code': app.user_warehouse_code
 
@@ -1290,10 +1294,9 @@ var app = {
     },
     showReceiptPage: function ()
     {
-        console.log( "App data" );
-        console.log( app );
         jQuery("#receiptData .timing" ).empty();
         jQuery( '#receiptData .parts' ).empty();
+        jQuery("#userEmail" ).val("");
 
 
         jQuery.getJSON( app.apiUrl + '/taskpart/search', {

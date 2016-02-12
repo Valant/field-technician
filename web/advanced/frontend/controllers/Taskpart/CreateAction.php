@@ -27,7 +27,8 @@
                         "PartCode"            => $part->Part_Code,
                         "Quantity"            => $this->params['Quantity'],
                         "Rate"                => $part->Service_Price * 3.5,
-                        "WarehouseCode"       => $this->params['Warehouse_Code']
+                        "WarehouseCode"       => $this->params['Warehouse_Code'],
+                        "ServiceTechCode"     => $this->params['Service_Tech_Code']
                     ], true, false ) );
             } else {
                 return $this->params;

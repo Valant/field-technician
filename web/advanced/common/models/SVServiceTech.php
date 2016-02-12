@@ -141,6 +141,9 @@
             $fields['usercode'] = function(){
                 return $this->employee->usercode;
             };
+            $fields['servicetechcode'] = function(){
+                return $this->employee->Employee_Code;
+            };
             return $fields;
         }
 //        public function getTechname(){

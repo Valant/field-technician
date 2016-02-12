@@ -288,6 +288,9 @@
             $fields['warehouse_code'] = function(){
                 return $this->technition->warehouse->Warehouse_Code;
             };
+            $fields['servicetechcode'] = function(){
+                return $this->technition->employee->Employee_Code;
+            };
             return $fields;
         }
     }
