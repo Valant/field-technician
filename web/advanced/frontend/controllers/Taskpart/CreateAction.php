@@ -28,7 +28,8 @@
                         "Quantity"            => $this->params['Quantity'],
                         "Rate"                => $part->Service_Price * 3.5,
                         "WarehouseCode"       => $this->params['Warehouse_Code'],
-                        "ServiceTechCode"     => $this->params['ServiceTechCode']
+                        "ServiceTechCode"     => $this->params['ServiceTechCode'],
+                        "FromStock"           => true
                     ], true, false ) );
             } else {
                 return $this->params;
