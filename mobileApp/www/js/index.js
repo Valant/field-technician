@@ -17,13 +17,13 @@
  * under the License.
  */
 var app = {
-    version: '0.12.8',
+    version: '0.12.9',
     db: false,
     task_id: false,
     uploaded: 0,
     needToUpload: 0,
     //apiUrl: 'http://api.field-technician.loc/',
-    apiUrl: 'http://ftapitest.afap.com/',
+    apiUrl: 'http://ftapi.afap.com/',
     user_id: 0,
     user_code: '',
     service_tech_code: '',
