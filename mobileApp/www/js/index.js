@@ -17,7 +17,7 @@
  * under the License.
  */
 var app = {
-    version: '0.12.9',
+    version: '0.12.12',
     db: false,
     task_id: false,
     uploaded: 0,
@@ -358,30 +358,50 @@ var app = {
                         );
                     }
 
-                    if (app.usedParts[data.Part_Id]) {
-                        if (quantity) {
-                            app.usedParts[data.Part_Id] += quantity;
-                        } else {
-                            app.usedParts[data.Part_Id] ++;
+                    app.showLoader("Adding part...");
+                    jQuery.ajax( {
+                        type: 'POST',
+                        url: app.apiUrl + 'taskpart/create?access-token=' + app.access_token,
+                        data: {
+                            'Service_Tech_ID': app.user_id,
+                            'Service_Ticket_Id': app.task_id,
+                            'Ticket_Number': app.task_data[app.task_id].Ticket_Number,
+                            'Part_Id': data.Part_Id,
+                            'Quantity': quantity,
+                            'UserCode': app.user_code,
+                            'ServiceTechCode': app.service_tech_code,
+                            'Warehouse_Id': app.user_warehouse_id,
+                            'Warehouse_Code': app.user_warehouse_code
+
                         }
-                        $( '#part' + data.Part_Id + ' .ui-li-count' ).text( app.usedParts[data.Part_Id] );
-                    } else {
-                        $( '<li data-icon="delete" id="part' + data.Part_Id + '">' +
-                           '<a onclick="app.removePart(' + data.Part_Id + ')">'
-                           + data.Part_Code + ' ' + data.Detail + ' ' + data.Description +
-                           '<span class="ui-li-count">' + (
-                               quantity ? quantity : 1
-                           ) + '</span>' +
-                           '</a></li>' ).appendTo( '#parts' );
-                        app.usedParts[data.Part_Id] = quantity ? quantity : 1;
-                    }
-                    $( '#parts' ).listview( 'refresh' );
-                    jQuery( "#autocomplete" ).html( "" );
-                    $( 'input[data-type="search"]' ).val( "" );
-                    $.mobile.loading( 'hide' );
-                    $.mobile.navigate( '#taskDetails' );
-                    $.mobile.silentScroll( $( '#parts' ).offset().top );
-                    app.uploadTaskData();
+                    } ).done(function(){
+
+                        if (app.usedParts[data.Part_Id]) {
+                            if (quantity) {
+                                app.usedParts[data.Part_Id] += quantity;
+                            } else {
+                                app.usedParts[data.Part_Id] ++;
+                            }
+                            $( '#part' + data.Part_Id + ' .ui-li-count' ).text( app.usedParts[data.Part_Id] );
+                        } else {
+                            $( '<li data-icon="delete" id="part' + data.Part_Id + '">' +
+                               '<a onclick="app.removePart(' + data.Part_Id + ', '+ (quantity ? quantity : 1) +')">'
+                               + data.Part_Code + ' ' + data.Detail + ' ' + data.Description +
+                               '<span class="ui-li-count">' + (
+                                   quantity ? quantity : 1
+                               ) + '</span>' +
+                               '</a></li>' ).appendTo( '#parts' );
+                            app.usedParts[data.Part_Id] = quantity ? quantity : 1;
+                        }
+                        $( '#parts' ).listview( 'refresh' );
+                        jQuery( "#autocomplete" ).html( "" );
+                        $( 'input[data-type="search"]' ).val( "" );
+                        $.mobile.loading( 'hide' );
+                        $.mobile.navigate( '#taskDetails' );
+                        $.mobile.silentScroll( $( '#parts' ).offset().top );
+//                        app.uploadTaskData();
+                        $.mobile.loading( 'hide' );
+                    });
                 }
             }.bind( this ),                  // callback to invoke
             'Quantity',            // title
@@ -659,43 +679,6 @@ var app = {
             }
         }
 
-        if (this.usedParts) {
-            this.showLoader( 'Saving...' );
-
-            $.when( jQuery.ajax( {
-                    type: 'GET',
-                    url: app.apiUrl + 'taskpart/empty',
-                    data: {
-                        'access-token': app.access_token,
-                        'Service_Ticket_Id': app.task_id,
-                        'UserCode': app.user_code
-                    }
-                } )
-            ).done( function ()
-                {
-                    for (var part_id in app.usedParts) {
-                        jQuery.ajax( {
-                            type: 'POST',
-                            url: app.apiUrl + 'taskpart/create?access-token=' + app.access_token,
-                            data: {
-                                'Service_Tech_ID': app.user_id,
-                                'Service_Ticket_Id': app.task_id,
-                                'Ticket_Number': app.task_data[app.task_id].Ticket_Number,
-                                'Part_Id': part_id,
-                                'Quantity': app.usedParts[part_id],
-                                'UserCode': app.user_code,
-                                'ServiceTechCode': app.service_tech_code,
-                                'Warehouse_Id': app.user_warehouse_id,
-                                'Warehouse_Code': app.user_warehouse_code
-
-                            }
-                        } );
-                    }
-                    $.mobile.loading( 'hide' );
-
-                }.bind( this )
-            );
-        }
         this.setProgressBarValue( 0 );
         $( '#progressBars' ).empty();
 
@@ -711,6 +694,9 @@ var app = {
             this.uploaded = 0;
 
         }
+
+        $.mobile.loading( 'hide' );
+
 
     },
     showTaskDetail: function ( task_id, data )
@@ -837,7 +823,7 @@ var app = {
                     for (var i in data) {
                         app.usedParts[data[i].part.Part_Id] = data[i].Quantity;
                         $( '#parts' ).append( '<li data-icon="delete" id="part' + data[i].part.Part_Id + '">' +
-                                              '<a onclick="app.removePart(' + data[i].part.Part_Id + ')">'
+                                              '<a onclick="app.removePart(' + data[i].part.Part_Id + ', '+data[i].Quantity+')">'
                                               + data[i].part.Part_Code + ' ' + data[i].part.Detail + ' ' + data[i].part.Description +
                                               '<span class="ui-li-count">' + data[i].Quantity + '</span>' +
                                               '</a>' +
@@ -1192,7 +1178,7 @@ var app = {
             return false;
         }
     },
-    removePart: function ( part_id )
+    removePart: function ( part_id, quantity )
     {
         app.part_to_delete = part_id;
         navigator.notification.confirm(
@@ -1200,9 +1186,28 @@ var app = {
             function ( index )
             {
                 if (1 == index) {
-                    delete app.usedParts[app.part_to_delete];
-                    $( '#part' + app.part_to_delete ).remove();
-                    app.saveTaskData();
+                    app.showLoader("Removing part...");
+                    $.ajax({
+                        type: 'POST',
+                        url: app.apiUrl + 'taskpart/delete?access-token=' + app.access_token,
+                        data: {
+                            part_id: app.part_to_delete,
+                            Service_Tech_ID: app.user_id,
+                            Service_Ticket_Id: app.task_id,
+                            Ticket_Number: app.task_data[app.task_id].Ticket_Number,
+                            Quantity: quantity,
+                            UserCode: app.user_code,
+                            ServiceTechCode: app.service_tech_code,
+                            Warehouse_Id: app.user_warehouse_id,
+                            Warehouse_Code: app.user_warehouse_code
+                        }
+                    } ).done(function(){
+                        delete app.usedParts[app.part_to_delete];
+                        $( '#part' + app.part_to_delete ).remove();
+                        $.mobile.loading( 'hide' );
+                    })
+
+//                    app.saveTaskData();
                 }
             },            // callback to invoke with index of button pressed
             'Part removing',           // title
