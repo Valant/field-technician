@@ -295,14 +295,16 @@
             $dispatchList = SVServiceTicketDispatch::find()->select( 'SV_Service_Ticket_Dispatch.Service_Ticket_Id, SV_Service_Ticket_Dispatch.*' )
                                                    ->innerJoin( 'SV_Service_Ticket',
                                                        'SV_Service_Ticket.Service_Ticket_Id = SV_Service_Ticket_Dispatch.Service_Ticket_Id' )
-                                                   ->where( [ "SV_Service_Ticket.Ticket_Status"            => $ticketStatus,
-                                                              "SV_Service_Ticket_Dispatch.Service_Tech_Id" => $service_tech_id
+                                                   ->where( [
+                                                       "SV_Service_Ticket.Ticket_Status"            => $ticketStatus,
+                                                       "SV_Service_Ticket_Dispatch.Service_Tech_Id" => $service_tech_id,
+                                                       "SV_Service_Ticket_Dispatch.Resolution_Id"   => 1
                                                    ] )
 //                                                   ->groupBy( 'SV_Service_Ticket_Dispatch.Dispatch_Id' )
                                                    ->orderBy( 'SV_Service_Ticket_Dispatch.Dispatch_Id',
-                                                       SORT_DESC )->all();
+                    SORT_DESC )->all();
             return $dispatchList;
-            $ticketIds    = [ ];
+            $ticketIds = [ ];
             foreach ($dispatchList as $dp) {
                 $ticketIds[] = $dp->Service_Ticket_Id;
             }
@@ -374,12 +376,18 @@
         public function afterSave( $insert, $changedAttributes )
         {
             if ( ! $insert && isset( $changedAttributes['Resolution_Id'] )) {
-                if($dispatch = SVServiceTicketDispatch::find()
-                    ->where(['SV_Service_Ticket_Dispatch.Service_Ticket_Id'=>$this->Service_Ticket_Id, 'SV_Service_Ticket_Dispatch.Service_Tech_Id'=>Yii::$app->user->getIdentity()->technition_id])
-                    ->innerJoin('SV_Service_Ticket', 'SV_Service_Ticket.Service_Ticket_Id = SV_Service_Ticket_Dispatch.Service_Ticket_Id')
-                    ->leftJoin('SS_LockTable', "SV_Service_Ticket.Ticket_Number = SS_LockTable.Code AND SS_LockTable.Table_Name = 'sv_service_ticket'")
-                    ->orderBy(['Dispatch_Id'=>SORT_DESC])
-                    ->one()){
+                if ($dispatch = SVServiceTicketDispatch::find()
+                                                       ->where( [
+                                                           'SV_Service_Ticket_Dispatch.Service_Ticket_Id' => $this->Service_Ticket_Id,
+                                                           'SV_Service_Ticket_Dispatch.Service_Tech_Id'   => Yii::$app->user->getIdentity()->technition_id
+                                                       ] )
+                                                       ->innerJoin( 'SV_Service_Ticket',
+                                                           'SV_Service_Ticket.Service_Ticket_Id = SV_Service_Ticket_Dispatch.Service_Ticket_Id' )
+                                                       ->leftJoin( 'SS_LockTable',
+                                                           "SV_Service_Ticket.Ticket_Number = SS_LockTable.Code AND SS_LockTable.Table_Name = 'sv_service_ticket'" )
+                                                       ->orderBy( [ 'Dispatch_Id' => SORT_DESC ] )
+                                                       ->one()
+                ) {
                     $dispatch->Resolution_Id = $this->Resolution_Id;
                     $dispatch->save();
                 }
