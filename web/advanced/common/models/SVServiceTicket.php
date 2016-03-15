@@ -351,14 +351,14 @@
                                           'AR_Customer_Site.Customer_Site_Id = SV_Service_Ticket.Customer_Site_Id' )
                                       ->innerJoin( 'AR_Customer_System',
                                           'AR_Customer_System.Customer_Id = AR_Customer.Customer_Id' )
-                                      ->innerJoin( 'SY_System', 'AR_Customer_System.System_Id = SY_System.System_Id' )
-                                      ->innerJoin( 'SY_Panel_Type',
+                                      ->leftJoin( 'SY_System', 'AR_Customer_System.System_Id = SY_System.System_Id' )
+                                      ->leftJoin( 'SY_Panel_Type',
                                           'SY_Panel_Type.panel_type_id = ar_customer_system.panel_type_id' )
-                                      ->innerJoin( 'SV_Service_Tech_Routes',
+                                      ->leftJoin( 'SV_Service_Tech_Routes',
                                           'SV_Service_Tech_Routes.Route_Id = SV_Service_Ticket.Route_Id' )
-                                      ->innerJoin( 'SV_Problem',
+                                      ->leftJoin( 'SV_Problem',
                                           'SV_Service_Ticket.Problem_Id = SV_Problem.Problem_Id' )
-                                      ->innerJoin( 'SV_Routes', 'SV_Routes.Route_Id = SV_Service_Tech_Routes.Route_Id' )
+                                      ->leftJoin( 'SV_Routes', 'SV_Routes.Route_Id = SV_Service_Tech_Routes.Route_Id' )
                                       ->where( "SV_Service_Ticket_Dispatch.Dispatch_Id = :Dispatch_Id",
                                           [ ":Dispatch_Id" => $dispatch_id ] )
                                       ->limit( 1 )
