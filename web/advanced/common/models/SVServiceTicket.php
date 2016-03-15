@@ -319,34 +319,9 @@
                                  ] )
                                  ->orderBy( 'SV_Service_Ticket.Scheduled_For', SORT_DESC )->limit( 100 )
             ] );
-//            return $dispatchList;
-            $ticketIds = [ ];
-            foreach ($dispatchList as $dp) {
-                $ticketIds[] = $dp->Service_Ticket_Id;
-            }
-
-            $query = new Query;
-
-            return new ActiveDataProvider( [
-                'query' => $query->select( '
-                    SV_Service_Ticket.Service_Ticket_Id, SV_Service_Ticket.Scheduled_For, SV_Service_Ticket.Ticket_Number, SV_Problem.Description AS ProblemDescription,
-                    AR_Customer.Customer_Name, ar_customer_site.ge1_description as  City,
-                    SV_Service_Ticket.Ticket_Status,
-                    SS_LockTable.LockTable_Id,SS_LockTable.LockedByUser,SS_LockTable.LockedTime,SS_LockTable.Form
-                ' )->from( 'SV_Service_Ticket' )
-                                 ->innerJoin( 'SV_Problem', 'SV_Problem.Problem_Id = SV_Service_Ticket.Problem_Id' )
-                                 ->innerJoin( 'AR_Customer', 'AR_Customer.Customer_Id = SV_Service_Ticket.Customer_Id' )
-                                 ->innerJoin( 'AR_Customer_Site',
-                                     'AR_Customer_Site.Customer_Site_Id = SV_Service_Ticket.Customer_Site_Id' )
-                                 ->leftJoin( 'SS_LockTable',
-                                     'SV_Service_Ticket.Ticket_Number = SS_LockTable.Code and SS_LockTable.Table_Name = "sv_service_ticket"' )
-                                 ->where( [ "SV_Service_Ticket.Service_Ticket_Id" => $ticketIds ] )
-                                 ->orderBy( 'SV_Service_Ticket.Scheduled_For', 'DESC' )->limit( 100 )
-            ] );
-
         }
 
-        public static function getSingleInfo( $ticket_id )
+        public static function getSingleInfo( $dispatch_id )
         {
             $query = new Query;
 
@@ -364,7 +339,10 @@
                 ar_customer_system.alarm_account, sy_system.description as System_Description, sy_panel_type.description as System_Panel_Description,
                 ar_customer_site.phone_1, ar_customer_site.cross_street, ar_customer_system.system_comments, sv_service_ticket.ticket_status,
                 sv_service_ticket.entered_by, sv_service_ticket.requested_by_phone
-                ' )->from( 'SV_Service_Ticket' )
+                ' )
+                                      ->from( 'SV_Service_Ticket_Dispatch' )
+                                      ->innerJoin( 'SV_Service_Ticket',
+                                          'SV_Service_Ticket.Service_Ticket_Id = SV_Service_Ticket_Dispatch.Service_Ticket_Id' )
                                       ->innerJoin( 'AR_Customer',
                                           'AR_Customer.Customer_Id = SV_Service_Ticket.Customer_Id' )
                                       ->innerJoin( 'AR_Customer_Bill',
@@ -381,8 +359,8 @@
                                       ->innerJoin( 'SV_Problem',
                                           'SV_Service_Ticket.Problem_Id = SV_Problem.Problem_Id' )
                                       ->innerJoin( 'SV_Routes', 'SV_Routes.Route_Id = SV_Service_Tech_Routes.Route_Id' )
-                                      ->where( "SV_Service_Ticket.Service_Ticket_Id = :Service_Ticket_Id",
-                                          [ ":Service_Ticket_Id" => $ticket_id ] )
+                                      ->where( "SV_Service_Ticket_Dispatch.Dispatch_Id = :Dispatch_Id",
+                                          [ ":Dispatch_Id" => $dispatch_id ] )
                                       ->limit( 1 )
                 ,
                 'pagination' => false
