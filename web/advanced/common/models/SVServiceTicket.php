@@ -298,7 +298,7 @@
                                                    ->where( [ "SV_Service_Ticket.Ticket_Status"            => $ticketStatus,
                                                               "SV_Service_Ticket_Dispatch.Service_Tech_Id" => $service_tech_id
                                                    ] )
-                                                   ->groupBy( 'SV_Service_Ticket_Dispatch.Dispatch_Id' )
+//                                                   ->groupBy( 'SV_Service_Ticket_Dispatch.Dispatch_Id' )
                                                    ->orderBy( 'SV_Service_Ticket_Dispatch.Dispatch_Id',
                                                        SORT_DESC )->all();
             return $dispatchList;
