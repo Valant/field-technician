@@ -51,7 +51,7 @@
             return $behaviors;
         }
 
-        public function actionGetdispatch($task_id){
+        public function actionGetdispatch($dispatch_id){
 //            return json_decode(PageLoaderComponent::load(Yii::$app->params['api.url']."/api/serviceticketdispatch/{$task_id}/byserviceticketid"));
 //            return SVServiceTicketDispatch::find()->where(['Service_Ticket_Id'=>$task_id, 'Service_Tech_Id'=>Yii::$app->user->getIdentity()->technition_id])->orderBy(['Dispatch_Id'=>SORT_DESC])->one();
             $query = new Query();
@@ -89,7 +89,7 @@
                     ->from('SV_Service_Ticket_Dispatch')
                     ->innerJoin('SV_Service_Ticket', 'SV_Service_Ticket.Service_Ticket_Id = SV_Service_Ticket_Dispatch.Service_Ticket_Id')
                     ->leftJoin('SS_LockTable', 'SV_Service_Ticket.Ticket_Number = SS_LockTable.Code AND SS_LockTable.Table_Name = "sv_service_ticket"')
-                    ->where(['SV_Service_Ticket_Dispatch.Service_Ticket_Id'=>$task_id, 'Service_Tech_Id'=>Yii::$app->user->getIdentity()->technition_id])
+                    ->where(['SV_Service_Ticket_Dispatch.Dispatch_Id'=>$dispatch_id, 'Service_Tech_Id'=>Yii::$app->user->getIdentity()->technition_id])
                     ->orderBy(['Dispatch_Id'=>SORT_DESC])
                     ->limit(1)
                 , 'pagination' => false
