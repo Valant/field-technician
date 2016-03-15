@@ -292,15 +292,16 @@
         public static function getList( $service_tech_id, $ticketStatus = [ 'SC', 'IP' ] )
         {
 
-            $dispatchList = SVServiceTicketDispatch::find()->select( 'SV_Service_Ticket_Dispatch.Service_Ticket_Id, max(SV_Service_Ticket_Dispatch.Dispatch_Id) as dispatch' )
+            $dispatchList = SVServiceTicketDispatch::find()->select( 'SV_Service_Ticket_Dispatch.Service_Ticket_Id, SV_Service_Ticket_Dispatch.*' )
                                                    ->innerJoin( 'SV_Service_Ticket',
                                                        'SV_Service_Ticket.Service_Ticket_Id = SV_Service_Ticket_Dispatch.Service_Ticket_Id' )
                                                    ->where( [ "SV_Service_Ticket.Ticket_Status"            => $ticketStatus,
                                                               "SV_Service_Ticket_Dispatch.Service_Tech_Id" => $service_tech_id
                                                    ] )
-                                                   ->groupBy( 'SV_Service_Ticket_Dispatch.Service_Ticket_Id' )
-                                                   ->orderBy( 'SV_Service_Ticket_Dispatch.Service_Ticket_Id',
+                                                   ->groupBy( 'SV_Service_Ticket_Dispatch.Dispatch_Id' )
+                                                   ->orderBy( 'SV_Service_Ticket_Dispatch.Dispatch_Id',
                                                        SORT_DESC )->all();
+            return $dispatchList;
             $ticketIds    = [ ];
             foreach ($dispatchList as $dp) {
                 $ticketIds[] = $dp->Service_Ticket_Id;
