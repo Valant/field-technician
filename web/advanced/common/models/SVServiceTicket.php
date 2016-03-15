@@ -292,7 +292,7 @@
         public static function getList( $service_tech_id, $ticketStatus = [ 'SC', 'IP' ] )
         {
 
-            $query = new Query;
+            $query = new Query();
 
             return new ActiveDataProvider( [
                 'query' => $query->select( '
@@ -317,8 +317,7 @@
                                      "SV_Service_Ticket_Dispatch.Service_Tech_Id" => $service_tech_id,
                                      "SV_Service_Ticket_Dispatch.Resolution_Id"   => 1
                                  ] )
-//                                                   ->groupBy( 'SV_Service_Ticket_Dispatch.Dispatch_Id' )
-                                 ->orderBy( 'SV_Service_Ticket.Scheduled_For', SORT_DESC )->all()
+                                 ->orderBy( 'SV_Service_Ticket.Scheduled_For', SORT_DESC )->limit( 100 )
             ] );
 //            return $dispatchList;
             $ticketIds = [ ];
