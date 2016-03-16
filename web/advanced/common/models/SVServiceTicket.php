@@ -296,7 +296,10 @@
 
             return new ActiveDataProvider( [
                 'query' => $query->select( '
-                    SV_Service_Ticket_Dispatch.Dispatch_Id, SV_Service_Ticket.Service_Ticket_Id, SV_Service_Ticket.Scheduled_For, SV_Service_Ticket.Ticket_Number, SV_Problem.Description AS ProblemDescription,
+                    SV_Service_Ticket_Dispatch.Dispatch_Id,
+                    SV_Service_Ticket_Dispatch.Schedule_Time,
+                    SV_Service_Ticket.Service_Ticket_Id, SV_Service_Ticket.Scheduled_For,
+                    SV_Service_Ticket.Ticket_Number, SV_Problem.Description AS ProblemDescription,
                     AR_Customer.Customer_Name, ar_customer_site.ge1_description as  City,
                     SV_Service_Ticket.Ticket_Status,
                     SS_LockTable.LockTable_Id,SS_LockTable.LockedByUser,SS_LockTable.LockedTime,SS_LockTable.Form
@@ -317,7 +320,7 @@
                                      "SV_Service_Ticket_Dispatch.Service_Tech_Id" => $service_tech_id,
                                      "SV_Service_Ticket_Dispatch.Resolution_Id"   => 1
                                  ] )
-                                 ->orderBy( 'SV_Service_Ticket.Scheduled_For', SORT_DESC )->limit( 100 )
+                                 ->orderBy( 'SV_Service_Ticket_Dispatch.Schedule_Time', SORT_DESC )->limit( 100 )
             ] );
         }
 
