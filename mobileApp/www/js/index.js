@@ -24,8 +24,8 @@ var app = {
     uploaded: 0,
     needToUpload: 0,
     //apiUrl: 'http://api.field-technician.loc/',
-   apiUrl: 'http://ftapi.afap.com/',
-//     apiUrl: 'http://ftapitest.afap.com/',
+//    apiUrl: 'http://ftapi.afap.com/',
+    apiUrl: 'http://ftapitest.afap.com/',
     user_id: 0,
     user_code: '',
     service_tech_code: '',
@@ -306,7 +306,7 @@ var app = {
         $( '#tasks #tasks_content table' ).table( 'refresh' );
 
         $.mobile.loading( 'hide' );
-        $.mobile.navigate( '#tasks' );
+        $.mobile.navigate('#tasks');
         $( '.ui-collapsible' ).find( 'tr:not(:first)' ).toggle();
         navigator.notification && navigator.notification.vibrate( 1000 );
     },
@@ -899,7 +899,7 @@ var app = {
                 'There is no data for this task',  // message
                 function ( res )
                 {
-                    $.mobile.navigate( '#tasks' );
+                    app.showTasksList();
                 },         // callback
                 'Task loading error',            // title
                 'OK'                  // buttonName
@@ -1118,7 +1118,7 @@ var app = {
                             data.Ticket_Status = 'IP';
                             this.saveTaskStatus( {status: status, data: data, taskId: app.task_id} );
                         } else {
-                            $.mobile.navigate( '#tasks' );
+                            app.showTasksList();
                         }
                     }.bind( this ),            // callback to invoke with index of button pressed
                     'On Your Way?',           // title
@@ -1278,7 +1278,7 @@ var app = {
         } ).always( function ( data )
         {
             app.user_data = data;
-            $.mobile.navigate( '#tasks' );
+            app.showTasksList();
             navigator.notification.alert(
                 'Profile was saved',  // message
                 false,         // callback
@@ -1463,10 +1463,11 @@ var app = {
             data: data
         } ).then(function(data){
             $.mobile.loading( 'hide' );
-            $.mobile.navigate( '#tasks' );
+            app.showTasksList();
         });
     },
     showTasksList: function(){
-        $.mobile.navigate( '#tasks' );
+        app.loadTasks();
+
     }
 };
