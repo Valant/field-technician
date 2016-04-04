@@ -10,7 +10,6 @@
 
     use common\models\INPart;
     use Yii;
-    use yii\helpers\Json;
     use yii\rest\ActiveController;
     use yii\filters\auth\QueryParamAuth;
     use common\behaviors\SYEditLog;
@@ -36,7 +35,7 @@
         {
             $res = INPart::find()->where( "CONVERT(varchar(11), Part_Code) like :code",
                 array( ':code' => $code . '%' ) );
-            return $res->limit( 20 )->all();
+            return $res->all();
         }
 
         public function actionKeyword( $code )
@@ -53,7 +52,6 @@
                     }
                 }
             }
-
             return $dataItems;
         }
 

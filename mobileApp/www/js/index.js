@@ -17,13 +17,15 @@
  * under the License.
  */
 var app = {
-    version: '0.12.12',
+    version: '0.12.18',
     db: false,
     task_id: false,
+    dispatch_id: false,
     uploaded: 0,
     needToUpload: 0,
     //apiUrl: 'http://api.field-technician.loc/',
-    apiUrl: 'http://ftapi.afap.com/',
+   apiUrl: 'http://ftapi.afap.com/',
+//     apiUrl: 'http://ftapitest.afap.com/',
     user_id: 0,
     user_code: '',
     service_tech_code: '',
@@ -270,20 +272,20 @@ var app = {
             } else {
                 app.taskLocked[value.Service_Ticket_Id] = false;
             }
-            var curDay = moment( value.Scheduled_For, 'MMM DD YYYY HH:mm:ss0A' ).format( 'MM/DD/YYYY' );
+            var curDay = moment( value.Schedule_Time, 'MMM DD YYYY HH:mm:ss0A' ).format( 'MM/DD/YYYY' );
             var rawCurDayBegin = '';
             var rawCurDayEnd = '';
             var tglbtn = '<a data-role="button" data-icon="plus" data-iconpos="notext" data-theme="a" data-inline="true" class="ui-link ui-btn ui-btn-a ui-icon-plus ui-btn-icon-notext ui-btn-inline ui-shadow ui-corner-all" role="button">Show tasks</a>';
             if (curDay != taskDay) {
-                taskDay = curDay;
-                rawCurDayBegin = '<tbody class="ui-collapsible" ><tr onclick="app.toggletasks(this)"><td><b>' + taskDay + '</b>' + tglbtn + '</td></tr>';
+
+                rawCurDayBegin = '<tbody class="ui-collapsible row'+moment( value.Schedule_Time, 'MMM DD YYYY HH:mm:ss0A' ).format( 'MM_DD_YYYY' )+'" ><tr onclick="app.toggletasks(this)"><td><b>' + curDay + '</b>' + tglbtn + '</td></tr>';
                 rawCurDayEnd = '</tbody>';
             }
-            var taskTime = moment( value.Scheduled_For, 'MMM DD YYYY HH:mm:ss0A' ).format( 'HH:mm:ss' );
+            var taskTime = moment( value.Schedule_Time, 'MMM DD YYYY HH:mm:ss0A' ).format( 'HH:mm:ss' );
 
             app.task_data[value.Service_Ticket_Id] = value;
 
-            $( rawCurDayBegin + '<tr id="task' + value.Service_Ticket_Id + '" onClick="app.showTaskDetail(' + value.Service_Ticket_Id + ');">' +
+            var tr = $( rawCurDayBegin + '<tr id="task' + value.Service_Ticket_Id + '" onClick="app.showTaskDetail('+ value.Service_Ticket_Id +',' + value.Dispatch_Id + ');">' +
                '<td>' + taskTime + '</td>' +
                '<td>' + value.Ticket_Number + '</td>' +
                '<td><b>' + value.ProblemDescription + '</b></td>' +
@@ -291,8 +293,14 @@ var app = {
                '<td>' + value.City + '</td>' +
                '<td>' + value.Ticket_Status + '</td>' +
                //'<td><button data-icon="info" onclick="app.showTaskDetail(' + value.Service_Ticket_Id + ')">Details</button></td>' +
-               '</tr>' + rawCurDayEnd ).appendTo( '#tasks #tasks_content table ' ).closest(
-                'table#table-custom-2' ).table( 'refresh' ).trigger( 'create' );
+               '</tr>' + rawCurDayEnd );
+            if(curDay != taskDay) {
+                tr.appendTo( '#tasks #tasks_content table' ).closest( 'table#table-custom-2' ).table(
+                    'refresh' ).trigger( 'create' );
+            }else{
+                tr.appendTo( '.row'+moment( value.Schedule_Time, 'MMM DD YYYY HH:mm:ss0A' ).format( 'MM_DD_YYYY' ) ).closest( 'table#table-custom-2' ).table(
+                    'refresh' ).trigger( 'create' );
+            }
             taskDay = curDay;
         } );
         $( '#tasks #tasks_content table' ).table( 'refresh' );
@@ -699,7 +707,7 @@ var app = {
 
 
     },
-    showTaskDetail: function ( task_id, data )
+    showTaskDetail: function ( task_id, dispatch_id )
     {
         this.showLoader( 'Loading task data' );
         this.clearTask();
@@ -707,10 +715,11 @@ var app = {
         app.usedParts = [];
         app.attachmentToDelete = [];
         app.task_id = task_id;
+        app.dispatch_id = dispatch_id;
         this.db && this.db.transaction( this.getTaskData, this.dbError );
 
         $.when( jQuery.getJSON( app.apiUrl + '/ticket/find', {
-            'id': app.task_id,
+            'id': dispatch_id,
             'Ticket_Number': app.task_data[app.task_id].Ticket_Number,
             'access-token': app.access_token,
             'UserCode': app.user_code
@@ -733,7 +742,8 @@ var app = {
     {
 
         jQuery.getJSON( app.apiUrl + 'ticket/getdispatch', {
-            'task_id': app.task_id,
+            'dispatch_id': app.dispatch_id,
+//            'task_id': app.task_id,
             'access-token': app.access_token
         }, function ( data )
         {
@@ -985,7 +995,7 @@ var app = {
                     //$('#status_dispatch,#status_arrived,#status_depart,button[id^="task_btn_"]').addClass('ui-disabled');
                     this.showLoader( 'Saving task status' );
 
-                    navigator.notification.confirm( 'Do you need to add material?',
+                    navigator.notification.confirm( '',
                         function ( button )
                         {
 
@@ -1025,7 +1035,7 @@ var app = {
                                 $.mobile.loading( 'hide' );
                             }
                         },
-                        'Add material',
+                        'Did you remember to add materials?',
                         ['Yes', 'No']
                     );
 
@@ -1096,7 +1106,7 @@ var app = {
         switch (status) {
             case 'dispatch':
                 navigator.notification.confirm(
-                    'Ready to go to ' + app.task_data[app.task_id].address_1, // message
+                    '', // message
                     function ( button )
                     {
                         if (1 == button) {
@@ -1111,13 +1121,13 @@ var app = {
                             $.mobile.navigate( '#tasks' );
                         }
                     }.bind( this ),            // callback to invoke with index of button pressed
-                    'Dispatch?',           // title
+                    'On Your Way?',           // title
                     ['Yes', 'No'] // buttonLabels
                 );
                 break;
             case 'arrived':
                 navigator.notification.confirm(
-                    'Arrived to ' + app.task_data[app.task_id].address_1, // message
+                    '', // message
                     function ( button )
                     {
                         if (button == 1) {
@@ -1127,15 +1137,15 @@ var app = {
                             data.Departure_Time = 0;
                             this.saveTaskStatus( {status: status, data: data, taskId: app.task_id} );
                             navigator.notification.confirm(
-                                'Place system on test?', // message
+                                'Remember to place system on test using MAS Mobile app.', // message
                                 function ( button )
                                 {
                                     if (1 == button) {
-                                        this.launchMASMobile();
+//                                        this.launchMASMobile();
                                     }
                                 },            // callback to invoke with index of button pressed
                                 'MASMobile',           // title
-                                ['Yes', 'No'] // buttonLabels
+                                ['Ok',] // buttonLabels
                             );
                         }
                     }.bind( this ),
@@ -1145,7 +1155,7 @@ var app = {
                 break;
             case 'depart':
                 navigator.notification.confirm(
-                    'Departure from ' + app.task_data[app.task_id].address_1, // message
+                    '', // message
                     function ( button )
                     {
                         if (1 == button) {
@@ -1154,7 +1164,7 @@ var app = {
                             this.saveTaskStatus( {status: status, data: data, taskId: app.task_id} );
                         }
                     }.bind( this ),
-                    'Departure?',
+                    'Ready to Depart?',
                     ['Yes', 'No']
                 );
                 break;
