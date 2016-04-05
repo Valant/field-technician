@@ -73,15 +73,15 @@
 
                 $signUrl = Yii::$app->params['domainName'] . "/uploads/" . $model->task_id . "/" . $fileName;
 
-                Yii::$app->mail->compose( [ 'html' => '@frontend/views/mail-templates/receipt' ], [
-                    'timing'  => $postData['time'],
-                    'parts'   => $postData['parts'],
-                    'signUrl' => $signUrl
-                ] )
-                               ->setFrom( 'no-reply@afap.com' )
-                               ->setTo( $postData['email'] )
-                               ->setSubject( 'Receipt' )
-                               ->send();
+//                Yii::$app->mail->compose( [ 'html' => '@frontend/views/mail-templates/receipt' ], [
+//                    'timing'  => $postData['time'],
+//                    'parts'   => $postData['parts'],
+//                    'signUrl' => $signUrl
+//                ] )
+//                               ->setFrom( 'no-reply@afap.com' )
+//                               ->setTo( $postData['email'] )
+//                               ->setSubject( 'Receipt' )
+//                               ->send();
 
                 return [ 'file' => $signUrl, 'sign' => $signUrl ];
             } else {
