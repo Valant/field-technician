@@ -53,7 +53,7 @@ var app = {
     bindEvents: function ()
     {
         document.addEventListener( 'deviceready', this.onDeviceReady, false );
-        //this.onDeviceReady();
+//         this.onDeviceReady();
     },
     // deviceready Event Handler
     //
@@ -730,8 +730,8 @@ var app = {
             if (res.length) {
                 $.mobile.navigate( '#taskDetails' );
             }
-
-        } )
+            
+        } );
 
     },
     dbError: function ( err )
@@ -1355,13 +1355,12 @@ var app = {
 
         }.bind( this ) );
 
-        $.mobile.navigate( '#signature' );
-        app.initCanvas();
+        $.mobile.navigate( '#receipt' );
     },
     initCanvas: function ()
     {
 //        var margin = $("#signature div[data-role='header']" ).height()+$("#signature #emailHolder" ).height()+$("#signature #canvasControl" ).height()+$("#signature div[data-role='footer']" ).height();
-        var margin = 260;
+        var margin = 110;
 
         $( "#contentCanvas" ).height( $( window ).height() - margin );
         var canvas = '<canvas id="canvas" width="' + (
@@ -1469,5 +1468,12 @@ var app = {
     showTasksList: function(){
         app.loadTasks();
 
+    },
+    showSignPopup: function(){
+        $.mobile.navigate( '#signature' );
+        app.initCanvas();
+    },
+    saveSignature: function(){
+        $.mobile.navigate( '#receipt' );
     }
 };

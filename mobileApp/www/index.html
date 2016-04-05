@@ -145,9 +145,9 @@
     </div>
     <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
 </div>
-<div data-role="page" id="signature">
+<div data-role="page" id="receipt">
     <div data-role="header">
-        <button data-icon="back" data-iconpos="notext" onclick="app.goBack();"></button>
+        <!--<button data-icon="back" data-iconpos="notext" onclick="app.goBack();"></button>-->
         <h2>Receipt</h2>
     </div>
     <div id="receiptData">
@@ -159,15 +159,18 @@
     <div id="emailHolder">
         <input type="email" id="userEmail" placeholder="Email"/>
     </div>
-    <div id="contentCanvas">
+    <button onclick="app.showSignPopup()">Add sign</button>
+    <button onclick="app.sendReceipt()">Ok</button>
+    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
+</div>
 
+<div data-role="page" id="signature">
+    <div id="contentCanvas">
     </div>
     <div id="canvasControl">
-        <button onclick="app.showTasksList()">No Signer Available</button>
         <button onclick="app.clearCanvas()">Clear</button>
-        <button onclick="app.sendReceipt()">Ok</button>
+        <button onclick="app.saveSignature()">Ok</button>
     </div>
-    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
 </div>
 <div data-role="page" id="gobacknoteswithcode">
     <div data-role="header">
