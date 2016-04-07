@@ -42,7 +42,8 @@
         {
             $res = INPart::find()
                          ->where( "Description like :code", array( ':code' => '%' . $code . '%' ) )
-                         ->orWhere( "Detail like :code", array( ':code' => '%' . $code . '%' ) );
+                         ->orWhere( "Detail like :code", array( ':code' => '%' . $code . '%' ) )
+                         ->orWhere( "CONVERT(varchar(11), Part_Code) like :code", array( ':code' => '%' . $code . '%' ) );
 
             $dataItems = $res->limit( 21 )->all();
             foreach ($dataItems as &$item) {
