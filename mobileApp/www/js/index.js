@@ -321,25 +321,28 @@ var app = {
                 }
                 else if (2 == button) {
 
-                    navigator.notification.confirm(
-                        'Enter Material',
-                        function ( button )
-                        {
-                            if (1 == button) {
-                                $( '#partsearch' ).attr( 'data-searchbycode', 1 );
-                                $.mobile.navigate( '#partsearch' );
-                                $( '#partsearch input' ).attr( 'type', 'number' );
-                            }
-                            else if (2 == button) {
-                                $( '#partsearch' ).attr( 'data-searchbycode', 0 );
-                                $.mobile.navigate( '#partsearch' );
-                                $( '#partsearch input' ).attr( 'type', 'text' );
+                    $.mobile.navigate( '#partsearch' );
+                    $( '#partsearch input' ).attr( 'type', 'text' );
 
-                            }
-                        }.bind( this ),
-                        'Add material',
-                        ['Enter Part#', 'Enter Codeword'] // buttonLabels
-                    );
+//                     navigator.notification.confirm(
+//                         'Enter Material',
+//                         function ( button )
+//                         {
+//                             if (1 == button) {
+//                                 $( '#partsearch' ).attr( 'data-searchbycode', 1 );
+//                                 $.mobile.navigate( '#partsearch' );
+//                                 $( '#partsearch input' ).attr( 'type', 'number' );
+//                             }
+//                             else if (2 == button) {
+//                                 $( '#partsearch' ).attr( 'data-searchbycode', 0 );
+//                                 $.mobile.navigate( '#partsearch' );
+//                                 $( '#partsearch input' ).attr( 'type', 'text' );
+//
+//                             }
+//                         }.bind( this ),
+//                         'Add material',
+//                         ['Enter Part#', 'Enter Codeword'] // buttonLabels
+//                     );
 
                 }
             }.bind( this ),
@@ -452,9 +455,9 @@ var app = {
         var sugList = jQuery( "#autocomplete" );
         sugList.html( "" );
         var searchpath = 'part/keyword';
-        if (codesearch == 1) {
-            var searchpath = 'part/codesearch';
-        }
+//         if (codesearch == 1) {
+//             var searchpath = 'part/codesearch';
+//         }
         //$('input[data-type="search"]').val("")
         app.keywordAutocomplete = jQuery.getJSON( app.apiUrl + searchpath, {
             code: keyword,
@@ -730,7 +733,7 @@ var app = {
             if (res.length) {
                 $.mobile.navigate( '#taskDetails' );
             }
-            
+
         } );
 
     },
