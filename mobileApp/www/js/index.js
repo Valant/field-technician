@@ -397,7 +397,7 @@ var app = {
                         } else {
                             $( '<li data-icon="delete" id="part' + data.Part_Id + '">' +
                                '<a onclick="app.removePart(' + data.Part_Id + ', '+ (quantity ? quantity : 1) +')">'
-                               + data.Part_Code + ' ' + data.Detail + ' ' + data.Description +
+                               + data.Part_Code + ' ' + data.Description +
                                '<span class="ui-li-count">' + (
                                    quantity ? quantity : 1
                                ) + '</span>' +
@@ -837,7 +837,7 @@ var app = {
                         app.usedParts[data[i].part.Part_Id] = data[i].Quantity;
                         $( '#parts' ).append( '<li data-icon="delete" id="part' + data[i].part.Part_Id + '">' +
                                               '<a onclick="app.removePart(' + data[i].part.Part_Id + ', '+data[i].Quantity+')">'
-                                              + data[i].part.Part_Code + ' ' + data[i].part.Detail + ' ' + data[i].part.Description +
+                                              + data[i].part.Part_Code + ' ' + data[i].part.Description +
                                               '<span class="ui-li-count">' + data[i].Quantity + '</span>' +
                                               '</a>' +
                                               '</li>' );
