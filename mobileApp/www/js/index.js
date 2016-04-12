@@ -1104,14 +1104,23 @@ var app = {
                                         $.mobile.loading( 'hide' );
                                     }
 
-                                    if (app.departType == 'RS') {
-                                        $.mobile.navigate( '#gobacknoteswithcode' );
+                                    if ((app.departType == 'RS') || (app.departType == 'GB')) {
+                                        navigator.notification.confirm(
+                                            'Reminder: Place system back on line via MASMobile.', // message
+                                            function ( button )
+                                            {
+                                                $.mobile.navigate( '#gobacknoteswithcode' );
+                                            },            // callback to invoke with index of button pressed
+                                            'MASMobile',           // title
+                                            ['Ok'] // buttonLabels
+                                        );
+
 
                                     }
-                                    else if (app.departType == 'GB') {
-                                        $.mobile.navigate( '#gobacknotes' );
-
-                                    }
+//                                     else if (app.departType == 'GB') {
+//                                         $.mobile.navigate( '#gobacknotes' );
+//
+//                                     }
 
                                 }, 'Depart type', ['Go back', 'Resolved', 'Cancel'] )
 
@@ -1241,27 +1250,18 @@ var app = {
                 break;
             case 'depart':
                 navigator.notification.confirm(
-                    'Reminder: Place system back on line via MASMobile.', // message
+                    '', // message
                     function ( button )
                     {
-                        navigator.notification.confirm(
-                            '', // message
-                            function ( button )
-                            {
-                                if (1 == button) {
-                                    data.Departure_Time = moment().format( 'MMM DD YYYY HH:mm:ss A' );
-                                    data.Departure_Time = moment().format( 'YYYY-MM-DD HH:mm:ss.000' );
-                                    this.saveTaskStatus( {status: status, data: data, taskId: app.task_id} );
-                                }
-                            }.bind( this ),
-                            'Ready to Depart?',
-                            ['Yes', 'No']
-                        );
-                    },            // callback to invoke with index of button pressed
-                    'MASMobile',           // title
-                    ['Ok',] // buttonLabels
+                        if (1 == button) {
+                            data.Departure_Time = moment().format( 'MMM DD YYYY HH:mm:ss A' );
+                            data.Departure_Time = moment().format( 'YYYY-MM-DD HH:mm:ss.000' );
+                            this.saveTaskStatus( {status: status, data: data, taskId: app.task_id} );
+                        }
+                    }.bind( this ),
+                    'Ready to Depart?',
+                    ['Yes', 'No']
                 );
-
                 break;
         }
     },
