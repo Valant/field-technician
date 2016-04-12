@@ -55,6 +55,8 @@ class SearchAction extends  Action  {
         }
 
         $query = $modelClass::find();
+	$query->select('Part_Id, sum(Quantity) as Quantity');
+	$query->groupBy(['Part_Id']);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
