@@ -323,27 +323,6 @@ var app = {
 
                     $.mobile.navigate( '#partsearch' );
                     $( '#partsearch input' ).attr( 'type', 'text' );
-
-//                     navigator.notification.confirm(
-//                         'Enter Material',
-//                         function ( button )
-//                         {
-//                             if (1 == button) {
-//                                 $( '#partsearch' ).attr( 'data-searchbycode', 1 );
-//                                 $.mobile.navigate( '#partsearch' );
-//                                 $( '#partsearch input' ).attr( 'type', 'number' );
-//                             }
-//                             else if (2 == button) {
-//                                 $( '#partsearch' ).attr( 'data-searchbycode', 0 );
-//                                 $.mobile.navigate( '#partsearch' );
-//                                 $( '#partsearch input' ).attr( 'type', 'text' );
-//
-//                             }
-//                         }.bind( this ),
-//                         'Add material',
-//                         ['Enter Part#', 'Enter Codeword'] // buttonLabels
-//                     );
-
                 }
             }.bind( this ),
             'Add material',
@@ -625,6 +604,22 @@ var app = {
             saveToPhotoAlbum: true,
             allowEdit: true
         } );
+    },
+    supplierPickup: function(){
+            navigator.notification.confirm(
+                'Photo source',
+                function ( button )
+                {
+                    if (1 == button) {
+                        app.makePhoto();
+                    }
+                    else if (2 == button) {
+                        app.choiseFile();
+                    }
+                }.bind( this ),
+                'Select photo source',
+                ['Camera', 'Gallery'] // buttonLabels
+            );
     },
     /*onSuccessChoiseFile: function (imageURI) {
      console.info('choise', imageURI);
@@ -1246,18 +1241,27 @@ var app = {
                 break;
             case 'depart':
                 navigator.notification.confirm(
-                    '', // message
+                    'Reminder: Place system back on line via MASMobile.', // message
                     function ( button )
                     {
-                        if (1 == button) {
-                            data.Departure_Time = moment().format( 'MMM DD YYYY HH:mm:ss A' );
-                            data.Departure_Time = moment().format( 'YYYY-MM-DD HH:mm:ss.000' );
-                            this.saveTaskStatus( {status: status, data: data, taskId: app.task_id} );
-                        }
-                    }.bind( this ),
-                    'Ready to Depart?',
-                    ['Yes', 'No']
+                        navigator.notification.confirm(
+                            '', // message
+                            function ( button )
+                            {
+                                if (1 == button) {
+                                    data.Departure_Time = moment().format( 'MMM DD YYYY HH:mm:ss A' );
+                                    data.Departure_Time = moment().format( 'YYYY-MM-DD HH:mm:ss.000' );
+                                    this.saveTaskStatus( {status: status, data: data, taskId: app.task_id} );
+                                }
+                            }.bind( this ),
+                            'Ready to Depart?',
+                            ['Yes', 'No']
+                        );
+                    },            // callback to invoke with index of button pressed
+                    'MASMobile',           // title
+                    ['Ok',] // buttonLabels
                 );
+
                 break;
         }
     },
