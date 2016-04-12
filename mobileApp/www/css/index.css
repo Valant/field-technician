@@ -174,3 +174,7 @@ h1 {
 #receiptData {
     margin: 4px;
 }
+
+.ui-li-count {
+    z-index: 999;
+}
