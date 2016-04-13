@@ -1429,7 +1429,8 @@ var app = {
         }.bind( this ) );
 
         jQuery.getJSON( app.apiUrl + 'ticket/getdispatch', {
-            'task_id': app.task_id,
+            'dispatch_id': app.dispatch_id,
+//             'task_id': app.task_id,
             'access-token': app.access_token
         }, function ( data )
         {
@@ -1545,7 +1546,9 @@ var app = {
         var canvas = document.getElementById( "canvas" );
 
         var data = {};
-        data.sign = canvas.toDataURL();
+        if(canvas) {
+            data.sign = canvas.toDataURL();
+        }
         data.email = jQuery("#userEmail" ).val();
         data.parts = jQuery("#receiptData .parts" ).html();
         data.time = jQuery("#receiptData .timing" ).html();
