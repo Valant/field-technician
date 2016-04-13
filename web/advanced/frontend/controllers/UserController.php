@@ -51,6 +51,7 @@
                 throw new HttpException( '503', 'No email' );
             }
             if (filter_var( $postData['email'], FILTER_VALIDATE_EMAIL )) {
+                $signUrl = false;
                 if(isset($postData['sign'])) {
                     $img      = $postData['sign'];
                     $img      = str_replace('data:image/png;base64,', '', $img);
