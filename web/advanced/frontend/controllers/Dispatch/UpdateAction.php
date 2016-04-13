@@ -71,24 +71,22 @@
                         break;
                     case "RS":
                         $preparedRequest['ResolvesTicket'] = true;
-                        if(!empty($requestParams['Resolution_Code'])){
-                            $preparedRequest['ResolutionCode'] = $requestParams['Resolution_Code'];
-                        }
+
                         break;
                 }
+                if(!empty($requestParams['Resolution_Code'])){
+                    $preparedRequest['ResolutionCode'] = $requestParams['Resolution_Code'];
+                }
                 if ( ! empty( $requestParams['Resolution_Notes'] )) {
-                    if ("RS" == $requestParams['Ticket_Status']) {
-                        $preparedRequest['ResolutionNote'] = $requestParams['Resolution_Notes'];
-                    } elseif ("GB" == $requestParams['Ticket_Status']) {
-                        PageLoaderComponent::load(
-                            \Yii::$app->params['api.url'] . "/api/serviceticketnote/",
-                            [
-                                "ServiceTicketNumber" => $requestParams['Ticket_Number'],
-                                "Note"                => $requestParams['Resolution_Notes'],
-                                "UserCode"            => $requestParams['UserCode']
-                            ], true, false, false
-                        );
-                    }
+                    $preparedRequest['ResolutionNote'] = $requestParams['Resolution_Notes'];
+                    PageLoaderComponent::load(
+                        \Yii::$app->params['api.url'] . "/api/serviceticketnote/",
+                        [
+                            "ServiceTicketNumber" => $requestParams['Ticket_Number'],
+                            "Note"                => $requestParams['Resolution_Notes'],
+                            "UserCode"            => $requestParams['UserCode']
+                        ], true, false, false
+                    );
                     $preparedRequest['ResolutionAccessLevel'] = 2;
                 }
             }
