@@ -13,6 +13,7 @@
      * @property integer $task_id
      * @property string $path
      * @property string $name
+     * @property string $sign_name
      */
     class TaskAttachment extends \yii\db\ActiveRecord
     {
@@ -30,10 +31,10 @@
         public function rules()
         {
             return [
-                [ [ 'task_id' ], 'required' ],
-                [ [ 'task_id' ], 'integer' ],
-                [ [ 'path' ], 'file' ],
-                [ [ 'name' ], 'string', 'max' => 255 ]
+                [['task_id'], 'required'],
+                [['task_id'], 'integer'],
+                [['path'], 'file'],
+                [['name', 'sign_name'], 'string', 'max' => 255]
             ];
         }
 
@@ -43,10 +44,11 @@
         public function attributeLabels()
         {
             return [
-                'id'      => 'ID',
-                'task_id' => 'Task ID',
-                'path'    => 'Path',
-                'name'    => 'Name',
+                'id'        => 'ID',
+                'task_id'   => 'Task ID',
+                'path'      => 'Path',
+                'name'      => 'Name',
+                'sign_name' => 'Sign Name',
             ];
         }
 
@@ -59,8 +61,8 @@
         {
             if (parent::beforeDelete()) {
                 $fileUrl  = "/web/uploads/" . $this->task_id . "/";
-                $filePath = Yii::getAlias( Yii::$app->params['filePath'] ) . $fileUrl . $this->path;
-                if(file_exists($filePath)){
+                $filePath = Yii::getAlias(Yii::$app->params['filePath']) . $fileUrl . $this->path;
+                if (file_exists($filePath)) {
                     unlink($filePath);
                 }
                 return true;
@@ -69,7 +71,8 @@
             }
         }
 
-        public function getTask(){
-            return $this->hasOne( SVServiceTicket::className(), [ 'Service_Ticket_Id' => 'task_id' ] );
+        public function getTask()
+        {
+            return $this->hasOne(SVServiceTicket::className(), ['Service_Ticket_Id' => 'task_id']);
         }
     }

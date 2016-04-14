@@ -70,6 +70,9 @@
                     $model->name    = 'User sign';
                     $model->task_id = $postData['task_id'];
                     $model->path    = $fileName;
+                    if(isset($postData['sign_name'])){
+                        $model->sign_name = $postData['sign_name'];
+                    }
                     $model->save();
 
 
