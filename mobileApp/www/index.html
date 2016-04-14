@@ -162,7 +162,10 @@
         <input type="text" id="signName" placeholder="Name of who signs"/>
     </div>
     <button onclick="app.showSignPopup()">Add sign</button>
-    <button onclick="app.sendReceipt()">Ok</button>
+    <button onclick="app.sendReceipt()" disabled="disabled" id="sendReceiptBtn">Ok</button>
+    <label for="terms">By checking this box you agree to AFA terms and conditions</label>
+    <input type="checkbox" name="terms" id="terms" onclick="app.checkTerms()">
+    <button onclick="app.showTerms();">Terms</button>
     <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
 </div>
 

@@ -1408,6 +1408,8 @@ var app = {
         jQuery( '#receiptData .parts' ).empty();
         jQuery("#userEmail" ).val("");
         jQuery("#signName" ).val("");
+        jQuery("#sendReceiptBtn").attr("disabled","disabled");
+        jQuery("#terms").removeAttr("checked");
 
 
         jQuery.getJSON( app.apiUrl + '/taskpart/search', {
@@ -1575,5 +1577,21 @@ var app = {
     },
     saveSignature: function(){
         $.mobile.navigate( '#receipt' );
+    },
+    showTerms: function(){
+        navigator.notification.alert(
+            'TO THE EXTENT THAT AFA MAY BE HELD LIABLE FOR AY DAMAGE OF LOSS THAT IS CAUSED OR RESULTS FROM THE ABOVE STATED WORK, THE UNDERSIGNED AGREES THAT SAID LIABILITY SHALL BE LIMITED TO THE LESSER OF THE AMOUNT PAID FOR SAID WORK OR $250.',  // message
+            false,         // callback
+            'Terms',            // title
+            'OK'                  // buttonName
+        );
+    },
+    checkTerms: function(){
+        if(jQuery("#terms").is(":checked")){
+            jQuery("#sendReceiptBtn").removeAttr("disabled");
+        }else{
+            jQuery("#sendReceiptBtn").attr("disabled","disabled");
+        }
+        return true;
     }
 };
