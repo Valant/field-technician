@@ -32,6 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'task_id',
             'path',
             'name',
+            'sign_name'
         ],
     ]) ?>
 
