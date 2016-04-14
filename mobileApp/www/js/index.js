@@ -1407,6 +1407,7 @@ var app = {
         jQuery("#receiptData .timing" ).empty();
         jQuery( '#receiptData .parts' ).empty();
         jQuery("#userEmail" ).val("");
+        jQuery("#signName" ).val("");
 
 
         jQuery.getJSON( app.apiUrl + '/taskpart/search', {
@@ -1548,6 +1549,7 @@ var app = {
         var data = {};
         if(canvas) {
             data.sign = canvas.toDataURL();
+            data.sign_name = jQuery("#signName" ).val();
         }
         data.email = jQuery("#userEmail" ).val();
         data.parts = jQuery("#receiptData .parts" ).html();
