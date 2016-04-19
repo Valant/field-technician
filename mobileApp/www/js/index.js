@@ -17,7 +17,7 @@
  * under the License.
  */
 var app = {
-    version: '0.12.18',
+    version: '0.13.1',
     db: false,
     task_id: false,
     dispatch_id: false,
@@ -1580,7 +1580,7 @@ var app = {
     },
     showTerms: function(){
         navigator.notification.alert(
-            'TO THE EXTENT THAT AFA MAY BE HELD LIABLE FOR AY DAMAGE OF LOSS THAT IS CAUSED OR RESULTS FROM THE ABOVE STATED WORK, THE UNDERSIGNED AGREES THAT SAID LIABILITY SHALL BE LIMITED TO THE LESSER OF THE AMOUNT PAID FOR SAID WORK OR $250.',  // message
+            'To the extent that AFA may be held liable for any damage or loss that is caused or results from the above stated work, the undersigned agrees that said liability shall be limited to the lesser of the amount paid for said work or $250.',  // message
             false,         // callback
             'Terms',            // title
             'OK'                  // buttonName
