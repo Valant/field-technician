@@ -17,7 +17,7 @@
  * under the License.
  */
 var app = {
-    version: '0.13.1',
+    version: '0.13.3',
     db: false,
     task_id: false,
     dispatch_id: false,
@@ -377,7 +377,7 @@ var app = {
                             $( '<li  id="part' + data.Part_Id + '">' +
                                '<a  data-inline="true" >'
                                + data.Part_Code + ' ' + data.Description +
-                               '<span class="ui-li-count">' + (
+                               '<span class="ui-li-count" onclick="app.changePartQuantity(' + data.Part_Id + ',' + quantity + '); return false;">' + (
                                    quantity ? quantity : 1
                                ) + '</span>' +
                                '</a>'+
@@ -905,7 +905,7 @@ var app = {
 
                             if (app.usedParts[part_id]) {
                                 if (quantity) {
-                                    app.usedParts[part_id] += quantity;
+                                    app.usedParts[part_id] = quantity;
                                 } else {
                                     app.usedParts[part_id] ++;
                                 }
@@ -1130,7 +1130,7 @@ var app = {
                                 $.mobile.loading( 'hide' );
                             }
                         },
-                        'Did you remember to add materials?',
+                        'Do you need to add materials?',
                         ['Yes', 'No']
                     );
 
