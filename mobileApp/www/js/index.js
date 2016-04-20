@@ -946,7 +946,7 @@ var app = {
             $( '#taskName' ).text( task.ProblemDescription + ' - ' + task.Customer_Name );
 
             $( '<h4>Customer</h4>' ).appendTo( '#taskDescription' );
-            $( '<p><pre>' + task.business_name + '</pre></p>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>' + task.customer_number + '</pre></p>' ).appendTo( '#taskDescription' );
             $( '<p><pre>' + task.Customer_Name + '</pre></p>' ).appendTo( '#taskDescription' );
             $( '<p><pre>' + task.address_1 + '</pre></p>' ).appendTo( '#taskDescription' );
             $( '<p><pre>' + task.ge1_description + '</pre></p>' ).appendTo( '#taskDescription' );
@@ -954,7 +954,7 @@ var app = {
             $( '<p><pre>' + task.ge3_description + '</pre></p>' ).appendTo( '#taskDescription' );
 
             $( '<h4>Site</h4>' ).appendTo( '#taskDescription' );
-            $( '<p><pre>' + task.customer_number + '</pre></p>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>' + task.business_name + '</pre></p>' ).appendTo( '#taskDescription' );
             $( '<p><pre>' + task.Customer_Site_Address + '</pre></p>' ).appendTo( '#taskDescription' );
             $( '<p><pre>' + task.Customer_Site_Ge1_Description + '</pre></p>' ).appendTo( '#taskDescription' );
             $( '<p><pre>' + task.Customer_Site_Ge2_Short + '</pre></p>' ).appendTo( '#taskDescription' );
