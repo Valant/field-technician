@@ -161,11 +161,14 @@
         <input type="email" id="userEmail" placeholder="Email"/>
         <input type="text" id="signName" placeholder="Print Name"/>
     </div>
-    <button onclick="app.showSignPopup()">Add Signature</button>
-    <button onclick="app.sendReceipt()" disabled="disabled" id="sendReceiptBtn">Ok</button>
-    <label for="terms">By checking this box you agree to AFA terms and conditions</label>
-    <input type="checkbox" name="terms" id="terms" onclick="app.checkTerms()">
-    <button onclick="app.showTerms();">Terms</button>
+    <button onclick="app.showSignPopup()" id="addSignBtn">Add Signature</button>
+    <button onclick="app.sendReceipt()" id="noSigner">No Signer Available</button>
+    <div id="termsBlock">
+        <button onclick="app.sendReceipt()" disabled="disabled" id="sendReceiptBtn">Ok</button>
+        <label for="terms">By checking this box you agree to AFA terms and conditions</label>
+        <input type="checkbox" name="terms" id="terms" onclick="app.checkTerms()">
+        <button onclick="app.showTerms();">Terms</button>
+    </div>
     <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
 </div>
 
@@ -175,6 +178,7 @@
     <div id="canvasControl">
         <button onclick="app.clearCanvas()">Clear</button>
         <button onclick="app.saveSignature()">Ok</button>
+        <button onclick="app.showReceiptPage()">Cancel</button>
     </div>
 </div>
 <div data-role="page" id="gobacknoteswithcode">

@@ -17,7 +17,7 @@
  * under the License.
  */
 var app = {
-    version: '0.13.3',
+    version: '0.13.4',
     db: false,
     task_id: false,
     dispatch_id: false,
@@ -1410,6 +1410,9 @@ var app = {
         jQuery("#signName" ).val("");
         jQuery("#sendReceiptBtn").attr("disabled","disabled");
         jQuery("#terms").removeAttr("checked");
+        jQuery("#emailHolder").hide();
+        jQuery("#termsBlock").hide();
+        
 
 
         jQuery.getJSON( app.apiUrl + '/taskpart/search', {
@@ -1459,7 +1462,7 @@ var app = {
     initCanvas: function ()
     {
 //        var margin = $("#signature div[data-role='header']" ).height()+$("#signature #emailHolder" ).height()+$("#signature #canvasControl" ).height()+$("#signature div[data-role='footer']" ).height();
-        var margin = 110;
+        var margin = 170;
 
         $( "#contentCanvas" ).height( $( window ).height() - margin );
         var canvas = '<canvas id="canvas" width="' + (
@@ -1541,8 +1544,10 @@ var app = {
     sendReceipt: function ()
     {
 
-        if(!jQuery("#userEmail" ).val()){
-            return false;
+        if(jQuery("#userEmail:visible" ).length > 0) {
+            if (! jQuery( "#userEmail" ).val()) {
+                return false;
+            }
         }
 
         this.showLoader( 'Sending receipt' );
@@ -1552,8 +1557,8 @@ var app = {
         if(canvas) {
             data.sign = canvas.toDataURL();
             data.sign_name = jQuery("#signName" ).val();
+            data.email = jQuery("#userEmail" ).val();
         }
-        data.email = jQuery("#userEmail" ).val();
         data.parts = jQuery("#receiptData .parts" ).html();
         data.time = jQuery("#receiptData .timing" ).html();
         data.task_id = app.task_id;
@@ -1576,6 +1581,10 @@ var app = {
         app.initCanvas();
     },
     saveSignature: function(){
+        $("#emailHolder").show();
+        $("#termsBlock").show();
+        $("#noSigner").hide();
+        $("#addSignBtn").hide();
         $.mobile.navigate( '#receipt' );
     },
     showTerms: function(){
