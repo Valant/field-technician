@@ -25,11 +25,11 @@
         {
 
             $model = new LoginForm();
-            if ($model->load( Yii::$app->request->post() ) && $model->login()) {
+            if ($model->load(Yii::$app->request->post()) && $model->login()) {
                 return $model->getUser();
 
             } else {
-                return [ 'status' => 'error', 'message' => $model->getErrors() ];
+                return ['status' => 'error', 'message' => $model->getErrors()];
             }
         }
 
@@ -38,7 +38,7 @@
             $behaviors                  = parent::behaviors();
             $behaviors['authenticator'] = [
                 'class'  => QueryParamAuth::className(),
-                'except' => [ 'login', 'sendreceipt' ]
+                'except' => ['login', 'sendreceipt']
             ];
             return $behaviors;
         }
@@ -47,12 +47,13 @@
         {
             $postData = Yii::$app->request->post();
 
-            if (empty( $postData['email'] )) {
-                throw new HttpException( '503', 'No email' );
-            }
-            if (filter_var( $postData['email'], FILTER_VALIDATE_EMAIL )) {
-                $signUrl = false;
-                if(isset($postData['sign'])) {
+
+            $signUrl = false;
+            if (isset($postData['sign'])) {
+                if (empty($postData['email'])) {
+                    throw new HttpException('503', 'No email');
+                }
+                if (filter_var($postData['email'], FILTER_VALIDATE_EMAIL)) {
                     $img      = $postData['sign'];
                     $img      = str_replace('data:image/png;base64,', '', $img);
                     $img      = str_replace(' ', '+', $img);
@@ -70,22 +71,23 @@
                     $model->name    = 'User sign';
                     $model->task_id = $postData['task_id'];
                     $model->path    = $fileName;
-                    if(isset($postData['sign_name'])){
+                    if (isset($postData['sign_name'])) {
                         $model->sign_name = $postData['sign_name'];
                     }
                     $model->save();
 
 
                     $signUrl = Yii::$app->params['domainName'] . "/uploads/" . $model->task_id . "/" . $fileName;
+                } else {
+                    throw new HttpException('503', 'Not valid email');
                 }
-
-                if($signUrl) {
-                    return ['file' => $signUrl, 'sign' => $signUrl];
-                }else{
-                    return ['status'=>true];
-                }
-            } else {
-                throw new HttpException( '503', 'Not valid email' );
             }
+
+            if ($signUrl) {
+                return ['file' => $signUrl, 'sign' => $signUrl];
+            } else {
+                return ['status' => true];
+            }
+
         }
     }
