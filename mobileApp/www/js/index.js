@@ -375,9 +375,9 @@ var app = {
                             $( '#part' + data.Part_Id + ' .ui-li-count' ).text( app.usedParts[data.Part_Id] );
                         } else {
                             $( '<li  id="part' + data.Part_Id + '">' +
-                               '<a  data-inline="true" >'
+                               '<a  data-inline="true" onclick="app.changePartQuantity(' + data.Part_Id + ',' + quantity + ',\'' + data.Part_Code + '\',\'' + data.Description + '\'); return false;">'
                                + data.Part_Code + ' ' + data.Description +
-                               '<span class="ui-li-count" onclick="app.changePartQuantity(' + data.Part_Id + ',' + quantity + '); return false;">' + (
+                               '<span class="ui-li-count" onclick="app.changePartQuantity(' + data.Part_Id + ',' + quantity + ',\'' + data.Part_Code + '\',\'' + data.Description + '\'); return false;">' + (
                                    quantity ? quantity : 1
                                ) + '</span>' +
                                '</a>'+
@@ -835,9 +835,9 @@ var app = {
                     for (var i in data) {
                         app.usedParts[data[i].part.Part_Id] = data[i].Quantity;
                         $( '#parts' ).append( '<li id="part' + data[i].part.Part_Id + '">' +
-                                              '<a data-inline="true" >'
+                                              '<a data-inline="true" onclick="app.changePartQuantity(' + data[i].part.Part_Id + ',' + data[i].Quantity+ ',\'' + data[i].part.Part_Code+ '\',\'' + data[i].part.Description + '\'); return false;">'
                                               + data[i].part.Part_Code + ' ' + data[i].part.Description +
-                                              '<span class="ui-li-count" onclick="app.changePartQuantity(' + data[i].part.Part_Id + ',' + data[i].Quantity + '); return false;">' + data[i].Quantity + '</span>' +
+                                              '<span class="ui-li-count" onclick="app.changePartQuantity(' + data[i].part.Part_Id + ',' + data[i].Quantity + ',\'' + data[i].part.Part_Code+ '\',\'' + data[i].part.Description + '\'); return false;">' + data[i].Quantity + '</span>' +
                                               '</a>'+
                                               '<a onclick="app.removePart(' + data[i].part.Part_Id + ', '+data[i].Quantity+')" class="delete">Delete</a>' +
                                               '</li>' );
@@ -849,9 +849,9 @@ var app = {
 
 
     },
-    changePartQuantity: function(part_id, currentQuantity){
+    changePartQuantity: function(part_id, currentQuantity, partCode, partDescription){
         mobile_prompt(
-            'Please enter quantity',  // message
+            'Please enter total quantity for '+ partCode + ' '+ partDescription,  // message
             function ( results )
             {
                 if (results.buttonIndex == 1) {
