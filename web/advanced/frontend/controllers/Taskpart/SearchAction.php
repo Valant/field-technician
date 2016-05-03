@@ -64,7 +64,8 @@ class SearchAction extends  Action  {
         ]);
 
         if (empty($params)) {
-            return $dataProvider;
+
+            return $this->prepareResult($dataProvider);
         }
 
 
@@ -74,6 +75,18 @@ class SearchAction extends  Action  {
             ]);
         }
 
-        return $dataProvider;
+        return $this->prepareResult($dataProvider);
+    }
+
+    protected function prepareResult(ActiveDataProvider $dataProvider){
+        $dataItems = $dataProvider->getModels();
+        foreach ($dataItems as &$item) {
+            foreach ($item->getAttributes() as $key => $val) {
+                if (is_string( $val )) {
+                    $item->$key = utf8_encode( $val );
+                }
+            }
+        }
+        return $dataItems;
     }
 } 
