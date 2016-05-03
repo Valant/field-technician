@@ -65,7 +65,7 @@ class SearchAction extends  Action  {
 
         if (empty($params)) {
 
-            return $this->prepareResult($dataProvider);
+            return $dataProvider;
         }
 
 
@@ -75,7 +75,7 @@ class SearchAction extends  Action  {
             ]);
         }
 
-        return $this->prepareResult($dataProvider);
+        return $dataProvider;
     }
 
     protected function prepareResult(ActiveDataProvider $dataProvider){
