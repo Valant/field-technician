@@ -84,7 +84,7 @@
                             "ticket_number" => $postData['ticket_number'],
                             "comments"      => "Comments entered at end of inspection",
                             "customer_name" => $postData['sign_name'],
-                            "signature"     => $postData['sign']
+                            "signature"     => $img
                         ],
                         true
                     );
