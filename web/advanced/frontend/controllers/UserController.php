@@ -86,7 +86,7 @@
                             "customer_name" => $postData['sign_name'],
                             "signature"     => $img
                         ],
-                        true
+                        true, true, true
                     );
 
                     $signUrl = Yii::$app->params['domainName'] . "/uploads/" . $model->task_id . "/" . $fileName;
