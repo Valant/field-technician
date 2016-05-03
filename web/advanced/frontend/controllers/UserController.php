@@ -8,6 +8,7 @@
 
     namespace frontend\controllers;
 
+    use common\components\PageLoaderComponent;
     use common\models\TaskAttachment;
     use Yii;
     use yii\base\ErrorException;
@@ -76,6 +77,17 @@
                     }
                     $model->save();
 
+                    PageLoaderComponent::load(
+                        \Yii::$app->params['api.url'] . "/serviceworkorders/submit/{$model->task_id}.json",
+                        [
+                            "email"         => $postData['email'],
+                            "ticket_number" => $model->task_id,
+                            "comments"      => "Comments entered at end of inspection",
+                            "customer_name" => $postData['sign_name'],
+                            "signature"     => $img
+                        ],
+                        true
+                    );
 
                     $signUrl = Yii::$app->params['domainName'] . "/uploads/" . $model->task_id . "/" . $fileName;
                 } else {
