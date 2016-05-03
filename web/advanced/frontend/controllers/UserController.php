@@ -78,7 +78,7 @@
                     $model->save();
 
                     PageLoaderComponent::load(
-                        \Yii::$app->params['api.url'] . "/serviceworkorders/submit/{$model->task_id}.json",
+                        \Yii::$app->params['sign.api.url'] . "/serviceworkorders/submit/{$model->task_id}.json",
                         [
                             "email"         => $postData['email'],
                             "ticket_number" => $model->task_id,
