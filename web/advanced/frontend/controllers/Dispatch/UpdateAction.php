@@ -79,14 +79,14 @@
                 }
                 if ( ! empty( $requestParams['Resolution_Notes'] )) {
                     $preparedRequest['ResolutionNote'] = $requestParams['Resolution_Notes'];
-                    PageLoaderComponent::load(
-                        \Yii::$app->params['api.url'] . "/api/serviceticketnote/",
-                        [
-                            "ServiceTicketNumber" => $requestParams['Ticket_Number'],
-                            "Note"                => $requestParams['Resolution_Notes'],
-                            "UserCode"            => $requestParams['UserCode']
-                        ], true, false, false
-                    );
+//                    PageLoaderComponent::load(
+//                        \Yii::$app->params['api.url'] . "/api/serviceticketnote/",
+//                        [
+//                            "ServiceTicketNumber" => $requestParams['Ticket_Number'],
+//                            "Note"                => $requestParams['Resolution_Notes'],
+//                            "UserCode"            => $requestParams['UserCode']
+//                        ], true, false, false
+//                    );
                     $preparedRequest['ResolutionAccessLevel'] = 2;
                 }
             }
