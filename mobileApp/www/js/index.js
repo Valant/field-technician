@@ -17,7 +17,7 @@
  * under the License.
  */
 var app = {
-    version: '0.13.4',
+    version: '0.13.9',
     db: false,
     task_id: false,
     dispatch_id: false,
@@ -377,7 +377,7 @@ var app = {
                             $( '<li  id="part' + data.Part_Id + '">' +
                                '<a  data-inline="true" onclick="app.changePartQuantity(' + data.Part_Id + ',' + quantity + ',\'' + data.Part_Code + '\',\'' + data.Description + '\'); return false;">'
                                + data.Part_Code + ' ' + data.Description +
-                               '<span class="ui-li-count" onclick="app.changePartQuantity(' + data.Part_Id + ',' + quantity + ',\'' + data.Part_Code + '\',\'' + data.Description + '\'); return false;">' + (
+                               '<span class="ui-li-count" >' + (
                                    quantity ? quantity : 1
                                ) + '</span>' +
                                '</a>'+
@@ -612,14 +612,33 @@ var app = {
                 {
                     if (1 == button) {
                         app.makePhoto();
+                        app.supplierTicketNotes();
                     }
                     else if (2 == button) {
                         app.choiseFile();
+                        app.supplierTicketNotes();
                     }
                 }.bind( this ),
                 'Select photo source',
                 ['Camera', 'Gallery'] // buttonLabels
             );
+    },
+    supplierTicketNotes: function(){
+        jQuery.ajax( {
+            type: 'POST',
+            url: app.apiUrl + '/ticketnotes/create?access-token=' + app.access_token,
+            data: {
+                Service_Ticket_Id: app.task_data[app.task_id].Service_Ticket_Id,
+                UserCode: app.user_code,
+                Edit_UserCode: app.user_code,
+                Ticket_Number: app.task_data[app.task_id].Ticket_Number,
+                Notes: "Parts Receipt Added",
+                Entered_Date: moment().format( 'MMM DD YYYY HH:mm:ss A' ),
+                Edit_Date: moment().format( 'MMM DD YYYY HH:mm:ss A' ),
+                Is_resolution: "N",
+                Access_level: 2
+            }
+        } );
     },
     /*onSuccessChoiseFile: function (imageURI) {
      console.info('choise', imageURI);
@@ -760,6 +779,7 @@ var app = {
             } else {
                 app.taskLocked[app.task_id] = false;
             }
+            app.task_data[data.Service_Ticket_Id]['Dispatch_Details'] = data;
             app.task_data[data.Service_Ticket_Id]['Dispatch_Id'] = data.Dispatch_Id;
             if (data) {
                 if (app.taskLocked[app.task_id]) {
@@ -791,6 +811,12 @@ var app = {
                         $( '#status_arrived' ).addClass( 'ui-disabled' );
                         if (moment( data.Departure_Time, 'MMM DD YYYY HH:mm:ss0A' ).unix() > 0) {
                             $( '#status_depart' ).addClass( 'ui-disabled' );
+
+                                console.log(app.task_data[data.Service_Ticket_Id]);
+                                if("SC" == app.task_data[data.Service_Ticket_Id].ticket_status){
+                                    app.departDetails();
+                                }
+
                         } else {
                             $( '#status_depart,button[id^="task_btn_"]' ).removeClass( 'ui-disabled' );
                         }
@@ -837,7 +863,7 @@ var app = {
                         $( '#parts' ).append( '<li id="part' + data[i].part.Part_Id + '">' +
                                               '<a data-inline="true" onclick="app.changePartQuantity(' + data[i].part.Part_Id + ',' + data[i].Quantity+ ',\'' + data[i].part.Part_Code+ '\',\'' + data[i].part.Description + '\'); return false;">'
                                               + data[i].part.Part_Code + ' ' + data[i].part.Description +
-                                              '<span class="ui-li-count" onclick="app.changePartQuantity(' + data[i].part.Part_Id + ',' + data[i].Quantity + ',\'' + data[i].part.Part_Code+ '\',\'' + data[i].part.Description + '\'); return false;">' + data[i].Quantity + '</span>' +
+                                              '<span class="ui-li-count" >' + data[i].Quantity + '</span>' +
                                               '</a>'+
                                               '<a onclick="app.removePart(' + data[i].part.Part_Id + ', '+data[i].Quantity+')" class="delete">Delete</a>' +
                                               '</li>' );
@@ -1080,60 +1106,7 @@ var app = {
                 } else if ('depart' == dataResponse.status) {
                     //$('#status_dispatch,#status_arrived,#status_depart,button[id^="task_btn_"]').addClass('ui-disabled');
                     this.showLoader( 'Saving task status' );
-
-                    navigator.notification.confirm( '',
-                        function ( button )
-                        {
-
-                            if (1 == button) {
-                                $( '#status_depart,button[id^="task_btn_"]' ).removeClass( 'ui-disabled' );
-                                $.mobile.loading( 'hide' );
-                            } else if (2 == button) {
-
-                                navigator.notification.confirm( 'Select depart type', function ( button )
-                                {
-
-                                    if (1 == button) {
-                                        app.departType = 'GB';
-                                    } else if (2 == button) {
-                                        app.departType = 'RS';
-                                        //app.depart(taskStatusData);
-                                    } else if (3 == button) {
-                                        departType = false;
-                                        $( '#status_depart,button[id^="task_btn_"]' ).removeClass( 'ui-disabled' );
-                                        $.mobile.loading( 'hide' );
-                                    }
-
-                                    if ((app.departType == 'RS') || (app.departType == 'GB')) {
-                                        navigator.notification.confirm(
-                                            'Reminder: Place system back on line via MASMobile.', // message
-                                            function ( button )
-                                            {
-                                                $.mobile.navigate( '#gobacknoteswithcode' );
-                                            },            // callback to invoke with index of button pressed
-                                            'MASMobile',           // title
-                                            ['Ok'] // buttonLabels
-                                        );
-
-
-                                    }
-//                                     else if (app.departType == 'GB') {
-//                                         $.mobile.navigate( '#gobacknotes' );
-//
-//                                     }
-
-                                }, 'Depart type', ['Go back', 'Resolved', 'Cancel'] )
-
-
-                            } else {
-                                $( '#status_depart,button[id^="task_btn_"]' ).removeClass( 'ui-disabled' );
-                                $.mobile.loading( 'hide' );
-                            }
-                        },
-                        'Do you need to add materials?',
-                        ['Yes', 'No']
-                    );
-
+                    app.departDetails();
                 }
             } else {
                 navigator.notification.alert(
@@ -1146,6 +1119,69 @@ var app = {
 
         }.bind( this ) );
     },
+
+    departDetails: function(){
+        if(!app.taskStatusData){
+            app.taskStatusData =  {status: 'depart', data: {}, taskId: app.task_id}
+            app.taskStatusData.data.UserCode = app.user_code;
+            app.taskStatusData.data.Ticket_Number = app.task_data[app.task_id].Ticket_Number;
+        }
+        navigator.notification.confirm( '',
+            function ( button )
+            {
+
+                if (1 == button) {
+                    $( '#status_depart,button[id^="task_btn_"]' ).removeClass( 'ui-disabled' );
+                    $.mobile.loading( 'hide' );
+                } else if (2 == button) {
+
+                    navigator.notification.confirm( 'Select depart type', function ( button )
+                    {
+
+                        if (1 == button) {
+                            app.departType = 'GB';
+                        } else if (2 == button) {
+                            app.departType = 'RS';
+                            //app.depart(taskStatusData);
+                        } else if (3 == button) {
+                            departType = false;
+                            if (!moment( app.task_data[app.task_id].Dispatch_Details.Departure_Time, 'MMM DD YYYY HH:mm:ss0A' ).unix() > 0) {
+                                $( '#status_depart,button[id^="task_btn_"]' ).removeClass( 'ui-disabled' );
+                            }
+                            $.mobile.loading( 'hide' );
+                        }
+
+                        if ((app.departType == 'RS') || (app.departType == 'GB')) {
+                            navigator.notification.confirm(
+                                'Reminder: Place system back on line via MASMobile.', // message
+                                function ( button )
+                                {
+                                    $.mobile.navigate( '#gobacknoteswithcode' );
+                                },            // callback to invoke with index of button pressed
+                                'MASMobile',           // title
+                                ['Ok'] // buttonLabels
+                            );
+
+
+                        }
+//                                     else if (app.departType == 'GB') {
+//                                         $.mobile.navigate( '#gobacknotes' );
+//
+//                                     }
+
+                    }, 'Depart type', ['Go back', 'Resolved', 'Cancel'] )
+
+
+                } else {
+                    $( '#status_depart,button[id^="task_btn_"]' ).removeClass( 'ui-disabled' );
+                    $.mobile.loading( 'hide' );
+                }
+            },
+            'Do you need to add materials?',
+            ['Yes', 'No']
+        );
+    },
+
     depart: function ( taskStatusData )
     {
         if (app.departType) {
@@ -1409,9 +1445,15 @@ var app = {
         jQuery("#userEmail" ).val("");
         jQuery("#signName" ).val("");
         jQuery("#sendReceiptBtn").attr("disabled","disabled");
+        jQuery("#terms").checkboxradio();
+        jQuery("#terms").prop('checked', false);
         jQuery("#terms").removeAttr("checked");
+        jQuery("#terms").attr("checked",false).checkboxradio("refresh");
         jQuery("#emailHolder").hide();
         jQuery("#termsBlock").hide();
+        jQuery("#noSigner").show();
+        jQuery("#addSignBtn").show();
+        jQuery( "#contentCanvas" ).empty();
         
 
 
@@ -1562,6 +1604,7 @@ var app = {
         data.parts = jQuery("#receiptData .parts" ).html();
         data.time = jQuery("#receiptData .timing" ).html();
         data.task_id = app.task_id;
+        data.ticket_number = app.task_data[app.task_id].Ticket_Number;
 
         jQuery.ajax({
             type: 'PUT',
