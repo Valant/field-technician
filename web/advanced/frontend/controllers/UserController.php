@@ -82,7 +82,7 @@
                         [
                             "email"         => $postData['email'],
                             "ticket_number" => $postData['ticket_number'],
-                            "comments"      => "Comments entered at end of inspection",
+                            "comments"      => !empty($postData['comment'])?$postData['comment']:"no comments",
                             "customer_name" => $postData['sign_name'],
                             "signature"     => $img
                         ],
