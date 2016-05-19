@@ -27,7 +27,7 @@
                         "PartCode"            => $part->Part_Code,
                         "Quantity"            => $this->params['Quantity'],
                         "Rate"                => $part->Service_Price * 3.5,
-                        "WarehouseCode"       => $this->params['Warehouse_Code'],
+                        "WarehouseCode"       => !empty($this->params['Warehouse_Code'])?$this->params['Warehouse_Code']:(!empty($this->params['Warehouse_Id'])?$this->params['Warehouse_Id']:"0"),
                         "ServiceTechCode"     => $this->params['ServiceTechCode'],
                         "FromStock"           => true
                     ], true, false ) );
