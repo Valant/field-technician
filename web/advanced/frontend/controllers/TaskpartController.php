@@ -36,6 +36,12 @@
                     'checkAccess' => [$this, 'checkAccess'],
                     'params'      => \Yii::$app->request->post()
                 ],
+                'update' => [
+                  'class'       => 'frontend\controllers\Taskpart\UpdateAction',
+                  'modelClass'  => $this->modelClass,
+                  'checkAccess' => [$this, 'checkAccess'],
+                  'params'      => \Yii::$app->request->post()
+                ],
                 'delete' => [
                     'class'       => 'frontend\controllers\Taskpart\DeleteAction',
                     'modelClass'  => $this->modelClass,
