@@ -17,7 +17,7 @@
  * under the License.
  */
 var app = {
-    version: '0.13.9',
+    version: '0.13.12',
     db: false,
     task_id: false,
     dispatch_id: false,
@@ -139,7 +139,7 @@ var app = {
                 app.service_tech_code = data.servicetechcode;
                 app.access_token = data.auth_key;
                 app.user_warehouse_id = data.warehoise_id;
-                app.user_warehouse_code = data.warehoise_code;
+                app.user_warehouse_code = data.warehouse_code;
                 app.loadTasks();
                 app.loadResolitons();
             } else {
@@ -190,6 +190,9 @@ var app = {
                         withcode ? '_withcode' : ''
                     ) ).val()) {
                 app.showLoader( 'Saving task status' );
+                app.task_data[app.task_id].Resolution_Notes_Comment  = $( '#resolution_notes' + (
+                        withcode ? '_withcode' : ''
+                    ) ).val();
                 jQuery.ajax( {
                     type: 'POST',
                     url: app.apiUrl + '/ticketnotes/create?access-token=' + app.access_token,
@@ -337,8 +340,27 @@ var app = {
             {
                 if (results.buttonIndex == 1) {
 
+                    if("0" == results.input1 ){
+                        navigator.notification.alert(
+                            'Please enter only numbers that more than 0',  // message
+                            false,         // callback
+                            'Incorrect value',            // title
+                            'OK'                  // buttonName
+                        );
+                        return false;
+                    }
+
                     if (parseInt( results.input1 ) != NaN) {
                         quantity = parseInt( results.input1 );
+                        if(quantity < 1){
+                            navigator.notification.alert(
+                                'Please enter only numbers that more than 0',  // message
+                                false,         // callback
+                                'Incorrect value',            // title
+                                'OK'                  // buttonName
+                            );
+                            return false;
+                        }
                     } else {
                         navigator.notification.alert(
                             'Please enter only numbers',  // message
@@ -346,6 +368,7 @@ var app = {
                             'Is not  number',            // title
                             'OK'                  // buttonName
                         );
+                        return false;
                     }
 
                     app.showLoader("Adding part...");
@@ -375,7 +398,7 @@ var app = {
                             $( '#part' + data.Part_Id + ' .ui-li-count' ).text( app.usedParts[data.Part_Id] );
                         } else {
                             $( '<li  id="part' + data.Part_Id + '">' +
-                               '<a  data-inline="true" onclick="app.changePartQuantity(' + data.Part_Id + ',' + quantity + ',\'' + data.Part_Code + '\',\'' + data.Description + '\'); return false;">'
+                               '<a  data-inline="true" onclick="app.changePartQuantity(' + data.Service_Ticket_Part_Id + ',' + data.Part_Id + ',' + quantity + ',\'' + data.Part_Code + '\',\'' + data.Description + '\'); return false;">'
                                + data.Part_Code + ' ' + data.Description +
                                '<span class="ui-li-count" >' + (
                                    quantity ? quantity : 1
@@ -861,29 +884,48 @@ var app = {
                     for (var i in data) {
                         app.usedParts[data[i].part.Part_Id] = data[i].Quantity;
                         $( '#parts' ).append( '<li id="part' + data[i].part.Part_Id + '">' +
-                                              '<a data-inline="true" onclick="app.changePartQuantity(' + data[i].part.Part_Id + ',' + data[i].Quantity+ ',\'' + data[i].part.Part_Code+ '\',\'' + data[i].part.Description + '\'); return false;">'
+                                              '<a data-inline="true" onclick="app.changePartQuantity('+ data[i].Service_Ticket_Part_Id + ',' + data[i].part.Part_Id + ',' + data[i].Quantity+ ',\'' + data[i].part.Part_Code+ '\',\'' + data[i].part.Description + '\'); return false;">'
                                               + data[i].part.Part_Code + ' ' + data[i].part.Description +
                                               '<span class="ui-li-count" >' + data[i].Quantity + '</span>' +
                                               '</a>'+
                                               '<a onclick="app.removePart(' + data[i].part.Part_Id + ', '+data[i].Quantity+')" class="delete">Delete</a>' +
                                               '</li>' );
                     }
-                    $( '#parts' ).listview( 'refresh' );
+                    $( '#parts:visible' ).listview( 'refresh' );
                 }
             }.bind( this ) );
         }
 
 
     },
-    changePartQuantity: function(part_id, currentQuantity, partCode, partDescription){
+    changePartQuantity: function(Service_Ticket_Part_Id, part_id, currentQuantity, partCode, partDescription){
         mobile_prompt(
             'Please enter total quantity for '+ partCode + ' '+ partDescription,  // message
             function ( results )
             {
                 if (results.buttonIndex == 1) {
 
+                    if("0" == results.input1 ){
+                        navigator.notification.alert(
+                            'Please enter only numbers that more than 0',  // message
+                            false,         // callback
+                            'Incorrect value',            // title
+                            'OK'                  // buttonName
+                        );
+                        return false;
+                    }
+
                     if (parseInt( results.input1 ) != NaN) {
                         quantity = parseInt( results.input1 );
+                        if(quantity <1){
+                            navigator.notification.alert(
+                                'Please enter only numbers that more than 0',  // message
+                                false,         // callback
+                                'Incorrect value',            // title
+                                'OK'                  // buttonName
+                            );
+                            return false;
+                        }
                     } else {
                         navigator.notification.alert(
                             'Please enter only numbers',  // message
@@ -895,27 +937,29 @@ var app = {
 
                     app.showLoader("Saving part...");
 
-                    $.ajax({
-                        type: 'POST',
-                        url: app.apiUrl + 'taskpart/delete?access-token=' + app.access_token,
-                        data: {
-                            part_id: part_id,
-                            Service_Tech_ID: app.user_id,
-                            Service_Ticket_Id: app.task_id,
-                            Ticket_Number: app.task_data[app.task_id].Ticket_Number,
-                            Quantity: currentQuantity,
-                            UserCode: app.user_code,
-                            ServiceTechCode: app.service_tech_code,
-                            Warehouse_Id: app.user_warehouse_id,
-                            Warehouse_Code: app.user_warehouse_code
-                        }
-                    } ).done(function(){
+//                     $.ajax({
+//                         type: 'POST',
+//                         url: app.apiUrl + 'taskpart/delete?access-token=' + app.access_token,
+//                         data: {
+//                             service_ticket_part_id: Service_Ticket_Part_Id,
+//                             part_id: part_id,
+//                             Service_Tech_ID: app.user_id,
+//                             Service_Ticket_Id: app.task_id,
+//                             Ticket_Number: app.task_data[app.task_id].Ticket_Number,
+//                             Quantity: currentQuantity,
+//                             UserCode: app.user_code,
+//                             ServiceTechCode: app.service_tech_code,
+//                             Warehouse_Id: app.user_warehouse_id,
+//                             Warehouse_Code: app.user_warehouse_code
+//                         }
+//                     } ).done(function(){
 
 
                         jQuery.ajax( {
                             type: 'POST',
-                            url: app.apiUrl + 'taskpart/create?access-token=' + app.access_token,
+                            url: app.apiUrl + 'taskpart/update?access-token=' + app.access_token,
                             data: {
+                                service_ticket_part_id: Service_Ticket_Part_Id,
                                 'Service_Tech_ID': app.user_id,
                                 'Service_Ticket_Id': app.task_id,
                                 'Ticket_Number': app.task_data[app.task_id].Ticket_Number,
@@ -927,7 +971,7 @@ var app = {
                                 'Warehouse_Code': app.user_warehouse_code
 
                             }
-                        } ).done(function(){
+                        } ).always(function(){
 
                             if (app.usedParts[part_id]) {
                                 if (quantity) {
@@ -950,7 +994,7 @@ var app = {
     //                        app.uploadTaskData();
                             $.mobile.loading( 'hide' );
                         });
-                    });
+//                     });
                 }
             }.bind( this ),                  // callback to invoke
             'Quantity',            // title
@@ -1605,6 +1649,7 @@ var app = {
         data.time = jQuery("#receiptData .timing" ).html();
         data.task_id = app.task_id;
         data.ticket_number = app.task_data[app.task_id].Ticket_Number;
+        data.comment = app.task_data[app.task_id].Resolution_Notes_Comment;
 
         jQuery.ajax({
             type: 'PUT',
