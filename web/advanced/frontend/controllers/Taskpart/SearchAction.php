@@ -55,7 +55,7 @@ class SearchAction extends  Action  {
         }
 
         $query = $modelClass::find();
-	    $query->select('ServiceTicketPartId, Part_Id, sum(Quantity) as Quantity');
+	    $query->select('Service_Ticket_Part_Id, Part_Id, sum(Quantity) as Quantity');
 	    $query->groupBy(['Part_Id']);
         $query->having(['>', 'sum(Quantity)', '0']);
 
