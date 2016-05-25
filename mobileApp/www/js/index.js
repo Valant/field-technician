@@ -999,7 +999,7 @@ var app = {
             }.bind( this ),                  // callback to invoke
             'Quantity',            // title
             ['Ok', 'Exit'],             // buttonLabels
-            '1'                 // defaultText
+            currentQuantity.toString()                 // defaultText
         );
     },
     drawTaskDetails: function ( data )
