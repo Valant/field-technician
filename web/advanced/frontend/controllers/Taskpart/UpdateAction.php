@@ -13,7 +13,7 @@
     use common\models\INPart;
     use yii\rest\Action;
 
-    class UodateAction extends Action
+    class UpdateAction extends Action
     {
         public $params;
 
