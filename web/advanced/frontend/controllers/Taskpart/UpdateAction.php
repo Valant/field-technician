@@ -31,7 +31,7 @@
                     "WarehouseCode"          => !empty($this->params['Warehouse_Code']) ? $this->params['Warehouse_Code'] : (!empty($this->params['Warehouse_Id']) ? $this->params['Warehouse_Id'] : "0"),
                     "ServiceTechCode"        => $this->params['ServiceTechCode'],
                     "FromStock"              => true
-                  ], true, false));
+                  ], true, true));
             } else {
                 return $this->params;
             }
