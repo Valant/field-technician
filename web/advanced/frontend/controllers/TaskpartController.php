@@ -58,7 +58,8 @@
             $verbs = [
                 'search'   => ['GET'],
                 'empty'   => ['GET'],
-                'delete'   => ['POST']
+                'delete'   => ['POST'],
+                'update'   => ['POST']
             ];
             return array_merge(parent::verbs(), $verbs);
         }
