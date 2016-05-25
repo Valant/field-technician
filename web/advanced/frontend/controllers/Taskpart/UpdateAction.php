@@ -23,7 +23,7 @@
 
                 return json_decode(PageLoaderComponent::load(\Yii::$app->params['api.url'] . "/api/ServiceTicketPart/" . $this->params['service_ticket_part_id'],
                   [
-                    "service_ticket_part_id" => $this->params['service_ticket_part_id'],
+                    "ServiceTicketPartId" => $this->params['service_ticket_part_id'],
                     "ServiceTicketNumber"    => $this->params['Ticket_Number'],
                     "PartCode"               => $part->Part_Code,
                     "Quantity"               => $this->params['Quantity'],
