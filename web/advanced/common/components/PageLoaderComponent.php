@@ -15,7 +15,7 @@
 
     class PageLoaderComponent extends Component
     {
-        public static function load( $url, $postParams = false, $asJSON = false, $returnHeader = true, $isPut = false )
+        public static function load( $url, $postParams = false, $asJSON = false, $returnHeader = true, $isPut = false, $isDelete = false )
         {
             if (filter_var( $url, FILTER_VALIDATE_URL )) {
                 try {
@@ -47,6 +47,9 @@
                                 curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, "PUT" );
                             }else{
                                 curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, "POST" );
+                            }
+                            if($isDelete){
+                                curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, "DELETE" );
                             }
                             curl_setopt( $ch, CURLOPT_POSTFIELDS, $dataString );
                             curl_setopt( $ch, CURLOPT_HEADER, $returnHeader );
