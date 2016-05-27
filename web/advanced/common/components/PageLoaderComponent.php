@@ -48,9 +48,6 @@
                             }else{
                                 curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, "POST" );
                             }
-                            if($isDelete){
-                                curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, "DELETE" );
-                            }
                             curl_setopt( $ch, CURLOPT_POSTFIELDS, $dataString );
                             curl_setopt( $ch, CURLOPT_HEADER, $returnHeader );
                             curl_setopt( $ch, CURLOPT_HTTPHEADER, array(
@@ -60,6 +57,9 @@
                         } else {
                             curl_setopt( $ch, CURLOPT_POSTFIELDS, $postParams );
                         }
+                    }
+                    if($isDelete){
+                        curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, "DELETE" );
                     }
                     $data = curl_exec( $ch );
                     curl_close( $ch );

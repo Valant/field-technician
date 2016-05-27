@@ -22,8 +22,7 @@
         {
 
             if(!empty($this->params['service_ticket_part_id'])) {
-                return json_decode(PageLoaderComponent::load(\Yii::$app->params['api.url'] . "/api/ServiceTicketPart/" . $this->params['service_ticket_part_id'],
-                  [], true, false, false, true));
+                return json_decode(PageLoaderComponent::load(\Yii::$app->params['api.url'] . "/api/ServiceTicketPart/" . $this->params['service_ticket_part_id'], false, false, false, false, true));
             }else{
                 return $this->params;
             }
