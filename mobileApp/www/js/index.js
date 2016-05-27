@@ -17,7 +17,7 @@
  * under the License.
  */
 var app = {
-    version: '0.13.12',
+    version: '0.13.13',
     db: false,
     task_id: false,
     dispatch_id: false,
@@ -888,7 +888,7 @@ var app = {
                                               + data[i].part.Part_Code + ' ' + data[i].part.Description +
                                               '<span class="ui-li-count" >' + data[i].Quantity + '</span>' +
                                               '</a>'+
-                                              '<a onclick="app.removePart(' + data[i].part.Part_Id + ', '+data[i].Quantity+')" class="delete">Delete</a>' +
+                                              '<a onclick="app.removePart(' + data[i].part.Part_Id + ', '+data[i].Quantity+','+ data[i].Service_Ticket_Part_Id + ')" class="delete">Delete</a>' +
                                               '</li>' );
                     }
                     $( '#parts:visible' ).listview( 'refresh' );
@@ -1363,7 +1363,7 @@ var app = {
             return false;
         }
     },
-    removePart: function ( part_id, quantity )
+    removePart: function ( part_id, quantity, service_ticket_part_id )
     {
         app.part_to_delete = part_id;
         navigator.notification.confirm(
@@ -1376,6 +1376,7 @@ var app = {
                         type: 'POST',
                         url: app.apiUrl + 'taskpart/delete?access-token=' + app.access_token,
                         data: {
+                            service_ticket_part_id: service_ticket_part_id,
                             part_id: app.part_to_delete,
                             Service_Tech_ID: app.user_id,
                             Service_Ticket_Id: app.task_id,
@@ -1386,7 +1387,7 @@ var app = {
                             Warehouse_Id: app.user_warehouse_id,
                             Warehouse_Code: app.user_warehouse_code
                         }
-                    } ).done(function(){
+                    } ).always(function(){
                         delete app.usedParts[app.part_to_delete];
                         $( '#part' + app.part_to_delete ).remove();
                         $.mobile.loading( 'hide' );
