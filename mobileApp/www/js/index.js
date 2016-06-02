@@ -17,7 +17,7 @@
  * under the License.
  */
 var app = {
-    version: '0.13.13',
+    version: '0.13.15',
     db: false,
     task_id: false,
     dispatch_id: false,
@@ -387,7 +387,7 @@ var app = {
                             'Warehouse_Code': app.user_warehouse_code
 
                         }
-                    } ).done(function(){
+                    } ).done(function(result){
 
                         if (app.usedParts[data.Part_Id]) {
                             if (quantity) {
@@ -398,13 +398,13 @@ var app = {
                             $( '#part' + data.Part_Id + ' .ui-li-count' ).text( app.usedParts[data.Part_Id] );
                         } else {
                             $( '<li  id="part' + data.Part_Id + '">' +
-                               '<a  data-inline="true" onclick="app.changePartQuantity(' + data.Service_Ticket_Part_Id + ',' + data.Part_Id + ',' + quantity + ',\'' + data.Part_Code + '\',\'' + data.Description + '\'); return false;">'
+                               '<a  data-inline="true" onclick="app.changePartQuantity(' + result.ServiceTicketPartId + ',' + data.Part_Id + ',' + result.Quantity + ',\'' + result.PartCode + '\',\'' + data.Description + '\'); return false;">'
                                + data.Part_Code + ' ' + data.Description +
                                '<span class="ui-li-count" >' + (
                                    quantity ? quantity : 1
                                ) + '</span>' +
                                '</a>'+
-                               '<a onclick="app.removePart(' + data.Part_Id + ', '+ (quantity ? quantity : 1) +')" class="delete">Delete</a>' +
+                               '<a onclick="app.removePart(' + data.Part_Id + ', '+ (quantity ? quantity : 1) +',' + result.ServiceTicketPartId + ')" class="delete">Delete</a>' +
                                '</li>' ).appendTo( '#parts' );
                             app.usedParts[data.Part_Id] = quantity ? quantity : 1;
                         }
@@ -959,7 +959,7 @@ var app = {
                             type: 'POST',
                             url: app.apiUrl + 'taskpart/update?access-token=' + app.access_token,
                             data: {
-                                service_ticket_part_id: Service_Ticket_Part_Id,
+                                'service_ticket_part_id': Service_Ticket_Part_Id,
                                 'Service_Tech_ID': app.user_id,
                                 'Service_Ticket_Id': app.task_id,
                                 'Ticket_Number': app.task_data[app.task_id].Ticket_Number,
