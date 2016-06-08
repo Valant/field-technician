@@ -17,7 +17,7 @@
  * under the License.
  */
 var app = {
-    version: '0.13.15',
+    version: '0.13.17',
     db: false,
     task_id: false,
     dispatch_id: false,
@@ -193,22 +193,22 @@ var app = {
                 app.task_data[app.task_id].Resolution_Notes_Comment  = $( '#resolution_notes' + (
                         withcode ? '_withcode' : ''
                     ) ).val();
-                jQuery.ajax( {
-                    type: 'POST',
-                    url: app.apiUrl + '/ticketnotes/create?access-token=' + app.access_token,
-                    data: {
-                        Service_Ticket_Id: app.task_data[app.task_id].Service_Ticket_Id,
-                        UserCode: app.user_code,
-                        Edit_UserCode: app.user_code,
-                        Ticket_Number: app.task_data[app.task_id].Ticket_Number,
-                        Entered_Date: moment().format( 'MMM DD YYYY HH:mm:ss A' ),
-                        Edit_Date: moment().format( 'MMM DD YYYY HH:mm:ss A' ),
-                        Notes: $( '#resolution_notes' + (
-                                withcode ? '_withcode' : ''
-                            ) ).val()
-                    }
-                } ).always( function ( dataResponse )
-                {
+//                 jQuery.ajax( {
+//                     type: 'POST',
+//                     url: app.apiUrl + '/ticketnotes/create?access-token=' + app.access_token,
+//                     data: {
+//                         Service_Ticket_Id: app.task_data[app.task_id].Service_Ticket_Id,
+//                         UserCode: app.user_code,
+//                         Edit_UserCode: app.user_code,
+//                         Ticket_Number: app.task_data[app.task_id].Ticket_Number,
+//                         Entered_Date: moment().format( 'MMM DD YYYY HH:mm:ss A' ),
+//                         Edit_Date: moment().format( 'MMM DD YYYY HH:mm:ss A' ),
+//                         Notes: $( '#resolution_notes' + (
+//                                 withcode ? '_withcode' : ''
+//                             ) ).val()
+//                     }
+//                 } ).always( function ( dataResponse )
+//                 {
                     var endNotes = function ( data )
                     {
 
@@ -237,7 +237,7 @@ var app = {
                         } ).always( endNotes( {Service_Ticket_Id: app.task_data[app.task_id].Service_Ticket_Id, resolved: withcode} ) );
                     }
 
-                } );
+//                 } );
             } else {
                 navigator.notification.alert(
                     'Required fields are empty',                    // message
@@ -398,8 +398,8 @@ var app = {
                             $( '#part' + data.Part_Id + ' .ui-li-count' ).text( app.usedParts[data.Part_Id] );
                         } else {
                             $( '<li  id="part' + data.Part_Id + '">' +
-                               '<a  data-inline="true" onclick="app.changePartQuantity(' + result.ServiceTicketPartId + ',' + data.Part_Id + ',' + result.Quantity + ',\'' + result.PartCode + '\',\'' + data.Description + '\'); return false;">'
-                               + data.Part_Code + ' ' + data.Description +
+                               '<a  data-inline="true" onclick="app.changePartQuantity(' + result.ServiceTicketPartId + ',' + data.Part_Id + ',' + result.Quantity + ',\'' + result.PartCode + '\',\'' + htmlEncode(data.Description) + '\'); return false;">'
+                               + data.Part_Code + ' ' + htmlEncode(data.Description) +
                                '<span class="ui-li-count" >' + (
                                    quantity ? quantity : 1
                                ) + '</span>' +
@@ -884,7 +884,7 @@ var app = {
                     for (var i in data) {
                         app.usedParts[data[i].part.Part_Id] = data[i].Quantity;
                         $( '#parts' ).append( '<li id="part' + data[i].part.Part_Id + '">' +
-                                              '<a data-inline="true" onclick="app.changePartQuantity('+ data[i].Service_Ticket_Part_Id + ',' + data[i].part.Part_Id + ',' + data[i].Quantity+ ',\'' + data[i].part.Part_Code+ '\',\'' + data[i].part.Description + '\'); return false;">'
+                                              '<a data-inline="true" onclick="app.changePartQuantity('+ data[i].Service_Ticket_Part_Id + ',' + data[i].part.Part_Id + ',' + data[i].Quantity+ ',\'' + data[i].part.Part_Code+ '\',\'' + htmlEncode(data[i].part.Description) + '\'); return false;">'
                                               + data[i].part.Part_Code + ' ' + data[i].part.Description +
                                               '<span class="ui-li-count" >' + data[i].Quantity + '</span>' +
                                               '</a>'+
@@ -1693,3 +1693,20 @@ var app = {
         return true;
     }
 };
+
+
+function htmlEncode(value){
+    //create a in-memory div, set it's inner text(which jQuery automatically encodes)
+    //then grab the encoded contents back out.  The div never exists on the page.
+    value =  value.replace(/'/g, "");
+    value =  value.replace(/"/g, "");
+    return value;
+}
+
+function htmlDecode(value){
+    return $('<div/>').html(value).text();
+}
+
+function addslashes( str ) {
+    return (str + '').replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0');
+}
