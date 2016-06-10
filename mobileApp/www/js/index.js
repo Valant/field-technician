@@ -17,7 +17,7 @@
  * under the License.
  */
 var app = {
-    version: '0.13.17',
+    version: '0.13.18',
     db: false,
     task_id: false,
     dispatch_id: false,
@@ -773,6 +773,7 @@ var app = {
                 $.mobile.navigate( '#taskDetails' );
             }
 //             app.showReceiptPage();
+//             app.showSignPopup();
 
 
         } );
@@ -1546,77 +1547,104 @@ var app = {
 
         $.mobile.navigate( '#receipt' );
     },
-    initCanvas: function ()
+    initCanvas:
     {
 //        var margin = $("#signature div[data-role='header']" ).height()+$("#signature #emailHolder" ).height()+$("#signature #canvasControl" ).height()+$("#signature div[data-role='footer']" ).height();
-        var margin = 170;
 
-        $( "#contentCanvas" ).height( $( window ).height() - margin );
-        var canvas = '<canvas id="canvas" width="' + (
-            $( window ).width() - 8
-            ) + '" height="' + (
-                         $( window ).height() - margin
-                     ) + '"></canvas>';
-        $( "#contentCanvas" ).html( canvas );
+        context: null,
+        canvasObj: null,
 
+        clickX: new Array(),
+        clickY: new Array(),
+        clickDrag: new Array(),
+        paint: null,
 
-        var context = document.getElementById( "canvas" ).getContext( "2d" );
-        var canvasObj = document.getElementById( "canvas" );
-
-        var clickX = new Array();
-        var clickY = new Array();
-        var clickDrag = new Array();
-        var paint;
-
-        function addClick( x, y, dragging )
+        init: function()
         {
-            clickX.push( x );
-            clickY.push( y );
-            clickDrag.push( dragging );
-        }
+            var margin = 170;
 
 
-        canvasObj.addEventListener( 'touchstart', function ( evt )
-        {
-            paint = true;
-            addClick( evt.touches[0].pageX - canvasObj.offsetLeft, evt.touches[0].pageY - canvasObj.offsetTop );
-            redraw();
-            evt.preventDefault();
-        }, false );
+            $( "#contentCanvas" ).height( $( window ).height() - margin );
+            var canvas = '<canvas id="canvas" width="' + (
+                    $( window ).width() - 8
+                ) + '" height="' + (
+                             $( window ).height() - margin
+                         ) + '"></canvas>';
+            $( "#contentCanvas" ).html( canvas );
+            app.initCanvas.context = document.getElementById( "canvas" ).getContext( "2d" );
+            app.initCanvas.canvasObj = document.getElementById( "canvas" );
+            app.initCanvas.drawGrid();
 
-        canvasObj.addEventListener( 'touchmove', function ( evt )
-        {
+            app.initCanvas.canvasObj.addEventListener( 'touchstart', function ( evt )
+            {
+                app.initCanvas.paint = true;
+                app.initCanvas.addClick( evt.touches[0].pageX - app.initCanvas.canvasObj.offsetLeft, evt.touches[0].pageY - app.initCanvas.canvasObj.offsetTop );
+                app.initCanvas.redraw(true);
+                evt.preventDefault();
+            }, false );
 
-            if (paint) {
-                addClick( evt.touches[0].pageX - canvasObj.offsetLeft, evt.touches[0].pageY - canvasObj.offsetTop,
-                    true );
-                redraw();
-            }
-        }, false );
+            app.initCanvas.canvasObj.addEventListener( 'touchmove', function ( evt )
+            {
 
-        canvasObj.addEventListener( 'touchend', function ()
-        {
-            paint = false;
-        }, false );
-
-        function redraw()
-        {
-            context.clearRect( 0, 0, context.canvas.width, context.canvas.height ); // Clears the canvas
-
-            context.strokeStyle = "#df4b26";
-            context.lineJoin = "round";
-            context.lineWidth = 5;
-
-            for (var i = 0; i < clickX.length; i ++) {
-                context.beginPath();
-                if (clickDrag[i] && i) {
-                    context.moveTo( clickX[i - 1], clickY[i - 1] );
-                } else {
-                    context.moveTo( clickX[i] - 1, clickY[i] );
+                if (app.initCanvas.paint) {
+                    app.initCanvas.addClick( evt.touches[0].pageX - app.initCanvas.canvasObj.offsetLeft, evt.touches[0].pageY - app.initCanvas.canvasObj.offsetTop,
+                        true );
+                    app.initCanvas.redraw(true);
                 }
-                context.lineTo( clickX[i], clickY[i] );
-                context.closePath();
-                context.stroke();
+            }, false );
+
+            app.initCanvas.canvasObj.addEventListener( 'touchend', function ()
+            {
+                app.initCanvas.paint = false;
+            }, false );
+
+        },
+
+        addClick: function( x, y, dragging )
+        {
+            app.initCanvas.clickX.push( x );
+            app.initCanvas.clickY.push( y );
+            app.initCanvas.clickDrag.push( dragging );
+        },
+
+         drawGrid: function(){
+
+            // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Pixel_manipulation_with_canvas
+             app.initCanvas.context.strokeStyle = "#cecece";
+             app.initCanvas.context.lineJoin = "round";
+             app.initCanvas.context.lineWidth = 1;
+
+            var lineY = 0;
+            while(lineY < app.initCanvas.context.canvas.height){
+                lineY += app.initCanvas.context.canvas.height * 0.2;
+                app.initCanvas.context.moveTo(0,  lineY);
+                app.initCanvas.context.lineTo(app.initCanvas.context.canvas.width,  lineY);
+                app.initCanvas.context.closePath();
+            }
+
+             app.initCanvas.context.stroke();
+        },
+
+        redraw: function(visGrid)
+        {
+            app.initCanvas.context.clearRect( 0, 0, app.initCanvas.context.canvas.width, app.initCanvas.context.canvas.height ); // Clears the canvas
+            if(visGrid) {
+                app.initCanvas.drawGrid();
+            }
+            app.initCanvas.context.strokeStyle = "#df4b26";
+            app.initCanvas.context.lineJoin = "round";
+            app.initCanvas.context.lineWidth = 5;
+
+            for (var i = 0; i < app.initCanvas.clickX.length; i ++) {
+                app.initCanvas.context.beginPath();
+                if (app.initCanvas.clickDrag[i] && i) {
+                    app.initCanvas.context.moveTo( app.initCanvas.clickX[i - 1], app.initCanvas.clickY[i - 1] );
+                } else {
+                    app.initCanvas.context.moveTo( app.initCanvas.clickX[i] - 1, app.initCanvas.clickY[i] );
+                }
+                app.initCanvas.context.lineTo( app.initCanvas.clickX[i], app.initCanvas.clickY[i] );
+                app.initCanvas.context.closePath();
+                app.initCanvas.context.stroke();
             }
         }
 
@@ -1626,7 +1654,7 @@ var app = {
         var canvas = document.getElementById( "canvas" );
         var context = canvas.getContext( "2d" );
         context.clearRect( 0, 0, canvas.width, canvas.height );
-        app.initCanvas();
+        app.initCanvas.init();
     },
     sendReceipt: function ()
     {
@@ -1642,6 +1670,7 @@ var app = {
 
         var data = {};
         if(canvas) {
+            app.initCanvas.redraw();
             data.sign = canvas.toDataURL();
             data.sign_name = jQuery("#signName" ).val();
             data.email = jQuery("#userEmail" ).val();
@@ -1667,7 +1696,7 @@ var app = {
     },
     showSignPopup: function(){
         $.mobile.navigate( '#signature' );
-        app.initCanvas();
+        app.initCanvas.init();
     },
     saveSignature: function(){
         $("#emailHolder").show();
