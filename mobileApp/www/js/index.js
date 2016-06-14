@@ -775,7 +775,7 @@ var app = {
                 $.mobile.navigate( '#taskDetails' );
             }
 //             app.showReceiptPage();
-            app.showSignPopup();
+//             app.showSignPopup();
 
 
         } );
