@@ -17,7 +17,7 @@
  * under the License.
  */
 var app = {
-    version: '0.13.18',
+    version: '0.13.19',
     db: false,
     task_id: false,
     dispatch_id: false,
@@ -53,6 +53,8 @@ var app = {
     bindEvents: function ()
     {
         document.addEventListener( 'deviceready', this.onDeviceReady, false );
+        document.addEventListener("orientationchange", this.updateOrientation);
+
 //         this.onDeviceReady();
     },
     // deviceready Event Handler
@@ -773,7 +775,7 @@ var app = {
                 $.mobile.navigate( '#taskDetails' );
             }
 //             app.showReceiptPage();
-//             app.showSignPopup();
+            app.showSignPopup();
 
 
         } );
@@ -1573,6 +1575,9 @@ var app = {
             $( "#contentCanvas" ).html( canvas );
             app.initCanvas.context = document.getElementById( "canvas" ).getContext( "2d" );
             app.initCanvas.canvasObj = document.getElementById( "canvas" );
+            app.initCanvas.clickX = new Array();
+            app.initCanvas.clickY = new Array();
+            app.initCanvas.clickDrag = new Array();
             app.initCanvas.drawGrid();
 
             app.initCanvas.canvasObj.addEventListener( 'touchstart', function ( evt )
@@ -1610,19 +1615,26 @@ var app = {
          drawGrid: function(){
 
             // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Pixel_manipulation_with_canvas
-             app.initCanvas.context.strokeStyle = "#cecece";
+             app.initCanvas.context.strokeStyle = "#000000";
              app.initCanvas.context.lineJoin = "round";
-             app.initCanvas.context.lineWidth = 1;
+             app.initCanvas.context.lineWidth = 2;
 
-            var lineY = 0;
-            while(lineY < app.initCanvas.context.canvas.height){
-                lineY += app.initCanvas.context.canvas.height * 0.2;
-                app.initCanvas.context.moveTo(0,  lineY);
-                app.initCanvas.context.lineTo(app.initCanvas.context.canvas.width,  lineY);
-                app.initCanvas.context.closePath();
-            }
+            var lineY = app.initCanvas.context.canvas.height - (app.initCanvas.context.canvas.height * 0.2);
+//              app.initCanvas.context.setLineDash([15, 15]);
+            app.initCanvas.context.moveTo(0,  lineY);
+            app.initCanvas.context.lineTo(app.initCanvas.context.canvas.width,  lineY);
+            app.initCanvas.context.closePath();
+
+             app.initCanvas.context.moveTo(5,  lineY - 20);
+             app.initCanvas.context.lineTo(15,  lineY - 5);
+             app.initCanvas.context.closePath();
+
+             app.initCanvas.context.moveTo(15,  lineY - 20);
+             app.initCanvas.context.lineTo(5,  lineY - 5);
+             app.initCanvas.context.closePath();
 
              app.initCanvas.context.stroke();
+//              app.initCanvas.context.setLineDash([]);
         },
 
         redraw: function(visGrid)
@@ -1720,6 +1732,11 @@ var app = {
             jQuery("#sendReceiptBtn").attr("disabled","disabled");
         }
         return true;
+    },
+    updateOrientation: function(){
+        if(app.initCanvas.context){
+            app.initCanvas.init();
+        }
     }
 };
 
