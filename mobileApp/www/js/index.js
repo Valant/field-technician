@@ -17,7 +17,7 @@
  * under the License.
  */
 var app = {
-    version: '0.13.19',
+    version: '0.13.21',
     db: false,
     task_id: false,
     dispatch_id: false,
@@ -1707,6 +1707,7 @@ var app = {
 
     },
     showSignPopup: function(){
+        window.screen.lockOrientation('landscape');
         $.mobile.navigate( '#signature' );
         app.initCanvas.init();
     },
@@ -1715,6 +1716,7 @@ var app = {
         $("#termsBlock").show();
         $("#noSigner").hide();
         $("#addSignBtn").hide();
+        window.screen.unlockOrientation();
         $.mobile.navigate( '#receipt' );
     },
     showTerms: function(){

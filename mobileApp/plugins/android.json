@@ -600,6 +600,9 @@
         },
         "org.apache.cordova.vibration": {
             "PACKAGE_NAME": "com.fieldtechnician.app"
+        },
+        "cordova-plugin-screen-orientation": {
+            "PACKAGE_NAME": "com.fieldtechnicianafa.app"
         }
     },
     "dependent_plugins": {
