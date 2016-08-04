@@ -1,0 +1,21 @@
+{
+    "version": "0.0.1",
+    "name": "phonegap.plugins.iosnumpad",
+    "cordova_name": "PinDialog",
+    "description": "\n\t\t\tPhoneGap numeric dialog plugin for Android and iOS. Forked from https://github.com/apache/cordova-plugin-dialogs.git\n\t",
+    "license": "MIT",
+    "keywords": [
+        "phonegap",
+        "android",
+        "ios",
+        "numeric",
+        "password",
+        "pin",
+        "dialog"
+    ],
+    "platforms": [
+        "android",
+        "ios"
+    ],
+    "engines": []
+}

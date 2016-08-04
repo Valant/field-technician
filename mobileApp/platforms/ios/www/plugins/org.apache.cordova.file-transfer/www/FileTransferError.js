@@ -17,13 +17,13 @@ cordova.define("org.apache.cordova.file-transfer.FileTransferError", function(re
  * specific language governing permissions and limitations
  * under the License.
  *
-*/
+ */
 
 /**
  * FileTransferError
  * @constructor
  */
-var FileTransferError = function(code, source, target, status, body, exception) {
+var FileTransferError = function (code, source, target, status, body, exception) {
     this.code = code || null;
     this.source = source || null;
     this.target = target || null;

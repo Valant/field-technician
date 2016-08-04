@@ -17,7 +17,7 @@ cordova.define("org.apache.cordova.file.LocalFileSystem", function(require, expo
  * specific language governing permissions and limitations
  * under the License.
  *
-*/
+ */
 
 exports.TEMPORARY = 0;
 exports.PERSISTENT = 1;

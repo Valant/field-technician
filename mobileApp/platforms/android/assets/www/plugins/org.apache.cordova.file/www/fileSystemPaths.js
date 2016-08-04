@@ -17,7 +17,7 @@ cordova.define("org.apache.cordova.file.fileSystemPaths", function(require, expo
  * specific language governing permissions and limitations
  * under the License.
  *
-*/
+ */
 
 var exec = require('cordova/exec');
 var channel = require('cordova/channel');
@@ -51,13 +51,14 @@ exports.file = {
 };
 
 channel.waitForInitialization('onFileSystemPathsReady');
-channel.onCordovaReady.subscribe(function() {
+channel.onCordovaReady.subscribe(function () {
     function after(paths) {
         for (var k in paths) {
             exports.file[k] = paths[k];
         }
         channel.initializationComplete('onFileSystemPathsReady');
     }
+
     exec(after, null, 'File', 'requestAllPaths', []);
 });
 

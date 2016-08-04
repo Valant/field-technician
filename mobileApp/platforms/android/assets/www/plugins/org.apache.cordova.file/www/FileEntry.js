@@ -17,7 +17,7 @@ cordova.define("org.apache.cordova.file.FileEntry", function(require, exports, m
  * specific language governing permissions and limitations
  * under the License.
  *
-*/
+ */
 
 var utils = require('cordova/utils'),
     exec = require('cordova/exec'),
@@ -35,8 +35,8 @@ var utils = require('cordova/utils'),
  * {DOMString} fullPath the absolute full path to the file (readonly)
  * {FileSystem} filesystem on which the file resides (readonly)
  */
-var FileEntry = function(name, fullPath, fileSystem, nativeURL) {
-     FileEntry.__super__.constructor.apply(this, [true, false, name, fullPath, fileSystem, nativeURL]);
+var FileEntry = function (name, fullPath, fileSystem, nativeURL) {
+    FileEntry.__super__.constructor.apply(this, [true, false, name, fullPath, fileSystem, nativeURL]);
 };
 
 utils.extend(FileEntry, Entry);
@@ -47,8 +47,8 @@ utils.extend(FileEntry, Entry);
  * @param {Function} successCallback is called with the new FileWriter
  * @param {Function} errorCallback is called with a FileError
  */
-FileEntry.prototype.createWriter = function(successCallback, errorCallback) {
-    this.file(function(filePointer) {
+FileEntry.prototype.createWriter = function (successCallback, errorCallback) {
+    this.file(function (filePointer) {
         var writer = new FileWriter(filePointer);
 
         if (writer.localURL === null || writer.localURL === "") {
@@ -65,15 +65,15 @@ FileEntry.prototype.createWriter = function(successCallback, errorCallback) {
  * @param {Function} successCallback is called with the new File object
  * @param {Function} errorCallback is called with a FileError
  */
-FileEntry.prototype.file = function(successCallback, errorCallback) {
+FileEntry.prototype.file = function (successCallback, errorCallback) {
     var localURL = this.toInternalURL();
-    var win = successCallback && function(f) {
-        var file = new File(f.name, localURL, f.type, f.lastModifiedDate, f.size);
-        successCallback(file);
-    };
-    var fail = errorCallback && function(code) {
-        errorCallback(new FileError(code));
-    };
+    var win = successCallback && function (f) {
+            var file = new File(f.name, localURL, f.type, f.lastModifiedDate, f.size);
+            successCallback(file);
+        };
+    var fail = errorCallback && function (code) {
+            errorCallback(new FileError(code));
+        };
     exec(win, fail, "File", "getFileMetadata", [localURL]);
 };
 

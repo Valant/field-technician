@@ -43,6 +43,7 @@ body {
     padding: 0px;
     text-transform: uppercase;
     width: 100%;
+    margin-top: 20px;
 }
 
 /* Portrait layout (default) */
@@ -129,9 +130,51 @@ h1 {
 .photoPreview {
     width: 100%;
     height: auto;
-    display: block;
+    /*display: block;*/
 }
 
 .errors {
     color: red;
+}
+
+.content-primary {
+    margin-top: 20px;
+}
+
+.newImage {
+    margin: 4px;
+    position: relative;
+}
+
+.newImage img{
+    display: inline;
+}
+
+.newImage a,.newImage button{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    overflow: hidden;
+    display: inline;
+}
+#tasks_content{
+    overflow-x: scroll;
+}
+#taskDescription{
+    background-color: #deebf7;
+    color: #000;
+    font-size: 1.4em;
+}
+
+#canvas {
+    margin: 4px;
+    border: 1px solid;
+}
+
+#receiptData {
+    margin: 4px;
+}
+
+.ui-li-count {
+    z-index: 999;
 }

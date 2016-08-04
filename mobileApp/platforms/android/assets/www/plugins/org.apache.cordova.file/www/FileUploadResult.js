@@ -17,15 +17,15 @@ cordova.define("org.apache.cordova.file.FileUploadResult", function(require, exp
  * specific language governing permissions and limitations
  * under the License.
  *
-*/
+ */
 
 /**
  * FileUploadResult
  * @constructor
  */
 module.exports = function FileUploadResult(size, code, content) {
-	this.bytesSent = size;
-	this.responseCode = code;
-	this.response = content;
- };
+    this.bytesSent = size;
+    this.responseCode = code;
+    this.response = content;
+};
 });

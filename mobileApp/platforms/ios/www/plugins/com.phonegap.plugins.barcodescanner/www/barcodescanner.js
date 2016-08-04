@@ -8,11 +8,11 @@ cordova.define("com.phonegap.plugins.barcodescanner.barcodescanner", function(re
 
 
 
- var exec = require('cordova/exec'),
+var exec = require('cordova/exec'),
     cordova = require('cordova');
 
- var BarcodeScanner = function () {
- };
+var BarcodeScanner = function () {
+};
 
 //-------------------------------------------------------------------
 BarcodeScanner.Encode = {
@@ -63,7 +63,7 @@ BarcodeScanner.prototype.encode = function (type, data, successCallback, errorCa
 
     cordova.exec(successCallback, errorCallback, 'BarcodeScanner', 'encode', [
         {"type": type, "data": data, "options": options}
-        ]);
+    ]);
 };
 
 var barcodeScanner = new BarcodeScanner();

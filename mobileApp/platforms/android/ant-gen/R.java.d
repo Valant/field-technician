@@ -1,4 +1,4 @@
-/Users/godson/projects/field-technician/mobileApp/platforms/android/ant-gen/com/example/hello/R.java \
+/Users/godson/projects/field-technician/mobileApp/platforms/android/ant-gen/com/fieldtechnicianafa/app/R.java \
  : /Users/godson/projects/field-technician/mobileApp/platforms/android/res/drawable/icon.png \
 /Users/godson/projects/field-technician/mobileApp/platforms/android/res/drawable/launcher_icon.png \
 /Users/godson/projects/field-technician/mobileApp/platforms/android/res/drawable/share_via_barcode.png \

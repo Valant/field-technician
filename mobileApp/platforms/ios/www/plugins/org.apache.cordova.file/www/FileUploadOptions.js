@@ -17,7 +17,7 @@ cordova.define("org.apache.cordova.file.FileUploadOptions", function(require, ex
  * specific language governing permissions and limitations
  * under the License.
  *
-*/
+ */
 
 /**
  * Options to customize the HTTP request used to upload files.
@@ -29,7 +29,7 @@ cordova.define("org.apache.cordova.file.FileUploadOptions", function(require, ex
  * @param headers {Object}   Keys are header names, values are header values. Multiple
  *                           headers of the same name are not supported.
  */
-var FileUploadOptions = function(fileKey, fileName, mimeType, params, headers, httpMethod) {
+var FileUploadOptions = function (fileKey, fileName, mimeType, params, headers, httpMethod) {
     this.fileKey = fileKey || null;
     this.fileName = fileName || null;
     this.mimeType = mimeType || null;

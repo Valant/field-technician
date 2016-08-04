@@ -23,7 +23,7 @@ var app = {
     dispatch_id: false,
     uploaded: 0,
     needToUpload: 0,
-    //apiUrl: 'http://api.field-technician.loc/',
+//     apiUrl: 'http://api.field-technician.loc/',
 //    apiUrl: 'http://ftapi.afap.com/',
     apiUrl: 'http://ftapitest.afap.com/',
     user_id: 0,
@@ -41,6 +41,7 @@ var app = {
     access_token: false,
     departType: false,
     taskStatusData: null,
+    lastTime: null,
     // Application Constructor
     initialize: function ()
     {
@@ -85,6 +86,13 @@ var app = {
         this.db = window.openDatabase( "hello_app_db6.sqlite", "1.0", "Hello app db", 100000 );
         this.db.transaction( this.populateDB.bind( this ), this.dbError.bind( this ) );
 
+        if(!window.localStorage.getItem('last_time')){
+            app.logout();
+        }else{
+            app.lastTime = window.localStorage.getItem('last_time');
+        }
+        app.checkLoginExpiration();
+        window.setInterval(app.checkLoginExpiration, 3000);
         if (window.localStorage.getItem( 'tech_id' ) && window.localStorage.getItem( 'access_token' )) {
             this.showLoader( 'Load user data' );
             app.user_id = window.localStorage.getItem( 'tech_id' );
@@ -111,6 +119,13 @@ var app = {
             );
         }
     },
+    checkLoginExpiration: function(){
+        var currentTime  = new Date().getTime();
+        if(((currentTime - app.lastTime)/1000) > 300){
+            app.logout();
+        }
+
+    },
     populateDB: function ( tx )
     {
 
@@ -135,6 +150,8 @@ var app = {
                 window.localStorage.setItem( 'user_id', data.id );
                 window.localStorage.setItem( 'user_code', data.usercode );
                 window.localStorage.setItem( 'access_token', data.auth_key );
+                app.lastTime = new Date().getTime();
+                window.localStorage.setItem( 'last_time', app.lastTime);
                 $( '#signin .errors' ).text( '' );
                 app.user_id = data.technition_id;
                 app.user_code = data.usercode;

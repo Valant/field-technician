@@ -17,7 +17,7 @@ cordova.define("org.apache.cordova.file.Flags", function(require, exports, modul
  * specific language governing permissions and limitations
  * under the License.
  *
-*/
+ */
 
 /**
  * Supplies arguments to methods that lookup or create files and directories.

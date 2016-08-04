@@ -17,14 +17,14 @@ cordova.define("org.apache.cordova.file.Metadata", function(require, exports, mo
  * specific language governing permissions and limitations
  * under the License.
  *
-*/
+ */
 
 /**
  * Information about the state of the file or directory
  *
  * {Date} modificationTime (readonly)
  */
-var Metadata = function(metadata) {
+var Metadata = function (metadata) {
     if (typeof metadata == "object") {
         this.modificationTime = new Date(metadata.modificationTime);
         this.size = metadata.size || 0;

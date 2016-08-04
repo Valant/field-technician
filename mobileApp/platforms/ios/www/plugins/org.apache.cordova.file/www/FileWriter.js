@@ -17,7 +17,7 @@ cordova.define("org.apache.cordova.file.FileWriter", function(require, exports, 
  * specific language governing permissions and limitations
  * under the License.
  *
-*/
+ */
 
 var exec = require('cordova/exec'),
     FileError = require('./FileError'),
@@ -34,7 +34,7 @@ var exec = require('cordova/exec'),
  * @param file {File} File object containing file properties
  * @param append if true write to the end of the file, otherwise overwrite the file
  */
-var FileWriter = function(file) {
+var FileWriter = function (file) {
     this.fileName = "";
     this.length = 0;
     if (file) {
@@ -68,7 +68,7 @@ FileWriter.DONE = 2;
 /**
  * Abort writing file.
  */
-FileWriter.prototype.abort = function() {
+FileWriter.prototype.abort = function () {
     // check for invalid state
     if (this.readyState === FileWriter.DONE || this.readyState === FileWriter.INIT) {
         throw new FileError(FileError.INVALID_STATE_ERR);
@@ -81,12 +81,12 @@ FileWriter.prototype.abort = function() {
 
     // If abort callback
     if (typeof this.onabort === "function") {
-        this.onabort(new ProgressEvent("abort", {"target":this}));
+        this.onabort(new ProgressEvent("abort", {"target": this}));
     }
 
     // If write end callback
     if (typeof this.onwriteend === "function") {
-        this.onwriteend(new ProgressEvent("writeend", {"target":this}));
+        this.onwriteend(new ProgressEvent("writeend", {"target": this}));
     }
 };
 
@@ -95,16 +95,16 @@ FileWriter.prototype.abort = function() {
  *
  * @param data text or blob to be written
  */
-FileWriter.prototype.write = function(data) {
+FileWriter.prototype.write = function (data) {
 
-    var that=this;
+    var that = this;
     var supportsBinary = (typeof window.Blob !== 'undefined' && typeof window.ArrayBuffer !== 'undefined');
     var isBinary;
 
     // Check to see if the incoming data is a blob
     if (data instanceof File || (supportsBinary && data instanceof Blob)) {
         var fileReader = new FileReader();
-        fileReader.onload = function() {
+        fileReader.onload = function () {
             // Call this method again, with the arraybuffer as argument
             FileWriter.prototype.write.call(that, this.result);
         };
@@ -122,7 +122,7 @@ FileWriter.prototype.write = function(data) {
         // create a plain array, using the keys from the Uint8Array view so that we can serialize it
         data = Array.apply(null, new Uint8Array(data));
     }
-    
+
     // Throw an exception if we are already writing a file
     if (this.readyState === FileWriter.WRITING) {
         throw new FileError(FileError.INVALID_STATE_ERR);
@@ -135,13 +135,13 @@ FileWriter.prototype.write = function(data) {
 
     // If onwritestart callback
     if (typeof me.onwritestart === "function") {
-        me.onwritestart(new ProgressEvent("writestart", {"target":me}));
+        me.onwritestart(new ProgressEvent("writestart", {"target": me}));
     }
 
     // Write file
     exec(
         // Success callback
-        function(r) {
+        function (r) {
             // If DONE (cancelled), then don't do anything
             if (me.readyState === FileWriter.DONE) {
                 return;
@@ -158,16 +158,16 @@ FileWriter.prototype.write = function(data) {
 
             // If onwrite callback
             if (typeof me.onwrite === "function") {
-                me.onwrite(new ProgressEvent("write", {"target":me}));
+                me.onwrite(new ProgressEvent("write", {"target": me}));
             }
 
             // If onwriteend callback
             if (typeof me.onwriteend === "function") {
-                me.onwriteend(new ProgressEvent("writeend", {"target":me}));
+                me.onwriteend(new ProgressEvent("writeend", {"target": me}));
             }
         },
         // Error callback
-        function(e) {
+        function (e) {
             // If DONE (cancelled), then don't do anything
             if (me.readyState === FileWriter.DONE) {
                 return;
@@ -181,12 +181,12 @@ FileWriter.prototype.write = function(data) {
 
             // If onerror callback
             if (typeof me.onerror === "function") {
-                me.onerror(new ProgressEvent("error", {"target":me}));
+                me.onerror(new ProgressEvent("error", {"target": me}));
             }
 
             // If onwriteend callback
             if (typeof me.onwriteend === "function") {
-                me.onwriteend(new ProgressEvent("writeend", {"target":me}));
+                me.onwriteend(new ProgressEvent("writeend", {"target": me}));
             }
         }, "File", "write", [this.localURL, data, this.position, isBinary]);
 };
@@ -200,7 +200,7 @@ FileWriter.prototype.write = function(data) {
  *
  * @param offset is the location to move the file pointer to.
  */
-FileWriter.prototype.seek = function(offset) {
+FileWriter.prototype.seek = function (offset) {
     // Throw an exception if we are already writing a file
     if (this.readyState === FileWriter.WRITING) {
         throw new FileError(FileError.INVALID_STATE_ERR);
@@ -231,7 +231,7 @@ FileWriter.prototype.seek = function(offset) {
  *
  * @param size to chop the file at.
  */
-FileWriter.prototype.truncate = function(size) {
+FileWriter.prototype.truncate = function (size) {
     // Throw an exception if we are already writing a file
     if (this.readyState === FileWriter.WRITING) {
         throw new FileError(FileError.INVALID_STATE_ERR);
@@ -244,13 +244,13 @@ FileWriter.prototype.truncate = function(size) {
 
     // If onwritestart callback
     if (typeof me.onwritestart === "function") {
-        me.onwritestart(new ProgressEvent("writestart", {"target":this}));
+        me.onwritestart(new ProgressEvent("writestart", {"target": this}));
     }
 
     // Write file
     exec(
         // Success callback
-        function(r) {
+        function (r) {
             // If DONE (cancelled), then don't do anything
             if (me.readyState === FileWriter.DONE) {
                 return;
@@ -265,16 +265,16 @@ FileWriter.prototype.truncate = function(size) {
 
             // If onwrite callback
             if (typeof me.onwrite === "function") {
-                me.onwrite(new ProgressEvent("write", {"target":me}));
+                me.onwrite(new ProgressEvent("write", {"target": me}));
             }
 
             // If onwriteend callback
             if (typeof me.onwriteend === "function") {
-                me.onwriteend(new ProgressEvent("writeend", {"target":me}));
+                me.onwriteend(new ProgressEvent("writeend", {"target": me}));
             }
         },
         // Error callback
-        function(e) {
+        function (e) {
             // If DONE (cancelled), then don't do anything
             if (me.readyState === FileWriter.DONE) {
                 return;
@@ -288,12 +288,12 @@ FileWriter.prototype.truncate = function(size) {
 
             // If onerror callback
             if (typeof me.onerror === "function") {
-                me.onerror(new ProgressEvent("error", {"target":me}));
+                me.onerror(new ProgressEvent("error", {"target": me}));
             }
 
             // If onwriteend callback
             if (typeof me.onwriteend === "function") {
-                me.onwriteend(new ProgressEvent("writeend", {"target":me}));
+                me.onwriteend(new ProgressEvent("writeend", {"target": me}));
             }
         }, "File", "truncate", [this.localURL, size]);
 };
