@@ -9,6 +9,7 @@
     namespace frontend\controllers;
 
     use common\components\PageLoaderComponent;
+    use common\models\LoginStats;
     use common\models\TaskAttachment;
     use Yii;
     use yii\base\ErrorException;
@@ -27,6 +28,12 @@
 
             $model = new LoginForm();
             if ($model->load(Yii::$app->request->post()) && $model->login()) {
+
+                $stat = new LoginStats();
+                $stat->user = $model->getUser()->getUserCode();
+                $stat->type = 1;
+                $stat->save();
+
                 return $model->getUser();
 
             } else {
