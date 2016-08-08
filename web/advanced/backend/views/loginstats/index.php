@@ -23,7 +23,24 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'user',
-            'type',
+                [
+                        'label'=>'Type',
+                        'format' => 'raw',
+                        'value'=>function ($data) {
+                            $result = "";
+
+                            switch ($data['type']){
+                                case 1:
+                                    $result = 'Login';
+                                    break;
+                                default:
+                                    $result = 'Logout';
+                                    break;
+
+                            }
+                            return $result;
+                        },
+                ],
             'time',
 
             ['class' => 'yii\grid\ActionColumn'],

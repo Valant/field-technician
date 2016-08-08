@@ -40,6 +40,7 @@ AppAsset::register($this);
                     [ 'label' => 'Users', 'url' => [ '/user/index' ] ],
                     [ 'label' => 'Task Attachment', 'url' => [ '/taskattachment/index' ] ],
                     [ 'label' => 'Service Tech', 'url' => [ '/svservicetech/index' ] ],
+                    [ 'label' => 'Login Stats', 'url' => [ '/loginstats/index' ] ],
                     [ 'label' => 'Tickets', 'url' => [ '/svserviceticket/index' ] ],
                 ]);
             }
