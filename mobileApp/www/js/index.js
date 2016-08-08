@@ -42,6 +42,7 @@ var app = {
     departType: false,
     taskStatusData: null,
     lastTime: null,
+    userLogIn: false,
     // Application Constructor
     initialize: function ()
     {
@@ -105,6 +106,8 @@ var app = {
 //             alert("7");
         }
 //         alert("8");
+        app.access_token = window.localStorage.getItem('access_token');
+        app.user_code = window.localStorage.getItem('user_code');
         app.checkLoginExpiration();
         window.setInterval(app.checkLoginExpiration, 3000);
 
@@ -127,6 +130,7 @@ var app = {
                         app.access_token = data.auth_key;
                         app.user_warehouse_id = data.warehoise_id;
                         app.user_warehouse_code = data.warehouse_code;
+                        app.userLogIn = true;
                         app.loadTasks();
                         app.loadResolitons();
 
@@ -138,36 +142,54 @@ var app = {
         );
     },
     checkFingerPrint: function(){
+        window.plugins.touchid.isAvailable(function()
+        {
+
 //         alert("11");
-        if(!window.localStorage.getItem('last_time')) {
+            if (! window.localStorage.getItem( 'last_time' )) {
 //             alert("12");
-            if (window.localStorage.getItem( 'tech_id' ) && window.localStorage.getItem( 'access_token' )) {
+                if (window.localStorage.getItem( 'tech_id' ) && window.localStorage.getItem( 'access_token' )) {
 //                 alert("13")
-                try {
-                    window.plugins.touchid.verifyFingerprint(
-                        'Scan your fingerprint please', // this will be shown in the native scanner popup
-                        function ( msg )
-                        {
+                    try {
+                        window.plugins.touchid.verifyFingerprint(
+                            'Scan your fingerprint please', // this will be shown in the native scanner popup
+                            function ( msg )
+                            {
+                                var data = {
+                                    'user': app.user_code,
+                                    'type': 1
+                                };
+                                jQuery.ajax({
+                                    type: 'POST',
+                                    url: app.apiUrl + 'loginstats?access-token=' + app.access_token,
+                                    data: data
+                                } ).then(function(data){
+                                    app.lastTime = new Date().getTime();
+                                    window.localStorage.setItem( 'last_time', app.lastTime );
+                                    app.loadUserData();
+                                });
 
-                            app.lastTime = new Date().getTime();
-                            window.localStorage.setItem('last_time', app.lastTime);
-                            app.loadUserData();
-                        }, // success handler: fingerprint accepted
-                        function ( msg )
-                        {
+                            }, // success handler: fingerprint accepted
+                            function ( msg )
+                            {
 //                             alert( 'not ok: ' + JSON.stringify( msg ) )
-                        } // error handler with errorcode and localised reason
-                    );
-                }catch(err){
+                            } // error handler with errorcode and localised reason
+                        );
+                    } catch ( err ) {
 //                     alert(err.message);
-                }
-            }else{
+                    }
+                } else {
 //                 alert("23");
-            }
-        }else{
+                }
+            } else {
 //             alert("22");
-        }
-
+            }
+        },
+            function(msg){
+                console.log("NO FINGER PRINT");
+                console.log(msg);
+            }
+        );
     },
     checkLoginExpiration: function(){
         var currentTime  = new Date().getTime();
@@ -1535,25 +1557,36 @@ var app = {
     },
     logout: function ()
     {
-//         alert("41");
-        window.localStorage.removeItem('last_time')
-//         alert("42");
-        $( '#login' ).val( '' );
-//         alert("43");
-        $( '#password' ).val( '' );
-//         alert("44");
-        $( '#tasks #tasks_content table tbody' ).empty();
-//         alert("45");
-        try {
-            $( '#table-custom-2' ).table( 'refresh' );
-        }catch(err){
+        if(app.userLogIn) {
+            app.showLoader( 'Logout' );
+            window.localStorage.removeItem( 'last_time' )
+
+            $( '#login' ).val( '' );
+            $( '#password' ).val( '' );
+            $( '#tasks #tasks_content table tbody' ).empty();
+
+            try {
+                $( '#table-custom-2' ).table( 'refresh' );
+            } catch ( err ) {
 //             alert(err.message);
+            }
+            var data = {
+                'user': app.user_code,
+                'type': 0
+            };
+            jQuery.ajax( {
+                type: 'POST',
+                url: app.apiUrl + 'loginstats?access-token=' + app.access_token,
+                data: data
+            } ).then( function ( data )
+            {
+                $.mobile.loading( 'hide' );
+                $.mobile.navigate( '#signin' );
+                app.userLogIn = false;
+                app.checkFingerPrint();
+            } );
         }
-//         alert("46");
-        $.mobile.navigate( '#signin' );
-//         alert("47");
-        app.checkFingerPrint();
-//         alert("48");
+
     },
     showLoader: function ( message )
     {
