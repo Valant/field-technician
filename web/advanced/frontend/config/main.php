@@ -48,7 +48,8 @@
                             'vendor'=>'vendor',
                             'dispatch'=>'dispatch',
                             'resolution'=>'resolution',
-                            'ticketnotes'=>'ticketnotes'
+                            'ticketnotes'=>'ticketnotes',
+                            'loginstats'=>'loginstats'
                         ]
                     ],
                 ],
