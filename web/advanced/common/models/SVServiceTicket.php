@@ -353,7 +353,7 @@
                                       ->innerJoin( 'AR_Customer_Site',
                                           'AR_Customer_Site.Customer_Id = SV_Service_Ticket.Customer_Id' )
                                       ->innerJoin( 'AR_Customer_System',
-                                          'AR_Customer_System.Customer_System_Id = AR_Customer.Customer_System_Id' )
+                                           'AR_Customer_System.Customer_Id = AR_Customer.Customer_Id' )
                                       ->leftJoin( 'SY_System', 'AR_Customer_System.System_Id = SY_System.System_Id' )
                                       ->leftJoin( 'SY_Panel_Type',
                                           'SY_Panel_Type.panel_type_id = ar_customer_system.panel_type_id' )
