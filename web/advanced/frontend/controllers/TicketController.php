@@ -31,9 +31,9 @@
             return SVServiceTicket::getList( Yii::$app->user->getIdentity()->technition_id );
         }
 
-        public function actionFind($id, $ticket_number)
+        public function actionFind($id, $Ticket_Number)
         {
-            return SVServiceTicket::getSingleInfo( $id, $ticket_number );
+            return SVServiceTicket::getSingleInfo( $id, $Ticket_Number );
         }
 
         public function behaviors()
