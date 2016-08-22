@@ -366,7 +366,7 @@
                                               ->innerJoin('AR_Customer_Bill',
                                                           'AR_Customer_Bill.Customer_Id = AR_Customer.Customer_Id')
                                               ->innerJoin('AR_Customer_Site',
-                                                          'AR_Customer_Site.Customer_Id = SV_Service_Ticket.Customer_Id')
+                                                          'AR_Customer_Site.Customer_Site_Id = SV_Service_Ticket.Customer_Site_Id')
                                               ->innerJoin('AR_Customer_System',
                                                           'AR_Customer_System.Customer_System_Id = SV_Service_Ticket.Customer_System_Id')
                                               ->leftJoin('SY_System',
