@@ -324,7 +324,7 @@
             ] );
         }
 
-        public static function getSingleInfo( $dispatch_id )
+        public static function getSingleInfo( $dispatch_id, $ticket_number )
         {
             $query = new Query;
 
@@ -362,8 +362,8 @@
                                       ->leftJoin( 'SV_Problem',
                                           'SV_Service_Ticket.Problem_Id = SV_Problem.Problem_Id' )
                                       ->leftJoin( 'SV_Routes', 'SV_Routes.Route_Id = SV_Service_Tech_Routes.Route_Id' )
-                                      ->where( "SV_Service_Ticket_Dispatch.Dispatch_Id = :Dispatch_Id",
-                                          [ ":Dispatch_Id" => $dispatch_id ] )
+                                      ->where( "SV_Service_Ticket_Dispatch.Dispatch_Id = :Dispatch_Id ANd SV_Service_Ticket.Ticket_Number = :Ticket_Number",
+                                          [ ":Dispatch_Id" => $dispatch_id, ":Ticket_Number"=> $ticket_number ] )
                                       ->limit( 1 )
                 ,
                 'pagination' => false
