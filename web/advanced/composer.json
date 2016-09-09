@@ -23,7 +23,10 @@
         "yiisoft/yii2": "*",
         "yiisoft/yii2-bootstrap": "*",
       "yiisoft/yii2-swiftmailer": "*",
-      "kartik-v/yii2-widget-select2": "*"
+      "kartik-v/yii2-widget-select2": "*",
+      "kartik-v/yii2-export": "@dev",
+      "kartik-v/yii2-mpdf": "@dev"
+
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",
