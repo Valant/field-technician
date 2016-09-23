@@ -17,7 +17,7 @@
  * under the License.
  */
 var app = {
-    version: '0.13.23',
+    version: '0.13.25',
     db: false,
     task_id: false,
     dispatch_id: false,
@@ -43,6 +43,7 @@ var app = {
     taskStatusData: null,
     lastTime: null,
     userLogIn: false,
+    statID: false,
     // Application Constructor
     initialize: function ()
     {
@@ -192,6 +193,7 @@ var app = {
         );
     },
     checkLoginExpiration: function(){
+        console.log("CHeck login expiration");
         var currentTime  = new Date().getTime();
         if(((currentTime - app.lastTime)/1000) > 300){
             app.logout();
@@ -215,22 +217,23 @@ var app = {
             'LoginForm[password]': $( '#password' ).val()
         }, function ( data )
         {
-            if (data.id) {
+            if (data.user) {
                 console.log( 'user login [OK]' );
-                app.user_data = data;
-                window.localStorage.setItem( 'tech_id', data.technition_id );
-                window.localStorage.setItem( 'user_id', data.id );
-                window.localStorage.setItem( 'user_code', data.usercode );
-                window.localStorage.setItem( 'access_token', data.auth_key );
+                app.user_data = data.user;
+                window.localStorage.setItem( 'tech_id', data.user.technition_id );
+                window.localStorage.setItem( 'user_id', data.user.id );
+                window.localStorage.setItem( 'user_code', data.user.usercode );
+                window.localStorage.setItem( 'access_token', data.user.auth_key );
                 app.lastTime = new Date().getTime();
                 window.localStorage.setItem( 'last_time', app.lastTime);
                 $( '#signin .errors' ).text( '' );
-                app.user_id = data.technition_id;
-                app.user_code = data.usercode;
-                app.service_tech_code = data.servicetechcode;
-                app.access_token = data.auth_key;
-                app.user_warehouse_id = data.warehoise_id;
-                app.user_warehouse_code = data.warehouse_code;
+                app.user_id = data.user.technition_id;
+                app.user_code = data.user.usercode;
+                app.service_tech_code = data.user.servicetechcode;
+                app.access_token = data.user.auth_key;
+                app.user_warehouse_id = data.user.warehoise_id;
+                app.user_warehouse_code = data.user.warehouse_code;
+                app.statID = data.stat_id;
                 app.loadTasks();
                 app.loadResolitons();
             } else {
@@ -1571,12 +1574,11 @@ var app = {
 //             alert(err.message);
             }
             var data = {
-                'user': app.user_code,
-                'type': 0
+                'stat_id': app.statID
             };
             jQuery.ajax( {
                 type: 'POST',
-                url: app.apiUrl + 'loginstats?access-token=' + app.access_token,
+                url: app.apiUrl + 'loginstats/logout'+app.statID+'?access-token=' + app.access_token,
                 data: data
             } ).then( function ( data )
             {

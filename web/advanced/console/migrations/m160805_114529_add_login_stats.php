@@ -16,7 +16,7 @@ class m160805_114529_add_login_stats extends Migration
             'id'=>$this->primaryKey(),
             'user'=>$this->string(100),
             'type'=>$this->smallInteger(),
-            'time'=>$this->timestamp()
+            'time'=>$this->timestamp()->null()
         ]);
     }
 

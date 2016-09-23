@@ -3,15 +3,14 @@
 namespace common\models;
 
 use Yii;
-use yii\db\Expression;
 
 /**
  * This is the model class for table "login_stats".
  *
  * @property integer $id
- * @property string $user
- * @property integer $type
- * @property string $time
+ * @property string $login_time
+ * @property string $logout_time
+ * @property integer $user_id
  */
 class LoginStats extends \yii\db\ActiveRecord
 {
@@ -37,10 +36,8 @@ class LoginStats extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['type'], 'integer'],
-            [['time'], 'safe'],
-            [['user'], 'string', 'max' => 100],
-            [['time'],'default','value'=>time(),'isEmpty'=>true,'on'=>'insert'],
+            [['login_time', 'logout_time', 'user', 'username'], 'safe'],
+            [['user_id'], 'integer'],
         ];
     }
 
@@ -51,11 +48,18 @@ class LoginStats extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'user' => 'User',
-            'type' => 'Type',
-            'time' => 'Time',
+            'login_time' => 'Login Time',
+            'logout_time' => 'Logout Time',
+            'user_id' => 'User ID',
         ];
     }
 
+    public function getUser(){
+        return User::findOne(['id'=>$this->user_id]);
+    }
+
+    public function getUsername(){
+        return $this->user->username;
+    }
 
 }

@@ -13,6 +13,7 @@
     use common\models\TaskAttachment;
     use Yii;
     use yii\base\ErrorException;
+    use yii\db\Expression;
     use yii\filters\auth\QueryParamAuth;
     use yii\rest\ActiveController;
     use common\models\LoginForm;
@@ -30,11 +31,12 @@
             if ($model->load(Yii::$app->request->post()) && $model->login()) {
 
                 $stat = new LoginStats();
-                $stat->user = $model->getUser()->getUserCode();
-                $stat->type = 1;
+                $stat->user_id = $model->getUser()->id;
+                $stat->login_time = new Expression("NOW()");
                 $stat->save();
 
-                return $model->getUser();
+
+                return ["user"=>$model->getUser(), "stat_id"=>$stat->id];
 
             } else {
                 return ['status' => 'error', 'message' => $model->getErrors()];

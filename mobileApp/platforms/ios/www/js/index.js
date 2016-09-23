@@ -17,15 +17,15 @@
  * under the License.
  */
 var app = {
-    version: '0.13.22',
+    version: '0.13.25',
     db: false,
     task_id: false,
     dispatch_id: false,
     uploaded: 0,
     needToUpload: 0,
-//     apiUrl: 'http://api.field-technician.loc/',
+    apiUrl: 'http://api.field-technician.loc/',
 //    apiUrl: 'http://ftapi.afap.com/',
-    apiUrl: 'http://ftapitest.afap.com/',
+//     apiUrl: 'http://ftapitest.afap.com/',
     user_id: 0,
     user_code: '',
     service_tech_code: '',
@@ -42,6 +42,7 @@ var app = {
     departType: false,
     taskStatusData: null,
     lastTime: null,
+    userLogIn: false,
     // Application Constructor
     initialize: function ()
     {
@@ -83,43 +84,115 @@ var app = {
     },
     prepareDB: function ()
     {
+//         alert("1");
+        if (navigator.userAgent === undefined) {
+            navigator.__defineGetter__('userAgent', function() {
+                return("Mozilla/5.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit");
+            });
+        }
+//         alert("2");
         this.db = window.openDatabase( "hello_app_db6.sqlite", "1.0", "Hello app db", 100000 );
         this.db.transaction( this.populateDB.bind( this ), this.dbError.bind( this ) );
+//         alert("3");
+//         app.checkFingerPrint();
 
         if(!window.localStorage.getItem('last_time')){
+//             alert("4");
             app.logout();
+//             alert("5");
         }else{
+//             alert("6");
             app.lastTime = window.localStorage.getItem('last_time');
+//             alert("7");
         }
+//         alert("8");
+        app.access_token = window.localStorage.getItem('access_token');
+        app.user_code = window.localStorage.getItem('user_code');
         app.checkLoginExpiration();
         window.setInterval(app.checkLoginExpiration, 3000);
-        if (window.localStorage.getItem( 'tech_id' ) && window.localStorage.getItem( 'access_token' )) {
-            this.showLoader( 'Load user data' );
-            app.user_id = window.localStorage.getItem( 'tech_id' );
-            jQuery.getJSON( app.apiUrl + 'user/' + window.localStorage.getItem( 'user_id' ),
-                {'access-token': window.localStorage.getItem( 'access_token' )},
-                function ( data )
-                {
-                    if (data) {
-                        if (typeof data.id != 'undefined') {
-                            app.user_data = data;
-                            app.user_code = data.usercode;
-                            app.service_tech_code = data.servicetechcode;
-                            app.access_token = data.auth_key;
-                            app.user_warehouse_id = data.warehoise_id;
-                            app.user_warehouse_code = data.warehouse_code;
-                            app.loadTasks();
-                            app.loadResolitons();
 
-                        } else {
-                            app.logout();
-                        }
-                    }
-                }.bind( this )
-            );
+        if (window.localStorage.getItem( 'tech_id' ) && window.localStorage.getItem( 'access_token' ) && window.localStorage.getItem( 'last_time' )) {
+            app.loadUserData();
         }
     },
+    loadUserData: function(){
+        this.showLoader( 'Load user data' );
+        app.user_id = window.localStorage.getItem( 'tech_id' );
+        jQuery.getJSON( app.apiUrl + 'user/' + window.localStorage.getItem( 'user_id' ),
+            {'access-token': window.localStorage.getItem( 'access_token' )},
+            function ( data )
+            {
+                if (data) {
+                    if (typeof data.id != 'undefined') {
+                        app.user_data = data;
+                        app.user_code = data.usercode;
+                        app.service_tech_code = data.servicetechcode;
+                        app.access_token = data.auth_key;
+                        app.user_warehouse_id = data.warehoise_id;
+                        app.user_warehouse_code = data.warehouse_code;
+                        app.userLogIn = true;
+                        app.loadTasks();
+                        app.loadResolitons();
+
+                    } else {
+                        app.logout();
+                    }
+                }
+            }.bind( this )
+        );
+    },
+    checkFingerPrint: function(){
+        window.plugins.touchid.isAvailable(function()
+        {
+
+//         alert("11");
+            if (! window.localStorage.getItem( 'last_time' )) {
+//             alert("12");
+                if (window.localStorage.getItem( 'tech_id' ) && window.localStorage.getItem( 'access_token' )) {
+//                 alert("13")
+                    try {
+                        window.plugins.touchid.verifyFingerprint(
+                            'Scan your fingerprint please', // this will be shown in the native scanner popup
+                            function ( msg )
+                            {
+                                var data = {
+                                    'user': app.user_code,
+                                    'type': 1
+                                };
+                                jQuery.ajax({
+                                    type: 'POST',
+                                    url: app.apiUrl + 'loginstats?access-token=' + app.access_token,
+                                    data: data
+                                } ).then(function(data){
+                                    app.lastTime = new Date().getTime();
+                                    window.localStorage.setItem( 'last_time', app.lastTime );
+                                    app.loadUserData();
+                                });
+
+                            }, // success handler: fingerprint accepted
+                            function ( msg )
+                            {
+//                             alert( 'not ok: ' + JSON.stringify( msg ) )
+                            } // error handler with errorcode and localised reason
+                        );
+                    } catch ( err ) {
+//                     alert(err.message);
+                    }
+                } else {
+//                 alert("23");
+                }
+            } else {
+//             alert("22");
+            }
+        },
+            function(msg){
+                console.log("NO FINGER PRINT");
+                console.log(msg);
+            }
+        );
+    },
     checkLoginExpiration: function(){
+        console.log("CHeck login expiration");
         var currentTime  = new Date().getTime();
         if(((currentTime - app.lastTime)/1000) > 300){
             app.logout();
@@ -1485,12 +1558,36 @@ var app = {
     },
     logout: function ()
     {
-        window.localStorage.clear();
-        $( '#login' ).val( '' );
-        $( '#password' ).val( '' );
-        $( '#tasks #tasks_content table tbody' ).empty();
-        $( '#table-custom-2' ).table( 'refresh' );
-        $.mobile.navigate( '#signin' );
+        if(app.userLogIn) {
+            app.showLoader( 'Logout' );
+            window.localStorage.removeItem( 'last_time' )
+
+            $( '#login' ).val( '' );
+            $( '#password' ).val( '' );
+            $( '#tasks #tasks_content table tbody' ).empty();
+
+            try {
+                $( '#table-custom-2' ).table( 'refresh' );
+            } catch ( err ) {
+//             alert(err.message);
+            }
+            var data = {
+                'user': app.user_code,
+                'type': 0
+            };
+            jQuery.ajax( {
+                type: 'POST',
+                url: app.apiUrl + 'loginstats?access-token=' + app.access_token,
+                data: data
+            } ).then( function ( data )
+            {
+                $.mobile.loading( 'hide' );
+                $.mobile.navigate( '#signin' );
+                app.userLogIn = false;
+                app.checkFingerPrint();
+            } );
+        }
+
     },
     showLoader: function ( message )
     {

@@ -9,6 +9,9 @@
     namespace frontend\controllers;
 
 
+    use common\models\LoginStats;
+    use yii\db\Exception;
+    use yii\db\Expression;
     use yii\filters\auth\QueryParamAuth;
     use yii\rest\ActiveController;
 
@@ -22,5 +25,15 @@
               'class'  => QueryParamAuth::className()
             ];
             return $behaviors;
+        }
+
+        public function actionLogout(){
+            if($stat_id = \Yii::$app->request->post("stat_id")){
+                if($stat = LoginStats::findOne($stat_id)){
+                    $stat->logout_time = new Expression("NOW()");
+                    $stat->save();
+                    return $stat;
+                }
+            }
         }
     }

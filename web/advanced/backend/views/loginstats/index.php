@@ -14,8 +14,9 @@
     $gridColumns = [
             ['class' => 'yii\grid\SerialColumn'],
             'id',
-            'user',
-            'time',
+            'username',
+            'login_time',
+            'logout_time',
             ['class' => 'yii\grid\ActionColumn'],
     ];
 
