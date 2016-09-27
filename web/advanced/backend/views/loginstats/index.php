@@ -14,9 +14,15 @@
     $gridColumns = [
             ['class' => 'yii\grid\SerialColumn'],
             'id',
-            'username',
-            'login_time',
-            'logout_time',
+            'user_id',
+            [
+                    'attribute'=>'login_time',
+                    'format' => ['date', 'php:m/d/Y H:i:s']
+            ],
+            [
+                    'attribute'=>'logout_time',
+                    'format' => ['date', 'php:m/d/Y H:i:s']
+            ],
             ['class' => 'yii\grid\ActionColumn'],
     ];
 
