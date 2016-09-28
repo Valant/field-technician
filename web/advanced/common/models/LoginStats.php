@@ -59,7 +59,7 @@ class LoginStats extends \yii\db\ActiveRecord
     }
 
     public function getUsername(){
-        return $this->user->username;
+        return isset($this->user->username)?$this->user->username:"";
     }
 
 }
