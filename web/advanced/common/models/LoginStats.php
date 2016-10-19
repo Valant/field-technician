@@ -54,10 +54,10 @@ class LoginStats extends \yii\db\ActiveRecord
         ];
     }
 
-    public function getUser(){
-        return User::findOne(['id'=>$this->user_id]);
+    public function getUser()
+    {
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
-
     public function getUsername(){
         return isset($this->user->username)?$this->user->username:"";
     }

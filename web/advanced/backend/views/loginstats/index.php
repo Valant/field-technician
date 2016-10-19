@@ -14,14 +14,17 @@
     $gridColumns = [
             ['class' => 'yii\grid\SerialColumn'],
             'id',
-            'user_id',
             [
-                    'attribute'=>'login_time',
-                    'format' => ['date', 'php:m/d/Y H:i:s']
+                    'attribute' => 'user',
+                    'value'     => 'user.username'
             ],
             [
-                    'attribute'=>'logout_time',
-                    'format' => ['date', 'php:m/d/Y H:i:s']
+                    'attribute' => 'login_time',
+                    'format'    => ['date', 'php:m/d/Y H:i:s']
+            ],
+            [
+                    'attribute' => 'logout_time',
+                    'format'    => ['date', 'php:m/d/Y H:i:s']
             ],
             ['class' => 'yii\grid\ActionColumn'],
     ];
@@ -33,12 +36,12 @@
 
     <p>
         <?php echo ExportMenu::widget([
-                                              'dataProvider' => $dataProvider,
-                                              'columns'      => $gridColumns
-                                      ]); ?>
+                'dataProvider' => $dataProvider,
+                'columns'      => $gridColumns
+        ]); ?>
     </p>
     <?php echo \kartik\grid\GridView::widget([
-                                                     'dataProvider' => $dataProvider,
-                                                     'columns'      => $gridColumns
-                                             ]); ?>
+            'dataProvider' => $dataProvider,
+            'columns'      => $gridColumns
+    ]); ?>
 </div>

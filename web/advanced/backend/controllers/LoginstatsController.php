@@ -4,13 +4,13 @@ namespace backend\controllers;
 
 use Yii;
 use common\models\LoginStats;
-use yii\data\ActiveDataProvider;
+use backend\models\LoginstatsSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * LoginStatsController implements the CRUD actions for LoginStats model.
+ * LoginstatsController implements the CRUD actions for LoginStats model.
  */
 class LoginstatsController extends Controller
 {
@@ -35,11 +35,11 @@ class LoginstatsController extends Controller
      */
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => LoginStats::find(),
-        ]);
+        $searchModel = new LoginstatsSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
+            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
@@ -120,9 +120,5 @@ class LoginstatsController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
-    }
-
-    public function actionExport(){
-
     }
 }
