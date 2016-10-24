@@ -19,6 +19,8 @@
 
     <?= $form->field( $model, 'email' )->textInput( [ 'maxlength' => 255 ] ) ?>
 
+    <?= $form->field( $model, 'branch_id' )->dropDownList( \common\models\Branches::findAll() ); ?>
+
     <?= $form->field( $model, 'role' )->dropDownList( $model::$roleLabels ); ?>
 
     <?= $form->field( $model, 'technition_id' )->widget( \kartik\select2\Select2::classname(), [

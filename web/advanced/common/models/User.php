@@ -89,7 +89,7 @@
             return [
                 [ [ 'username',  'password_hash', 'email' ], 'required', 'on'=>'create' ],
                 [ [ 'username',  'email' ], 'required', 'on'=>'update' ],
-                [ [ 'role', 'status', 'technition_id' ], 'integer' ],
+                [ [ 'role', 'status', 'technition_id','branch_id' ], 'integer' ],
                 [ [ 'username', 'password_hash', 'password_reset_token', 'email', 'userCode' ], 'string', 'max' => 255 ],
                 [ [ 'auth_key' ], 'string', 'max' => 32 ]
             ];
@@ -270,6 +270,9 @@
             if($this->technition) {
                 return $this->technition->employee->UserCode;
             }
+        }
+        public function getBranch(){
+            return $this->hasOne(Branches::className(),['id'=>'branch_id']);
         }
         public function extraFields()
         {
