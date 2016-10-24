@@ -39,6 +39,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'role',
                 'value' => $model::$roleLabels[$model->role]
             ],
+	     [
+		'attribute'=>'Branch Name',
+	    'value'=>$model->branch->name
+		],
             'status',
             'created_at',
             'updated_at',
