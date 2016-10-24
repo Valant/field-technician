@@ -19,7 +19,7 @@
 
     <?= $form->field( $model, 'email' )->textInput( [ 'maxlength' => 255 ] ) ?>
 
-    <?= $form->field( $model, 'branch_id' )->dropDownList( \common\models\Branches::findAll([]) ); ?>
+    <?= $form->field( $model, 'branch_id' )->dropDownList( \common\models\Branches::find()->all() ); ?>
 
     <?= $form->field( $model, 'role' )->dropDownList( $model::$roleLabels ); ?>
 
