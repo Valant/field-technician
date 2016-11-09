@@ -59,7 +59,7 @@ class IndexAction extends Action
         $modelClass = $this->modelClass;
         $query = $modelClass::find();
 
-        $query->where("Resolution_Id <> 1 AND Inactive='N' AND Description LIKE :branch'",array(':branch'=>'%branch%'));
+        $query->where("Resolution_Id <> 1 AND Inactive='N' AND Description LIKE :branch",array(':branch'=>'%branch%'));
 
         return new ActiveDataProvider([
             'query' => $query,
