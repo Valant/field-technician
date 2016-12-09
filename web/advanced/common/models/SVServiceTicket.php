@@ -308,8 +308,7 @@
 
             $query = new Query();
 
-            return new ActiveDataProvider([
-                                            'query' => $query->select('
+            $query->select('
                     SV_Service_Ticket_Dispatch.Dispatch_Id,
                     SV_Service_Ticket_Dispatch.Schedule_Time,
                     SV_Service_Ticket.Service_Ticket_Id, SV_Service_Ticket.Scheduled_For,
@@ -318,25 +317,28 @@
                     SV_Service_Ticket.Ticket_Status,
                     SS_LockTable.LockTable_Id,SS_LockTable.LockedByUser,SS_LockTable.LockedTime,SS_LockTable.Form
                     ')
-                                                             ->from('SV_Service_Ticket_Dispatch')
-                                                             ->innerJoin('SV_Service_Ticket',
-                                                                         'SV_Service_Ticket.Service_Ticket_Id = SV_Service_Ticket_Dispatch.Service_Ticket_Id')
-                                                             ->innerJoin('SV_Problem',
-                                                                         'SV_Problem.Problem_Id = SV_Service_Ticket.Problem_Id')
-                                                             ->innerJoin('AR_Customer',
-                                                                         'AR_Customer.Customer_Id = SV_Service_Ticket.Customer_Id')
-                                                             ->innerJoin('AR_Customer_Site',
-                                                                         'AR_Customer_Site.Customer_Site_Id = SV_Service_Ticket.Customer_Site_Id')
-                                                             ->leftJoin('SS_LockTable',
-                                                                        'SV_Service_Ticket.Ticket_Number = SS_LockTable.Code and SS_LockTable.Table_Name = "sv_service_ticket"')
-                                                             ->where([
-                                                                       "SV_Service_Ticket.Ticket_Status"            => $ticketStatus,
-                                                                       "SV_Service_Ticket_Dispatch.Service_Tech_Id" => $service_tech_id,
-                                                                       "SV_Service_Ticket_Dispatch.Resolution_Id"   => 1
-                                                                     ])
-                                                             ->orderBy('SV_Service_Ticket_Dispatch.Schedule_Time',
-                                                                       SORT_DESC)
-                                                             ->limit(100)
+                  ->from('SV_Service_Ticket_Dispatch')
+                  ->innerJoin('SV_Service_Ticket',
+                    'SV_Service_Ticket.Service_Ticket_Id = SV_Service_Ticket_Dispatch.Service_Ticket_Id')
+                  ->innerJoin('SV_Problem',
+                    'SV_Problem.Problem_Id = SV_Service_Ticket.Problem_Id')
+                  ->innerJoin('AR_Customer',
+                    'AR_Customer.Customer_Id = SV_Service_Ticket.Customer_Id')
+                  ->innerJoin('AR_Customer_Site',
+                    'AR_Customer_Site.Customer_Site_Id = SV_Service_Ticket.Customer_Site_Id')
+                  ->leftJoin('SS_LockTable',
+                    'SV_Service_Ticket.Ticket_Number = SS_LockTable.Code and SS_LockTable.Table_Name = "sv_service_ticket"')
+                  ->where([
+                    "SV_Service_Ticket.Ticket_Status"            => $ticketStatus,
+                    "SV_Service_Ticket_Dispatch.Service_Tech_Id" => $service_tech_id,
+                    "SV_Service_Ticket_Dispatch.Resolution_Id"   => 1
+                  ])
+                  ->orderBy('SV_Service_Ticket_Dispatch.Schedule_Time',
+                    SORT_DESC)
+                  ->limit(100);
+
+            return new ActiveDataProvider([
+                                            'query' => $query
                                           ]);
         }
 
