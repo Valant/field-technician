@@ -17,7 +17,7 @@
  * under the License.
  */
 var app = {
-    version: '0.13.29',
+    version: '0.13.30',
     db: false,
     task_id: false,
     dispatch_id: false,
@@ -120,7 +120,7 @@ var app = {
         this.showLoader( 'Load user data' );
         app.user_id = window.localStorage.getItem( 'tech_id' );
         jQuery.getJSON( app.apiUrl + 'user/' + window.localStorage.getItem( 'user_id' ),
-            {'access-token': window.localStorage.getItem( 'access_token' )},
+            {'access-token': window.localStorage.getItem( 'access_token' ), 'per-page': 100},
             function ( data )
             {
                 if (data) {
@@ -249,14 +249,15 @@ var app = {
         app.showLoader( 'Load tasks' );
         jQuery.getJSON( app.apiUrl + '/ticket/list', {
             'access-token': app.access_token,
-            'UserCode': app.user_code
+            'UserCode': app.user_code,
+            'per-page': 100
         }, this.drawTask );
 
 
     },
     loadResolitons: function ()
     {
-        jQuery.getJSON( app.apiUrl + '/resolution/', {'access-token': window.localStorage.getItem( 'access_token' ), 'sort':'Resolution_Code'},
+        jQuery.getJSON( app.apiUrl + '/resolution/', {'access-token': window.localStorage.getItem( 'access_token' ), 'sort':'Resolution_Code', 'per-page': 100},
             function ( data )
             {
                 if (data) {
@@ -526,7 +527,8 @@ var app = {
         var self = this;
         jQuery.getJSON( app.apiUrl + 'part/search', {
             code: materialCode,
-            'access-token': app.access_token
+            'access-token': app.access_token,
+            'per-page': 100
         }, function ( data )
         {
             if ('error' == data.status) {
@@ -561,7 +563,8 @@ var app = {
         //$('input[data-type="search"]').val("")
         app.keywordAutocomplete = jQuery.getJSON( app.apiUrl + searchpath, {
             code: keyword,
-            'access-token': app.access_token
+            'access-token': app.access_token,
+            'per-page': 100
         }, function ( data )
         {
             $.mobile.loading( 'hide' );
@@ -860,7 +863,8 @@ var app = {
             'id': dispatch_id,
             'Ticket_Number': app.task_data[app.task_id].Ticket_Number,
             'access-token': app.access_token,
-            'UserCode': app.user_code
+            'UserCode': app.user_code,
+            'per-page': 100
         }, this.drawTaskDetails.bind( this ) ) ).done( function ( res )
         {
 
@@ -885,7 +889,8 @@ var app = {
         jQuery.getJSON( app.apiUrl + 'ticket/getdispatch', {
             'dispatch_id': app.dispatch_id,
 //            'task_id': app.task_id,
-            'access-token': app.access_token
+            'access-token': app.access_token,
+            'per-page': 100
         }, function ( data )
         {
             console.info( 'dispatch data', data );
@@ -953,7 +958,8 @@ var app = {
         if (app.taskLocked[app.task_id] == false) {
             jQuery.getJSON( app.apiUrl + '/taskattachment/search', {
                 task_id: app.task_id,
-                'access-token': app.access_token
+                'access-token': app.access_token,
+                'per-page': 100
             }, function ( data )
             {
                 if (data) {
@@ -974,7 +980,8 @@ var app = {
             jQuery.getJSON( app.apiUrl + '/taskpart/search', {
                 'Service_Ticket_Id': app.task_id,
                 'expand': 'part',
-                'access-token': app.access_token
+                'access-token': app.access_token,
+                'per-page': 100
             }, function ( data )
             {
                 if (data) {
@@ -1631,7 +1638,8 @@ var app = {
         jQuery.getJSON( app.apiUrl + '/taskpart/search', {
             'Service_Ticket_Id': app.task_id,
             'expand': 'part',
-            'access-token': app.access_token
+            'access-token': app.access_token,
+            'per-page': 100
         }, function ( data )
         {
             $( '#receiptData .parts' ).empty();
@@ -1650,7 +1658,8 @@ var app = {
         jQuery.getJSON( app.apiUrl + 'ticket/getdispatch', {
             'dispatch_id': app.dispatch_id,
 //             'task_id': app.task_id,
-            'access-token': app.access_token
+            'access-token': app.access_token,
+            'per-page': 100
         }, function ( data )
         {
             data = data[0]
