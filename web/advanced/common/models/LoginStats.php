@@ -62,4 +62,15 @@ class LoginStats extends \yii\db\ActiveRecord
         return isset($this->user->username)?$this->user->username:"";
     }
 
+    public function beforeSave($insert) {
+        if(parent::beforeSave($insert)){
+            if($insert){
+                if(!$this->user_id){
+                    $this->user_id = \Yii::$app->getUser()->id;
+                }
+            }
+            return true;
+        }
+    }
+
 }
