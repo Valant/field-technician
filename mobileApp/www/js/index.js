@@ -17,7 +17,7 @@
  * under the License.
  */
 var app = {
-    version: '0.13.30',
+    version: '0.13.32',
     db: false,
     task_id: false,
     dispatch_id: false,
@@ -110,7 +110,7 @@ var app = {
         app.access_token = window.localStorage.getItem('access_token');
         app.user_code = window.localStorage.getItem('user_code');
         app.checkLoginExpiration();
-        window.setInterval(app.checkLoginExpiration, 15000);
+        window.setInterval(app.checkLoginExpiration, 300);
 
         if (window.localStorage.getItem( 'tech_id' ) && window.localStorage.getItem( 'access_token' ) && window.localStorage.getItem( 'last_time' )) {
             app.loadUserData();
@@ -159,6 +159,7 @@ var app = {
                                 var data = {
                                     'user_id': app.user_id
                                 };
+                                app.access_token = window.localStorage.getItem( 'access_token' );
                                 jQuery.ajax({
                                     type: 'POST',
                                     url: app.apiUrl + 'loginstats?access-token=' + app.access_token,
