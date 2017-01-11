@@ -17,7 +17,7 @@
  * under the License.
  */
 var app = {
-    version: '0.13.32',
+    version: '0.13.35',
     db: false,
     task_id: false,
     dispatch_id: false,
@@ -99,6 +99,7 @@ var app = {
 
         if(!window.localStorage.getItem('last_time')){
 //             alert("4");
+            console.log("logout on prepareDB")
             app.logout();
 //             alert("5");
         }else{
@@ -136,6 +137,7 @@ var app = {
                         app.loadResolitons();
 
                     } else {
+                        console.log("LOGOUT ON load user data");
                         app.logout();
                     }
                 }
@@ -197,7 +199,10 @@ var app = {
         console.log("CHeck login expiration");
         var currentTime  = new Date().getTime();
         if(((currentTime - app.lastTime)/1000) > 1500){
-            app.logout();
+            if(app.userLogIn) {
+                console.log("logout on login expiration");
+                app.logout();
+            }
         }
 
     },
@@ -1568,7 +1573,8 @@ var app = {
     {
         if(app.userLogIn) {
             app.showLoader( 'Logout' );
-            window.localStorage.removeItem( 'last_time' )
+            window.localStorage.removeItem( 'last_time' );
+            app.userLogIn = false;
 
             $( '#login' ).val( '' );
             $( '#password' ).val( '' );
@@ -1603,6 +1609,8 @@ var app = {
         }else{
             $.mobile.loading( 'hide' );
             $.mobile.navigate( '#signin' );
+            app.userLogIn = false;
+            app.checkFingerPrint();
         }
 
     },
