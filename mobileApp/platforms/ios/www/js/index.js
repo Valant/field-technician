@@ -17,15 +17,15 @@
  * under the License.
  */
 var app = {
-    version: '0.13.25',
+    version: '0.13.38',
     db: false,
     task_id: false,
     dispatch_id: false,
     uploaded: 0,
     needToUpload: 0,
-    apiUrl: 'http://api.field-technician.loc/',
+//     apiUrl: 'http://api.field-technician.loc/',
 //    apiUrl: 'http://ftapi.afap.com/',
-//     apiUrl: 'http://ftapitest.afap.com/',
+    apiUrl: 'http://ftapitest.afap.com/',
     user_id: 0,
     user_code: '',
     service_tech_code: '',
@@ -43,6 +43,7 @@ var app = {
     taskStatusData: null,
     lastTime: null,
     userLogIn: false,
+    statID: false,
     // Application Constructor
     initialize: function ()
     {
@@ -98,6 +99,7 @@ var app = {
 
         if(!window.localStorage.getItem('last_time')){
 //             alert("4");
+            console.log("logout on prepareDB")
             app.logout();
 //             alert("5");
         }else{
@@ -109,7 +111,7 @@ var app = {
         app.access_token = window.localStorage.getItem('access_token');
         app.user_code = window.localStorage.getItem('user_code');
         app.checkLoginExpiration();
-        window.setInterval(app.checkLoginExpiration, 3000);
+        window.setInterval(app.checkLoginExpiration, 300);
 
         if (window.localStorage.getItem( 'tech_id' ) && window.localStorage.getItem( 'access_token' ) && window.localStorage.getItem( 'last_time' )) {
             app.loadUserData();
@@ -119,7 +121,7 @@ var app = {
         this.showLoader( 'Load user data' );
         app.user_id = window.localStorage.getItem( 'tech_id' );
         jQuery.getJSON( app.apiUrl + 'user/' + window.localStorage.getItem( 'user_id' ),
-            {'access-token': window.localStorage.getItem( 'access_token' )},
+            {'access-token': window.localStorage.getItem( 'access_token' ), 'per-page': 100},
             function ( data )
             {
                 if (data) {
@@ -135,6 +137,7 @@ var app = {
                         app.loadResolitons();
 
                     } else {
+                        console.log("LOGOUT ON load user data");
                         app.logout();
                     }
                 }
@@ -156,15 +159,16 @@ var app = {
                             function ( msg )
                             {
                                 var data = {
-                                    'user': app.user_code,
-                                    'type': 1
+                                    'user_id': app.user_id
                                 };
+                                app.access_token = window.localStorage.getItem( 'access_token' );
                                 jQuery.ajax({
                                     type: 'POST',
                                     url: app.apiUrl + 'loginstats?access-token=' + app.access_token,
                                     data: data
                                 } ).then(function(data){
                                     app.lastTime = new Date().getTime();
+                                    app.statID = data.id
                                     window.localStorage.setItem( 'last_time', app.lastTime );
                                     app.loadUserData();
                                 });
@@ -194,8 +198,11 @@ var app = {
     checkLoginExpiration: function(){
         console.log("CHeck login expiration");
         var currentTime  = new Date().getTime();
-        if(((currentTime - app.lastTime)/1000) > 300){
-            app.logout();
+        if(((currentTime - app.lastTime)/1000) > 1500){
+            if(app.userLogIn) {
+                console.log("logout on login expiration");
+                app.logout();
+            }
         }
 
     },
@@ -216,22 +223,24 @@ var app = {
             'LoginForm[password]': $( '#password' ).val()
         }, function ( data )
         {
-            if (data.id) {
+            if (data.user) {
                 console.log( 'user login [OK]' );
-                app.user_data = data;
-                window.localStorage.setItem( 'tech_id', data.technition_id );
-                window.localStorage.setItem( 'user_id', data.id );
-                window.localStorage.setItem( 'user_code', data.usercode );
-                window.localStorage.setItem( 'access_token', data.auth_key );
+                app.user_data = data.user;
+                window.localStorage.setItem( 'tech_id', data.user.technition_id );
+                window.localStorage.setItem( 'user_id', data.user.id );
+                window.localStorage.setItem( 'user_code', data.user.usercode );
+                window.localStorage.setItem( 'access_token', data.user.auth_key );
                 app.lastTime = new Date().getTime();
                 window.localStorage.setItem( 'last_time', app.lastTime);
                 $( '#signin .errors' ).text( '' );
-                app.user_id = data.technition_id;
-                app.user_code = data.usercode;
-                app.service_tech_code = data.servicetechcode;
-                app.access_token = data.auth_key;
-                app.user_warehouse_id = data.warehoise_id;
-                app.user_warehouse_code = data.warehouse_code;
+                app.user_id = data.user.technition_id;
+                app.user_code = data.user.usercode;
+                app.service_tech_code = data.user.servicetechcode;
+                app.access_token = data.user.auth_key;
+                app.user_warehouse_id = data.user.warehoise_id;
+                app.user_warehouse_code = data.user.warehouse_code;
+                app.statID = data.stat_id;
+                app.userLogIn = true;
                 app.loadTasks();
                 app.loadResolitons();
             } else {
@@ -246,22 +255,24 @@ var app = {
         app.showLoader( 'Load tasks' );
         jQuery.getJSON( app.apiUrl + '/ticket/list', {
             'access-token': app.access_token,
-            'UserCode': app.user_code
+            'UserCode': app.user_code,
+            'per-page': 100
         }, this.drawTask );
 
 
     },
     loadResolitons: function ()
     {
-        jQuery.getJSON( app.apiUrl + '/resolution/', {'access-token': window.localStorage.getItem( 'access_token' ), 'sort':'Resolution_Code'},
+        jQuery.getJSON( app.apiUrl + '/resolution/', {'access-token': window.localStorage.getItem( 'access_token' ), 'sort':'Resolution_Code', 'per-page': 100},
             function ( data )
             {
                 if (data) {
-                    $( 'select#resolution_code' ).empty();
+//                    $( 'select#resolution_code' ).empty();
                     $.each( data, function ( key, el )
                     {
-                        $( 'select#resolution_code' ).append(
-                            '<option value="' + el.Resolution_Id + '">' + el.Description + '</option>' )
+                        $( '#resolution_code' ).val(el.Resolution_Id);
+                        $( '#resolution_code' ).attr("Resolution_Code",el.Description);
+
                     } );
                 }
             } );
@@ -273,7 +284,7 @@ var app = {
         }
         if (app.taskStatusData) {
             if(withcode) {
-                app.taskStatusData.data.Resolution_Code = $( '#resolution_code option:selected' ).text();
+                app.taskStatusData.data.Resolution_Code = $( '#resolution_code' ).attr("Resolution_Code");
             }
             app.taskStatusData.data.Resolution_Notes = $( '#resolution_notes' + (withcode ? '_withcode' : '') ).val();
             app.depart( app.taskStatusData );
@@ -313,8 +324,8 @@ var app = {
                         $( '#resolution_notes' + (
                                 withcode ? '_withcode' : ''
                             ) ).val( '' );                         // clearing goback/resolved
-                        $( '#resolution_code option' ).attr( 'selected', false );    // resolution notes
-                        $( '#resolution_code' ).selectmenu( 'refresh', true );    // values
+//                        $( '#resolution_code option' ).attr( 'selected', false );    // resolution notes
+//                        $( '#resolution_code' ).selectmenu( 'refresh', true );    // values
                     };
                     if (! withcode) {
                         endNotes( {Service_Ticket_Id: app.task_data[app.task_id].Service_Ticket_Id, resolved: withcode} );
@@ -522,7 +533,8 @@ var app = {
         var self = this;
         jQuery.getJSON( app.apiUrl + 'part/search', {
             code: materialCode,
-            'access-token': app.access_token
+            'access-token': app.access_token,
+            'per-page': 100
         }, function ( data )
         {
             if ('error' == data.status) {
@@ -557,7 +569,8 @@ var app = {
         //$('input[data-type="search"]').val("")
         app.keywordAutocomplete = jQuery.getJSON( app.apiUrl + searchpath, {
             code: keyword,
-            'access-token': app.access_token
+            'access-token': app.access_token,
+            'per-page': 100
         }, function ( data )
         {
             $.mobile.loading( 'hide' );
@@ -856,7 +869,8 @@ var app = {
             'id': dispatch_id,
             'Ticket_Number': app.task_data[app.task_id].Ticket_Number,
             'access-token': app.access_token,
-            'UserCode': app.user_code
+            'UserCode': app.user_code,
+            'per-page': 100
         }, this.drawTaskDetails.bind( this ) ) ).done( function ( res )
         {
 
@@ -881,7 +895,8 @@ var app = {
         jQuery.getJSON( app.apiUrl + 'ticket/getdispatch', {
             'dispatch_id': app.dispatch_id,
 //            'task_id': app.task_id,
-            'access-token': app.access_token
+            'access-token': app.access_token,
+            'per-page': 100
         }, function ( data )
         {
             console.info( 'dispatch data', data );
@@ -949,7 +964,8 @@ var app = {
         if (app.taskLocked[app.task_id] == false) {
             jQuery.getJSON( app.apiUrl + '/taskattachment/search', {
                 task_id: app.task_id,
-                'access-token': app.access_token
+                'access-token': app.access_token,
+                'per-page': 100
             }, function ( data )
             {
                 if (data) {
@@ -970,7 +986,8 @@ var app = {
             jQuery.getJSON( app.apiUrl + '/taskpart/search', {
                 'Service_Ticket_Id': app.task_id,
                 'expand': 'part',
-                'access-token': app.access_token
+                'access-token': app.access_token,
+                'per-page': 100
             }, function ( data )
             {
                 if (data) {
@@ -1112,16 +1129,12 @@ var app = {
             $( '<p><pre>' + task.customer_number + '</pre></p>' ).appendTo( '#taskDescription' );
             $( '<p><pre>' + task.Customer_Name + '</pre></p>' ).appendTo( '#taskDescription' );
             $( '<p><pre>' + task.address_1 + '</pre></p>' ).appendTo( '#taskDescription' );
-            $( '<p><pre>' + task.ge1_description + '</pre></p>' ).appendTo( '#taskDescription' );
-            $( '<p><pre>' + task.ge2_short + '</pre></p>' ).appendTo( '#taskDescription' );
-            $( '<p><pre>' + task.ge3_description + '</pre></p>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>' + task.ge1_description + ' ' + task.ge2_short + ' ' + task.ge3_description + '</pre></p>' ).appendTo( '#taskDescription' );
 
             $( '<h4>Site</h4>' ).appendTo( '#taskDescription' );
             $( '<p><pre>' + task.business_name + '</pre></p>' ).appendTo( '#taskDescription' );
             $( '<p><pre>' + task.Customer_Site_Address + '</pre></p>' ).appendTo( '#taskDescription' );
-            $( '<p><pre>' + task.Customer_Site_Ge1_Description + '</pre></p>' ).appendTo( '#taskDescription' );
-            $( '<p><pre>' + task.Customer_Site_Ge2_Short + '</pre></p>' ).appendTo( '#taskDescription' );
-            $( '<p><pre>' + task.Customer_Site_Ge3_Description + '</pre></p>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>' + task.Customer_Site_Ge1_Description + ' ' + task.Customer_Site_Ge2_Short + ' ' + task.Customer_Site_Ge3_Description + '</pre></p>' ).appendTo( '#taskDescription' );
 
             $( '<h4>System Information</h4>' ).appendTo( '#taskDescription' );
             $( '<p><pre>System Account: ' + task.alarm_account + '</pre></p>' ).appendTo( '#taskDescription' );
@@ -1560,7 +1573,8 @@ var app = {
     {
         if(app.userLogIn) {
             app.showLoader( 'Logout' );
-            window.localStorage.removeItem( 'last_time' )
+            window.localStorage.removeItem( 'last_time' );
+            app.userLogIn = false;
 
             $( '#login' ).val( '' );
             $( '#password' ).val( '' );
@@ -1571,21 +1585,32 @@ var app = {
             } catch ( err ) {
 //             alert(err.message);
             }
-            var data = {
-                'user': app.user_code,
-                'type': 0
-            };
-            jQuery.ajax( {
-                type: 'POST',
-                url: app.apiUrl + 'loginstats?access-token=' + app.access_token,
-                data: data
-            } ).then( function ( data )
-            {
+            if(app.statID) {
+                var data = {
+                    'stat_id': app.statID
+                };
+                jQuery.ajax( {
+                    type: 'POST',
+                    url: app.apiUrl + 'loginstats/logout?access-token=' + app.access_token,
+                    data: data
+                } ).then( function ( data )
+                {
+                    $.mobile.loading( 'hide' );
+                    $.mobile.navigate( '#signin' );
+                    app.userLogIn = false;
+                    app.checkFingerPrint();
+                } );
+            }else{
                 $.mobile.loading( 'hide' );
                 $.mobile.navigate( '#signin' );
                 app.userLogIn = false;
                 app.checkFingerPrint();
-            } );
+            }
+        }else{
+            $.mobile.loading( 'hide' );
+            $.mobile.navigate( '#signin' );
+            app.userLogIn = false;
+            app.checkFingerPrint();
         }
 
     },
@@ -1622,7 +1647,8 @@ var app = {
         jQuery.getJSON( app.apiUrl + '/taskpart/search', {
             'Service_Ticket_Id': app.task_id,
             'expand': 'part',
-            'access-token': app.access_token
+            'access-token': app.access_token,
+            'per-page': 100
         }, function ( data )
         {
             $( '#receiptData .parts' ).empty();
@@ -1641,7 +1667,8 @@ var app = {
         jQuery.getJSON( app.apiUrl + 'ticket/getdispatch', {
             'dispatch_id': app.dispatch_id,
 //             'task_id': app.task_id,
-            'access-token': app.access_token
+            'access-token': app.access_token,
+            'per-page': 100
         }, function ( data )
         {
             data = data[0]
@@ -1706,6 +1733,7 @@ var app = {
             {
 
                 if (app.initCanvas.paint) {
+                    jQuery("#saveSignatureBtn").removeAttr("disabled")
                     app.initCanvas.addClick( evt.touches[0].pageX - app.initCanvas.canvasObj.offsetLeft, evt.touches[0].pageY - app.initCanvas.canvasObj.offsetTop,
                         true );
                     app.initCanvas.redraw(true);
@@ -1779,6 +1807,7 @@ var app = {
     {
         var canvas = document.getElementById( "canvas" );
         var context = canvas.getContext( "2d" );
+        jQuery("#saveSignatureBtn").attr("disabled", "disabled")
         context.clearRect( 0, 0, canvas.width, canvas.height );
         app.initCanvas.init();
     },
@@ -1823,6 +1852,7 @@ var app = {
     showSignPopup: function(){
         window.screen.lockOrientation('landscape');
         $.mobile.navigate( '#signature' );
+        jQuery("#saveSignatureBtn").attr("disabled", "disabled")
         app.initCanvas.init();
     },
     saveSignature: function(){

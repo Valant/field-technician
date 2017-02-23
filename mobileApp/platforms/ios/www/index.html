@@ -179,7 +179,7 @@
     </div>
     <div id="canvasControl">
         <button onclick="app.clearCanvas()">Clear</button>
-        <button onclick="app.saveSignature()">Ok</button>
+        <button onclick="app.saveSignature()" id="saveSignatureBtn" disabled="disabled">Ok</button>
         <button onclick="app.showReceiptPage()">Cancel</button>
     </div>
 </div>
@@ -191,8 +191,8 @@
     </div>
     <div role="main" class="ui-content" id="gobacknoteswithcodeContent">
 
-        <label for="resolution_code">RESOLUTION CODE</label>
-        <select name="resolution_code" id="resolution_code" required="required"></select>
+        <!-- label for="resolution_code">RESOLUTION CODE</label -->
+        <input name="resolution_code" id="resolution_code" required="required" type="hidden"/>
         <label for="resolution_notes_withcode">RESOLUTION NOTE</label>
         <textarea name="resolution_notes_withcode" id="resolution_notes_withcode" cols="30" rows="10" required="required"></textarea>
         <button data-icon="check" onclick="app.saveGoBackNotes(1)">Save</button>

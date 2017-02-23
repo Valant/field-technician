@@ -83,41 +83,78 @@ var app = {
     },
     prepareDB: function ()
     {
+        console.log("1");
+        if (navigator.userAgent === undefined) {
+            navigator.__defineGetter__('userAgent', function() {
+                return("Mozilla/5.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit");
+            });
+        }
+        console.log("2");
         this.db = window.openDatabase( "hello_app_db6.sqlite", "1.0", "Hello app db", 100000 );
         this.db.transaction( this.populateDB.bind( this ), this.dbError.bind( this ) );
+        console.log("3");
+//         app.checkFingerPrint();
 
         if(!window.localStorage.getItem('last_time')){
+            console.log("4");
             app.logout();
+            console.log("5");
         }else{
+            console.log("6");
             app.lastTime = window.localStorage.getItem('last_time');
+            console.log("7");
         }
+        console.log("8");
         app.checkLoginExpiration();
+        console.log("9");
+        app.checkFingerPrint();
         window.setInterval(app.checkLoginExpiration, 3000);
-        if (window.localStorage.getItem( 'tech_id' ) && window.localStorage.getItem( 'access_token' )) {
-            this.showLoader( 'Load user data' );
-            app.user_id = window.localStorage.getItem( 'tech_id' );
-            jQuery.getJSON( app.apiUrl + 'user/' + window.localStorage.getItem( 'user_id' ),
-                {'access-token': window.localStorage.getItem( 'access_token' )},
-                function ( data )
-                {
-                    if (data) {
-                        if (typeof data.id != 'undefined') {
-                            app.user_data = data;
-                            app.user_code = data.usercode;
-                            app.service_tech_code = data.servicetechcode;
-                            app.access_token = data.auth_key;
-                            app.user_warehouse_id = data.warehoise_id;
-                            app.user_warehouse_code = data.warehouse_code;
-                            app.loadTasks();
-                            app.loadResolitons();
-
-                        } else {
-                            app.logout();
-                        }
-                    }
-                }.bind( this )
-            );
+        if (window.localStorage.getItem( 'tech_id' ) && window.localStorage.getItem( 'access_token' ) && window.localStorage.getItem( 'last_time' )) {
+            app.loadUserData();
         }
+    },
+    loadUserData: function(){
+        this.showLoader( 'Load user data' );
+        app.user_id = window.localStorage.getItem( 'tech_id' );
+        jQuery.getJSON( app.apiUrl + 'user/' + window.localStorage.getItem( 'user_id' ),
+            {'access-token': window.localStorage.getItem( 'access_token' )},
+            function ( data )
+            {
+                if (data) {
+                    if (typeof data.id != 'undefined') {
+                        app.user_data = data;
+                        app.user_code = data.usercode;
+                        app.service_tech_code = data.servicetechcode;
+                        app.access_token = data.auth_key;
+                        app.user_warehouse_id = data.warehoise_id;
+                        app.user_warehouse_code = data.warehouse_code;
+                        app.loadTasks();
+                        app.loadResolitons();
+
+                    } else {
+                        app.logout();
+                    }
+                }
+            }.bind( this )
+        );
+    },
+    checkFingerPrint: function(){
+        if(!window.localStorage.getItem('last_time')) {
+            if (window.localStorage.getItem( 'tech_id' ) && window.localStorage.getItem( 'access_token' )) {
+                window.plugins.touchid.verifyFingerprint(
+                    'Scan your fingerprint please', // this will be shown in the native scanner popup
+                    function ( msg )
+                    {
+                        app.loadUserData();
+                    }, // success handler: fingerprint accepted
+                    function ( msg )
+                    {
+                        alert( 'not ok: ' + JSON.stringify( msg ) )
+                    } // error handler with errorcode and localised reason
+                );
+            }
+        }
+
     },
     checkLoginExpiration: function(){
         var currentTime  = new Date().getTime();
@@ -1485,12 +1522,13 @@ var app = {
     },
     logout: function ()
     {
-        window.localStorage.clear();
+        window.localStorage.removeItem('last_time')
         $( '#login' ).val( '' );
         $( '#password' ).val( '' );
         $( '#tasks #tasks_content table tbody' ).empty();
         $( '#table-custom-2' ).table( 'refresh' );
         $.mobile.navigate( '#signin' );
+        app.checkFingerPrint();
     },
     showLoader: function ( message )
     {

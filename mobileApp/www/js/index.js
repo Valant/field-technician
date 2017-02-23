@@ -17,15 +17,15 @@
  * under the License.
  */
 var app = {
-    version: '0.13.35',
+    version: '0.13.39',
     db: false,
     task_id: false,
     dispatch_id: false,
     uploaded: 0,
     needToUpload: 0,
 //     apiUrl: 'http://api.field-technician.loc/',
-//    apiUrl: 'http://ftapi.afap.com/',
-    apiUrl: 'http://ftapitest.afap.com/',
+    apiUrl: 'http://ftapi.afap.com/',
+//    apiUrl: 'http://ftapitest.afap.com/',
     user_id: 0,
     user_code: '',
     service_tech_code: '',
@@ -1733,6 +1733,7 @@ var app = {
             {
 
                 if (app.initCanvas.paint) {
+                    jQuery("#saveSignatureBtn").removeAttr("disabled")
                     app.initCanvas.addClick( evt.touches[0].pageX - app.initCanvas.canvasObj.offsetLeft, evt.touches[0].pageY - app.initCanvas.canvasObj.offsetTop,
                         true );
                     app.initCanvas.redraw(true);
@@ -1806,6 +1807,7 @@ var app = {
     {
         var canvas = document.getElementById( "canvas" );
         var context = canvas.getContext( "2d" );
+        jQuery("#saveSignatureBtn").attr("disabled", "disabled")
         context.clearRect( 0, 0, canvas.width, canvas.height );
         app.initCanvas.init();
     },
@@ -1850,6 +1852,7 @@ var app = {
     showSignPopup: function(){
         window.screen.lockOrientation('landscape');
         $.mobile.navigate( '#signature' );
+        jQuery("#saveSignatureBtn").attr("disabled", "disabled")
         app.initCanvas.init();
     },
     saveSignature: function(){

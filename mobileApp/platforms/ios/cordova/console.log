@@ -7298,3 +7298,198 @@ To disable web storage backup to iCloud, set the BackupWebStorage preference to 
 2016-07-18 15:54:56.454 Field Technician[24025:859045] [CDVTimer][TotalPluginStartup] 349.636972ms
 2016-07-18 15:54:56.511 Field Technician[24025:859045] Resetting plugins due to page load.
 2016-07-18 15:54:56.927 Field Technician[24025:859045] Finished load of: file:///Users/godson/Library/Developer/CoreSimulator/Devices/08212C52-D6B3-48E6-8DD5-0C517ACE1163/data/Containers/Bundle/Application/504624E7-4CF1-42F6-95B8-27560AAEE3C1/Field%20Technician.app/www/index.html
+2016-08-04 17:23:35.443 Field Technician[21198:3479452] Apache Cordova native platform version 3.9.2 is starting.
+2016-08-04 17:23:35.452 Field Technician[21198:3479452] Multi-tasking -> Device: YES, App: YES
+2016-08-04 17:23:35.470 Field Technician[21198:3479452] Unlimited access to network resources
+2016-08-04 17:23:35.483 Field Technician[21198:3479452] 
+
+Started backup to iCloud! Please be careful.
+Your application might be rejected by Apple if you store too much data.
+For more information please read "iOS Data Storage Guidelines" at:
+https://developer.apple.com/icloud/documentation/data-storage/
+To disable web storage backup to iCloud, set the BackupWebStorage preference to "local" in the Cordova config.xml file
+
+2016-08-04 17:23:35.815 Field Technician[21198:3479452] [CDVTimer][file] 12.696981ms
+2016-08-04 17:23:36.194 Field Technician[21198:3479452] [CDVTimer][statusbar] 378.816962ms
+2016-08-04 17:23:36.194 Field Technician[21198:3479452] [CDVTimer][TotalPluginStartup] 391.993999ms
+2016-08-04 17:23:36.251 Field Technician[21198:3479452] Resetting plugins due to page load.
+2016-08-04 17:23:36.608 Field Technician[21198:3479452] Finished load of: file:///Users/godson/Library/Developer/CoreSimulator/Devices/08212C52-D6B3-48E6-8DD5-0C517ACE1163/data/Containers/Bundle/Application/AC9D0ECF-43C9-4F37-B4FC-B1A89A2E2AA9/Field%20Technician.app/www/index.html
+2016-08-05 16:01:03.338 Field Technician[38944:1439567] Apache Cordova native platform version 3.9.2 is starting.
+2016-08-05 16:01:03.342 Field Technician[38944:1439567] Multi-tasking -> Device: YES, App: YES
+2016-08-05 16:01:03.359 Field Technician[38944:1439567] Unlimited access to network resources
+2016-08-05 16:01:03.375 Field Technician[38944:1439567] 
+
+Started backup to iCloud! Please be careful.
+Your application might be rejected by Apple if you store too much data.
+For more information please read "iOS Data Storage Guidelines" at:
+https://developer.apple.com/icloud/documentation/data-storage/
+To disable web storage backup to iCloud, set the BackupWebStorage preference to "local" in the Cordova config.xml file
+
+2016-08-05 16:01:03.812 Field Technician[38944:1439567] [CDVTimer][file] 16.916990ms
+2016-08-05 16:01:04.246 Field Technician[38944:1439567] [CDVTimer][statusbar] 433.494031ms
+2016-08-05 16:01:04.246 Field Technician[38944:1439567] [CDVTimer][TotalPluginStartup] 450.975001ms
+2016-08-05 16:01:04.302 Field Technician[38944:1439567] Resetting plugins due to page load.
+2016-08-05 16:01:05.259 Field Technician[38944:1439567] Finished load of: file:///Users/godson/Library/Developer/CoreSimulator/Devices/08212C52-D6B3-48E6-8DD5-0C517ACE1163/data/Containers/Bundle/Application/1CE51D1B-4FEF-4253-B03C-4DF5F989BB0D/Field%20Technician.app/www/index.html
+2016-08-05 16:01:05.727 Field Technician[38944:1441307] Fingerprint or device passcode validated.
+2016-08-05 16:01:05.731 Field Technician[38944:1441616] Fingerprint or device passcode validated.
+2016-08-05 16:01:37.638 Field Technician[39034:1445640] Apache Cordova native platform version 3.9.2 is starting.
+2016-08-05 16:01:37.639 Field Technician[39034:1445640] Multi-tasking -> Device: YES, App: YES
+2016-08-05 16:01:37.640 Field Technician[39034:1445640] Unlimited access to network resources
+2016-08-05 16:01:37.643 Field Technician[39034:1445640] 
+
+Started backup to iCloud! Please be careful.
+Your application might be rejected by Apple if you store too much data.
+For more information please read "iOS Data Storage Guidelines" at:
+https://developer.apple.com/icloud/documentation/data-storage/
+To disable web storage backup to iCloud, set the BackupWebStorage preference to "local" in the Cordova config.xml file
+
+2016-08-05 16:01:37.667 Field Technician[39034:1445640] [CDVTimer][file] 1.588047ms
+2016-08-05 16:01:37.751 Field Technician[39034:1445640] [CDVTimer][statusbar] 83.661020ms
+2016-08-05 16:01:37.751 Field Technician[39034:1445640] [CDVTimer][TotalPluginStartup] 85.664988ms
+2016-08-05 16:01:37.771 Field Technician[39034:1445640] Resetting plugins due to page load.
+2016-08-05 16:01:37.931 Field Technician[39034:1445640] Finished load of: file:///Users/godson/Library/Developer/CoreSimulator/Devices/08212C52-D6B3-48E6-8DD5-0C517ACE1163/data/Containers/Bundle/Application/98BA3140-9678-4CCE-A1DF-67B00F32C47B/Field%20Technician.app/www/index.html
+2016-08-05 16:04:56.025 Field Technician[39306:1451666] Apache Cordova native platform version 3.9.2 is starting.
+2016-08-05 16:04:56.026 Field Technician[39306:1451666] Multi-tasking -> Device: YES, App: YES
+2016-08-05 16:04:56.028 Field Technician[39306:1451666] Unlimited access to network resources
+2016-08-05 16:04:56.031 Field Technician[39306:1451666] 
+
+Started backup to iCloud! Please be careful.
+Your application might be rejected by Apple if you store too much data.
+For more information please read "iOS Data Storage Guidelines" at:
+https://developer.apple.com/icloud/documentation/data-storage/
+To disable web storage backup to iCloud, set the BackupWebStorage preference to "local" in the Cordova config.xml file
+
+2016-08-05 16:04:56.051 Field Technician[39306:1451666] [CDVTimer][file] 3.456950ms
+2016-08-05 16:04:56.125 Field Technician[39306:1451666] [CDVTimer][statusbar] 73.300004ms
+2016-08-05 16:04:56.125 Field Technician[39306:1451666] [CDVTimer][TotalPluginStartup] 77.234030ms
+2016-08-05 16:04:56.140 Field Technician[39306:1451666] Resetting plugins due to page load.
+2016-08-05 16:04:56.347 Field Technician[39306:1451666] Finished load of: file:///Users/godson/Library/Developer/CoreSimulator/Devices/08212C52-D6B3-48E6-8DD5-0C517ACE1163/data/Containers/Bundle/Application/1B68DF85-00AB-4652-A402-EA8DFE81CD17/Field%20Technician.app/www/index.html
+2016-08-05 16:05:16.464 Field Technician[39306:1451666] 16:05:16.464 WARNING:  998: Failure to setup sound, err = -50
+2016-08-05 16:05:16.465 Field Technician[39306:1451666] THREAD WARNING: ['Vibration'] took '20.312012' ms. Plugin should use a background thread.
+2016-08-05 16:07:06.136 Field Technician[39306:1454531] Fingerprint or device passcode validated.
+2016-08-05 16:07:08.422 Field Technician[39306:1451666] 16:07:08.422 WARNING:  998: Failure to setup sound, err = -50
+2016-08-05 16:07:32.401 Field Technician[39306:1457215] Fingerprint or device passcode validated.
+2016-08-05 16:07:34.666 Field Technician[39306:1451666] 16:07:34.666 WARNING:  998: Failure to setup sound, err = -50
+2016-08-05 16:08:55.208 Field Technician[39306:1451666] 16:08:55.208 WARNING:  998: Failure to setup sound, err = -50
+2016-08-05 16:08:58.401 Field Technician[39306:1469075] Fingerprint or device passcode validated.
+2016-08-05 16:09:00.431 Field Technician[39306:1451666] 16:09:00.431 WARNING:  998: Failure to setup sound, err = -50
+2016-08-05 16:14:00.079 Field Technician[39306:1498203] Fingerprint or device passcode validated.
+2016-08-05 16:14:02.330 Field Technician[39306:1451666] 16:14:02.330 WARNING:  998: Failure to setup sound, err = -50
+2016-08-05 16:15:49.275 Field Technician[39938:1507805] Apache Cordova native platform version 3.9.2 is starting.
+2016-08-05 16:15:49.276 Field Technician[39938:1507805] Multi-tasking -> Device: YES, App: YES
+2016-08-05 16:15:49.278 Field Technician[39938:1507805] Unlimited access to network resources
+2016-08-05 16:15:49.280 Field Technician[39938:1507805] 
+
+Started backup to iCloud! Please be careful.
+Your application might be rejected by Apple if you store too much data.
+For more information please read "iOS Data Storage Guidelines" at:
+https://developer.apple.com/icloud/documentation/data-storage/
+To disable web storage backup to iCloud, set the BackupWebStorage preference to "local" in the Cordova config.xml file
+
+2016-08-05 16:15:49.300 Field Technician[39938:1507805] [CDVTimer][file] 2.768040ms
+2016-08-05 16:15:49.382 Field Technician[39938:1507805] [CDVTimer][statusbar] 81.705987ms
+2016-08-05 16:15:49.382 Field Technician[39938:1507805] [CDVTimer][TotalPluginStartup] 85.071981ms
+2016-08-05 16:15:49.398 Field Technician[39938:1507805] Resetting plugins due to page load.
+2016-08-05 16:15:49.569 Field Technician[39938:1507805] Finished load of: file:///Users/godson/Library/Developer/CoreSimulator/Devices/08212C52-D6B3-48E6-8DD5-0C517ACE1163/data/Containers/Bundle/Application/7AA80416-E7F2-4C7F-9627-0F5CE72B39D2/Field%20Technician.app/www/index.html
+2016-08-05 16:15:51.875 Field Technician[39938:1507805] 16:15:51.875 WARNING:  998: Failure to setup sound, err = -50
+2016-08-05 16:17:00.897 Field Technician[39938:1509516] Fingerprint or device passcode validated.
+2016-08-05 16:17:03.207 Field Technician[39938:1507805] 16:17:03.207 WARNING:  998: Failure to setup sound, err = -50
+2016-08-05 16:22:01.895 Field Technician[39938:1526716] Fingerprint or device passcode validated.
+2016-08-05 16:22:04.486 Field Technician[39938:1507805] 16:22:04.486 WARNING:  998: Failure to setup sound, err = -50
+2016-08-05 16:23:01.625 Field Technician[40386:1528510] Apache Cordova native platform version 3.9.2 is starting.
+2016-08-05 16:23:01.626 Field Technician[40386:1528510] Multi-tasking -> Device: YES, App: YES
+2016-08-05 16:23:01.628 Field Technician[40386:1528510] Unlimited access to network resources
+2016-08-05 16:23:01.630 Field Technician[40386:1528510] 
+
+Started backup to iCloud! Please be careful.
+Your application might be rejected by Apple if you store too much data.
+For more information please read "iOS Data Storage Guidelines" at:
+https://developer.apple.com/icloud/documentation/data-storage/
+To disable web storage backup to iCloud, set the BackupWebStorage preference to "local" in the Cordova config.xml file
+
+2016-08-05 16:23:01.650 Field Technician[40386:1528510] [CDVTimer][file] 3.049970ms
+2016-08-05 16:23:01.721 Field Technician[40386:1528510] [CDVTimer][statusbar] 70.908964ms
+2016-08-05 16:23:01.721 Field Technician[40386:1528510] [CDVTimer][TotalPluginStartup] 74.406981ms
+2016-08-05 16:23:01.736 Field Technician[40386:1528510] Resetting plugins due to page load.
+2016-08-05 16:23:01.887 Field Technician[40386:1528510] Finished load of: file:///Users/godson/Library/Developer/CoreSimulator/Devices/08212C52-D6B3-48E6-8DD5-0C517ACE1163/data/Containers/Bundle/Application/385BBF5E-9CB2-4B4F-9E39-0B4ECD346770/Field%20Technician.app/www/index.html
+2016-08-05 16:23:04.269 Field Technician[40386:1528510] 16:23:04.269 WARNING:  998: Failure to setup sound, err = -50
+2016-08-05 16:23:35.494 Field Technician[40386:1528510] 16:23:35.494 WARNING:  998: Failure to setup sound, err = -50
+2016-08-12 17:11:23.150 Field Technician[88690:1969726] Apache Cordova native platform version 3.9.2 is starting.
+2016-08-12 17:11:23.154 Field Technician[88690:1969726] Multi-tasking -> Device: YES, App: YES
+2016-08-12 17:11:23.170 Field Technician[88690:1969726] Unlimited access to network resources
+2016-08-12 17:11:23.180 Field Technician[88690:1969726] 
+
+Started backup to iCloud! Please be careful.
+Your application might be rejected by Apple if you store too much data.
+For more information please read "iOS Data Storage Guidelines" at:
+https://developer.apple.com/icloud/documentation/data-storage/
+To disable web storage backup to iCloud, set the BackupWebStorage preference to "local" in the Cordova config.xml file
+
+2016-08-12 17:11:23.494 Field Technician[88690:1969726] [CDVTimer][file] 8.095026ms
+2016-08-12 17:11:23.783 Field Technician[88690:1969726] [CDVTimer][statusbar] 288.291991ms
+2016-08-12 17:11:23.783 Field Technician[88690:1969726] [CDVTimer][TotalPluginStartup] 297.381997ms
+2016-08-12 17:11:23.840 Field Technician[88690:1969726] Resetting plugins due to page load.
+2016-08-12 17:11:24.176 Field Technician[88690:1969726] Finished load of: file:///Users/godson/Library/Developer/CoreSimulator/Devices/08212C52-D6B3-48E6-8DD5-0C517ACE1163/data/Containers/Bundle/Application/D3BB124A-3EF6-4063-BC86-E9E206D00A98/Field%20Technician.app/www/index.html
+2016-08-12 17:11:26.738 Field Technician[88690:1969726] 17:11:26.738 WARNING:  998: Failure to setup sound, err = -50
+2016-08-12 17:11:26.739 Field Technician[88690:1969726] THREAD WARNING: ['Vibration'] took '20.392090' ms. Plugin should use a background thread.
+2016-08-12 17:11:42.694 Field Technician[88690:1969726] 17:11:42.694 WARNING:  998: Failure to setup sound, err = -50
+2016-08-22 12:33:50.098 Field Technician[2071:86373] Apache Cordova native platform version 3.9.2 is starting.
+2016-08-22 12:33:50.101 Field Technician[2071:86373] Multi-tasking -> Device: YES, App: YES
+2016-08-22 12:33:50.116 Field Technician[2071:86373] Unlimited access to network resources
+2016-08-22 12:33:50.132 Field Technician[2071:86373] 
+
+Started backup to iCloud! Please be careful.
+Your application might be rejected by Apple if you store too much data.
+For more information please read "iOS Data Storage Guidelines" at:
+https://developer.apple.com/icloud/documentation/data-storage/
+To disable web storage backup to iCloud, set the BackupWebStorage preference to "local" in the Cordova config.xml file
+
+2016-08-22 12:33:50.463 Field Technician[2071:86373] [CDVTimer][file] 9.863019ms
+2016-08-22 12:33:50.805 Field Technician[2071:86373] [CDVTimer][statusbar] 341.893017ms
+2016-08-22 12:33:50.805 Field Technician[2071:86373] [CDVTimer][TotalPluginStartup] 352.304995ms
+2016-08-22 12:33:50.859 Field Technician[2071:86373] Resetting plugins due to page load.
+2016-08-22 12:33:51.235 Field Technician[2071:86373] Finished load of: file:///Users/godson/Library/Developer/CoreSimulator/Devices/08212C52-D6B3-48E6-8DD5-0C517ACE1163/data/Containers/Bundle/Application/6CFFBF22-744D-414C-8BA7-8EA8DCA5A71A/Field%20Technician.app/www/index.html
+2016-08-22 12:33:55.413 Field Technician[2071:86373] 12:33:55.412 WARNING:  998: Failure to setup sound, err = -50
+2016-08-22 12:33:55.413 Field Technician[2071:86373] THREAD WARNING: ['Vibration'] took '26.508057' ms. Plugin should use a background thread.
+2016-08-22 12:34:13.435 Field Technician[2071:86373] 12:34:13.435 WARNING:  998: Failure to setup sound, err = -50
+2016-08-22 12:42:59.459 Field Technician[2071:86373] 12:42:59.459 WARNING:  998: Failure to setup sound, err = -50
+2016-08-22 12:43:53.045 Field Technician[2071:86373] 12:43:53.045 WARNING:  998: Failure to setup sound, err = -50
+2016-08-22 12:44:19.347 Field Technician[2071:86373] 12:44:19.347 WARNING:  998: Failure to setup sound, err = -50
+2016-08-22 16:35:31.111 Field Technician[14609:609621] Apache Cordova native platform version 3.9.2 is starting.
+2016-08-22 16:35:31.114 Field Technician[14609:609621] Multi-tasking -> Device: YES, App: YES
+2016-08-22 16:35:31.129 Field Technician[14609:609621] Unlimited access to network resources
+2016-08-22 16:35:31.141 Field Technician[14609:609621] 
+
+Started backup to iCloud! Please be careful.
+Your application might be rejected by Apple if you store too much data.
+For more information please read "iOS Data Storage Guidelines" at:
+https://developer.apple.com/icloud/documentation/data-storage/
+To disable web storage backup to iCloud, set the BackupWebStorage preference to "local" in the Cordova config.xml file
+
+2016-08-22 16:35:31.478 Field Technician[14609:609621] [CDVTimer][file] 15.208006ms
+2016-08-22 16:35:31.910 Field Technician[14609:609621] [CDVTimer][statusbar] 431.547999ms
+2016-08-22 16:35:31.910 Field Technician[14609:609621] [CDVTimer][TotalPluginStartup] 447.246015ms
+2016-08-22 16:35:32.008 Field Technician[14609:609621] Resetting plugins due to page load.
+2016-08-22 16:35:32.481 Field Technician[14609:609621] Finished load of: file:///Users/godson/Library/Developer/CoreSimulator/Devices/08212C52-D6B3-48E6-8DD5-0C517ACE1163/data/Containers/Bundle/Application/EBFC6F66-4569-414B-B2B7-F644C449CDFD/Field%20Technician.app/www/index.html
+2016-08-22 16:35:35.216 Field Technician[14609:609621] 16:35:35.215 WARNING:  998: Failure to setup sound, err = -50
+2016-08-22 16:35:35.216 Field Technician[14609:609621] THREAD WARNING: ['Vibration'] took '21.224121' ms. Plugin should use a background thread.
+2016-08-22 16:36:09.670 Field Technician[14609:609621] 16:36:09.670 WARNING:  998: Failure to setup sound, err = -50
+2016-08-22 16:37:55.112 Field Technician[14609:609621] 16:37:55.112 WARNING:  998: Failure to setup sound, err = -50
+2016-08-22 16:42:28.175 Field Technician[14609:609621] 16:42:28.175 WARNING:  998: Failure to setup sound, err = -50
+2016-08-22 16:55:03.686 Field Technician[15687:671835] Apache Cordova native platform version 3.9.2 is starting.
+2016-08-22 16:55:03.687 Field Technician[15687:671835] Multi-tasking -> Device: YES, App: YES
+2016-08-22 16:55:03.689 Field Technician[15687:671835] Unlimited access to network resources
+2016-08-22 16:55:03.692 Field Technician[15687:671835] 
+
+Started backup to iCloud! Please be careful.
+Your application might be rejected by Apple if you store too much data.
+For more information please read "iOS Data Storage Guidelines" at:
+https://developer.apple.com/icloud/documentation/data-storage/
+To disable web storage backup to iCloud, set the BackupWebStorage preference to "local" in the Cordova config.xml file
+
+2016-08-22 16:55:03.750 Field Technician[15687:671835] [CDVTimer][file] 9.682953ms
+2016-08-22 16:55:03.852 Field Technician[15687:671835] [CDVTimer][statusbar] 100.694001ms
+2016-08-22 16:55:03.852 Field Technician[15687:671835] [CDVTimer][TotalPluginStartup] 111.684024ms
+2016-08-22 16:55:03.869 Field Technician[15687:671835] Resetting plugins due to page load.
+2016-08-22 16:55:04.044 Field Technician[15687:671835] Finished load of: file:///Users/godson/Library/Developer/CoreSimulator/Devices/08212C52-D6B3-48E6-8DD5-0C517ACE1163/data/Containers/Bundle/Application/41154352-4957-4C83-B274-051CF7E6F1E7/Field%20Technician.app/www/index.html
+2016-08-22 16:55:38.459 Field Technician[15687:671835] 16:55:38.459 WARNING:  998: Failure to setup sound, err = -50
