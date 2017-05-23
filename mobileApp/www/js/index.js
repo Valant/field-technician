@@ -17,15 +17,15 @@
  * under the License.
  */
 var app = {
-    version: '0.13.39',
+    version: '0.13.41',
     db: false,
     task_id: false,
     dispatch_id: false,
     uploaded: 0,
     needToUpload: 0,
 //     apiUrl: 'http://api.field-technician.loc/',
-    apiUrl: 'http://ftapi.afap.com/',
-//    apiUrl: 'http://ftapitest.afap.com/',
+//     apiUrl: 'http://ftapi.afap.com/',
+   apiUrl: 'http://ftapitest.afap.com/',
     user_id: 0,
     user_code: '',
     service_tech_code: '',
@@ -198,7 +198,8 @@ var app = {
     checkLoginExpiration: function(){
         console.log("CHeck login expiration");
         var currentTime  = new Date().getTime();
-        if(((currentTime - app.lastTime)/1000) > 1500){
+        app.lastTime = window.localStorage.getItem('last_time');
+        if(((currentTime - app.lastTime)/1000) > 900){
             if(app.userLogIn) {
                 console.log("logout on login expiration");
                 app.logout();
