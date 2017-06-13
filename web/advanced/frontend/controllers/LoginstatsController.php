@@ -33,6 +33,7 @@
                     $stat->login_time = $stat->login_time;
                     $stat->logout_time = new Expression("NOW()");
                     $stat->save();
+                    $stat->refresh();
                     return $stat;
                 }
             }
