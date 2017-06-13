@@ -30,8 +30,11 @@
         public function actionLogout(){
             if($stat_id = \Yii::$app->request->post("stat_id")){
                 if($stat = LoginStats::findOne($stat_id)){
-                    $stat->login_time = $stat->login_time;
+                    $tempLoginInTime = $stat->login_time;
                     $stat->logout_time = new Expression("NOW()");
+                    $stat->save();
+                    $stat->refresh();
+                    $stat->login_time = $tempLoginInTime;
                     $stat->save();
                     $stat->refresh();
                     return $stat;
