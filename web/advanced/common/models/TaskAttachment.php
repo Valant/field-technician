@@ -11,6 +11,7 @@
      *
      * @property integer $id
      * @property integer $task_id
+     * @property integer $tech_id
      * @property string $path
      * @property string $name
      * @property string $sign_name
@@ -33,6 +34,7 @@
             return [
                 [['task_id'], 'required'],
                 [['task_id'], 'integer'],
+                [['tech_id'], 'integer'],
                 [['path'], 'file'],
                 [['name', 'sign_name'], 'string', 'max' => 255]
             ];
@@ -46,6 +48,7 @@
             return [
                 'id'        => 'ID',
                 'task_id'   => 'Task ID',
+                '$tech_id'   => 'Tech ID',
                 'path'      => 'Path',
                 'name'      => 'Name',
                 'sign_name' => 'Sign Name',
@@ -74,5 +77,10 @@
         public function getTask()
         {
             return $this->hasOne(SVServiceTicket::className(), ['Service_Ticket_Id' => 'task_id']);
+        }
+
+        public function beforeSave($insert) {
+            $this->tech_id = Yii::$app->user->getIdentity()->technition_id;
+            return parent::beforeSave($insert);
         }
     }
