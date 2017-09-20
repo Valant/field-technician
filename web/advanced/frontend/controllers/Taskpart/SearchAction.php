@@ -56,7 +56,7 @@ class SearchAction extends  Action  {
 
         $query = $modelClass::find();
 	    $query->select('Service_Ticket_Part_Id, Part_Id, sum(Quantity) as Quantity,Service_Tech_Id');
-	    $query->groupBy(['Service_Ticket_Part_Id','Part_Id']);
+	    $query->groupBy(['Service_Ticket_Part_Id','Part_Id','Service_Tech_Id']);
         $query->having(['>', 'sum(Quantity)', '0']);
 
         $dataProvider = new ActiveDataProvider([
