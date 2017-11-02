@@ -610,9 +610,9 @@ var app = {
     scanBarCode: function ()
     {
         app.resetTimer();
-        var scanner = cordova.require( 'cordova.plugins.barcodeScanner' ); // ver.0.6.0
+
         try {
-            scanner.scan(
+            cordova.plugins.barcodeScanner.scan(
                 function ( result )
                 {
                     if (! result.cancelled) {
@@ -791,7 +791,7 @@ var app = {
      },*/
     onSuccessMakePhoto: function ( imageURI )
     {
-
+        console.log("onSuccessMakePhoto");
         //new Parse.File('myfile.txt', { base64: imageURI });
         $( '#files' ).append( '<div class="newImage"><img class="photoPreview"  src="' + imageURI + '"/>' +
             '<button data-icon="delete" data-iconpos="notext" onclick="app.removeImage(this);"></button>' +
@@ -805,7 +805,9 @@ var app = {
     },
     uploadTaskData: function ()
     {
-        this.db && this.db.transaction( this.saveTaskData.bind( this ), this.dbError.bind( this ) );
+        console.log("uploadTaskData");
+        app.saveTaskData();
+//        this.db && this.db.transaction( this.saveTaskData.bind( this ), this.dbError.bind( this ) );
     },
     saveAndExit: function ()
     {
@@ -815,6 +817,7 @@ var app = {
     },
     saveTaskData: function ()
     {
+        console.log("saveTaskData");
         app.resetTimer();
         var self = this;
         var filesList = [];

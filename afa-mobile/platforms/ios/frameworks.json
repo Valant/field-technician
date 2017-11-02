@@ -9,5 +9,7 @@
     "libiconv.dylib": 1,
     "CoreVideo.framework": 1,
     "QuartzCore.framework": 1,
-    "CoreImage.framework": 1
+    "CoreImage.framework": 1,
+    "LocalAuthentication.framework": 1,
+    "Security.framework": 1
 }
