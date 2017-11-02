@@ -50,10 +50,10 @@
     "cordova-plugin-pin-dialog": {
       "PACKAGE_NAME": "com.fieldtechnicianafa.app"
     },
-    "cordova-plugin-touchid": {
+    "cordova-plugin-file-transfer": {
       "PACKAGE_NAME": "com.fieldtechnicianafa.app"
     },
-    "cordova-plugin-file-transfer": {
+    "cordova-plugin-touch-id": {
       "PACKAGE_NAME": "com.fieldtechnicianafa.app"
     }
   },

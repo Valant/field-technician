@@ -391,14 +391,6 @@ module.exports = [
     ]
   },
   {
-    "id": "cordova-plugin-touchid.TouchID",
-    "file": "plugins/cordova-plugin-touchid/www/touchid.js",
-    "pluginId": "cordova-plugin-touchid",
-    "clobbers": [
-      "touchid"
-    ]
-  },
-  {
     "id": "cordova-plugin-file-transfer.FileTransferError",
     "file": "plugins/cordova-plugin-file-transfer/www/FileTransferError.js",
     "pluginId": "cordova-plugin-file-transfer",
@@ -412,6 +404,14 @@ module.exports = [
     "pluginId": "cordova-plugin-file-transfer",
     "clobbers": [
       "window.FileTransfer"
+    ]
+  },
+  {
+    "id": "cordova-plugin-touch-id.TouchID",
+    "file": "plugins/cordova-plugin-touch-id/www/TouchID.js",
+    "pluginId": "cordova-plugin-touch-id",
+    "clobbers": [
+      "window.plugins.touchid"
     ]
   }
 ];
@@ -432,8 +432,8 @@ module.exports.metadata =
   "cordova-plugin-vibration": "2.1.5",
   "phonegap-plugin-barcodescanner": "7.0.0",
   "cordova-plugin-pin-dialog": "0.1.3",
-  "cordova-plugin-touchid": "0.4.0",
-  "cordova-plugin-file-transfer": "1.6.3"
+  "cordova-plugin-file-transfer": "1.6.3",
+  "cordova-plugin-touch-id": "3.2.0"
 };
 // BOTTOM OF METADATA
 });

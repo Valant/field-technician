@@ -22,8 +22,8 @@
         "CAMERA_USAGE_DESCRIPTION": "Scan bar codes"
       },
       "cordova-plugin-pin-dialog": {},
-      "cordova-plugin-touchid": {},
-      "cordova-plugin-file-transfer": {}
+      "cordova-plugin-file-transfer": {},
+      "cordova-plugin-touch-id": {}
     }
   },
   "dependencies": {
@@ -41,7 +41,7 @@
     "cordova-plugin-media-capture": "~1.4.3",
     "cordova-plugin-network-information": "~1.3.3",
     "cordova-plugin-pin-dialog": "git+https://github.com/Paldom/PinDialog.git",
-    "cordova-plugin-touchid": "^0.4.0",
+    "cordova-plugin-touch-id": "^3.2.0",
     "cordova-plugin-vibration": "~2.1.5",
     "phonegap-plugin-barcodescanner": "^7.0.0"
   }

@@ -155,7 +155,7 @@ var app = {
 //                 alert("13")
                         try {
                             window.plugins.touchid.verifyFingerprint(
-                                'Scan your fingerprint please', // this will be shown in the native scanner popup
+                                'Scan your fingerprint please',
                                 function ( msg )
                                 {
                                     var data = {
@@ -178,6 +178,7 @@ var app = {
                                 {
 //                             alert( 'not ok: ' + JSON.stringify( msg ) )
                                 } // error handler with errorcode and localised reason
+
                             );
                         } catch ( err ) {
 //                     alert(err.message);
@@ -193,7 +194,7 @@ var app = {
                 console.log("NO FINGER PRINT");
                 console.log(msg);
             }
-        );
+        ,function(){});
     },
     checkLoginExpiration: function(){
 //        console.log("CHeck login expiration");
