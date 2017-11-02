@@ -610,7 +610,7 @@ var app = {
     scanBarCode: function ()
     {
         app.resetTimer();
-        var scanner = cordova.require( 'com.phonegap.plugins.barcodescanner.barcodescanner' ); // ver.0.6.0
+        var scanner = cordova.require( 'cordova.plugins.barcodeScanner' ); // ver.0.6.0
         try {
             scanner.scan(
                 function ( result )
