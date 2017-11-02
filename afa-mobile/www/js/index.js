@@ -17,7 +17,7 @@
  * under the License.
  */
 var app = {
-    version: '0.14.10',
+    version: '0.15',
     db: false,
     task_id: false,
     dispatch_id: false,
