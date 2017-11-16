@@ -413,6 +413,14 @@ module.exports = [
     "clobbers": [
       "window.plugins.touchid"
     ]
+  },
+  {
+    "id": "cordova-plugin-screen-orientation.screenorientation",
+    "file": "plugins/cordova-plugin-screen-orientation/www/screenorientation.js",
+    "pluginId": "cordova-plugin-screen-orientation",
+    "clobbers": [
+      "cordova.plugins.screenorientation"
+    ]
   }
 ];
 module.exports.metadata = 
@@ -433,7 +441,8 @@ module.exports.metadata =
   "phonegap-plugin-barcodescanner": "7.0.0",
   "cordova-plugin-pin-dialog": "0.1.3",
   "cordova-plugin-file-transfer": "1.6.3",
-  "cordova-plugin-touch-id": "3.2.0"
+  "cordova-plugin-touch-id": "3.2.0",
+  "cordova-plugin-screen-orientation": "2.0.2"
 };
 // BOTTOM OF METADATA
 });

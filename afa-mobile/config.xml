@@ -112,4 +112,5 @@
     <plugin name="cordova-plugin-pin-dialog" spec="git+https://github.com/Paldom/PinDialog.git" />
     <plugin name="cordova-plugin-file-transfer" spec="^1.6.3" />
     <plugin name="cordova-plugin-touch-id" spec="^3.2.0" />
+    <plugin name="cordova-plugin-screen-orientation" spec="^2.0.2" />
 </widget>

@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		0207DA581B56EA530066E2B4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0207DA571B56EA530066E2B4 /* Images.xcassets */; };
 		1D3623260D0F684500981E51 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* AppDelegate.m */; };
@@ -52,6 +51,7 @@
 		F0D50833210E4DF58AC5B994 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8C3068A45B54C42B7C74AE6 /* QuartzCore.framework */; };
 		F1AF71728F9D44EA8201CE77 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C3AE34BCA26416D9E8E15C5 /* LocalAuthentication.framework */; };
 		FA69791C803D431584DE1892 /* UIImage+CropScaleOrientation.m in Sources */ = {isa = PBXBuildFile; fileRef = DDEB5FD31DAA4D439701BCBC /* UIImage+CropScaleOrientation.m */; };
+		47D0981D897944F880D9C388 /* CDVOrientation.m in Sources */ = {isa = PBXBuildFile; fileRef = A61028AF492D4EAA9B1787A2 /* CDVOrientation.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -158,6 +158,8 @@
 		F9FD41A3E8554B8F99978B66 /* CDVPinDialog.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = CDVPinDialog.m; path = "cordova-plugin-pin-dialog/CDVPinDialog.m"; sourceTree = "<group>"; };
 		FDB45BA6DA8D429B88E90037 /* zxing-all-in-one.cpp */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "zxing-all-in-one.cpp"; path = "phonegap-plugin-barcodescanner/zxing-all-in-one.cpp"; sourceTree = "<group>"; };
 		FF746F7958F84B9D809B67CD /* CDVReachability.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = CDVReachability.m; path = "cordova-plugin-network-information/CDVReachability.m"; sourceTree = "<group>"; };
+		A61028AF492D4EAA9B1787A2 /* CDVOrientation.m */ = {isa = PBXFileReference; name = "CDVOrientation.m"; path = "cordova-plugin-screen-orientation/CDVOrientation.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		7438DB2D253F471A87A2B145 /* CDVOrientation.h */ = {isa = PBXFileReference; name = "CDVOrientation.h"; path = "cordova-plugin-screen-orientation/CDVOrientation.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -334,6 +336,8 @@
 				B0E15C46ACDA482F935D84B4 /* CDVFileTransfer.h */,
 				4CEFFA2C06D342AB863D99BB /* TouchID.m */,
 				B7413D1A69D046E78150A3EA /* TouchID.h */,
+				A61028AF492D4EAA9B1787A2 /* CDVOrientation.m */,
+				7438DB2D253F471A87A2B145 /* CDVOrientation.h */,
 			);
 			name = Plugins;
 			path = "Field Technician/Plugins";
@@ -486,6 +490,7 @@
 				AFC858062AB34052B72749D0 /* CDVPinDialog.m in Sources */,
 				24B19A62FD824F9089CD9D9A /* CDVFileTransfer.m in Sources */,
 				4273F385C6B24F7A8BCC1E1B /* TouchID.m in Sources */,
+				47D0981D897944F880D9C388 /* CDVOrientation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

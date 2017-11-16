@@ -1896,7 +1896,7 @@ var app = {
 
     },
     showSignPopup: function(){
-        window.screen.lockOrientation('landscape');
+        window.screen.orientation.lock('landscape');
         $.mobile.navigate( '#signature' );
         jQuery("#saveSignatureBtn").attr("disabled", "disabled")
         app.initCanvas.init();
@@ -1906,7 +1906,7 @@ var app = {
         $("#termsBlock").show();
         $("#noSigner").hide();
         $("#addSignBtn").hide();
-        window.screen.unlockOrientation();
+        window.screen.orientation.unlock();
         $.mobile.navigate( '#receipt' );
         app.resetTimer();
     },
