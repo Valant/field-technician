@@ -11,6 +11,7 @@
     use common\models\SVServiceTicket;
     use common\models\SVServiceTicketNotes;
     use Yii;
+    use yii\data\ActiveDataProvider;
     use yii\rest\ActiveController;
     use yii\filters\auth\QueryParamAuth;
     use yii\helpers\ArrayHelper;
