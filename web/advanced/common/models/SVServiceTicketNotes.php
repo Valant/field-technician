@@ -60,8 +60,10 @@
         public function beforeSave($insert){
 
             if($insert) {
-            $this->Access_Level = 2;
-            $this->Is_Resolution = 'N';
+            	if(!$this->Access_Level) {
+		            $this->Access_Level = 2;
+	            }
+                $this->Is_Resolution = 'N';
             }
             return parent::beforeSave($insert);
         }

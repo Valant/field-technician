@@ -46,4 +46,13 @@
         public function actionGetdispatch($task_id){
             return SVServiceTicketNotes::find()->where(['Service_Ticket_Id'=>$task_id, 'Service_Tech_Id'=>Yii::$app->user->getIdentity()->technition_id])->orderBy(['Dispatch_Id'=>SORT_DESC])->one();
         }
+
+        public function actionGetticketnotes($service_ticked_id){
+			return new ActiveDataProvider([
+                          'query' => SVServiceTicketNotes::find()->where(['Service_Ticket_Id'=>$service_ticked_id]),
+                          'pagination' => [
+                              'pageSize' => 20,
+                          ],
+                      ]);
+        }
     }
