@@ -57,6 +57,17 @@
                 'Notes'                   => 'Notes',
             ];
         }
+
+
+	    public function extraFields()
+	    {
+		    return ['user'];
+	    }
+
+	    public function getUser(){
+		    return $this->hasOne( SYEmployee::className(), [ 'UserCode' => 'UserCode' ] );
+	    }
+
         public function beforeSave($insert){
 
             if($insert) {
