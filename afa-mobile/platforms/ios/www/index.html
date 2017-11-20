@@ -118,6 +118,9 @@
         <div role="main" class="ui-content" id="taskContent">
             <h3 id="taskName"></h3>
             <div id="taskDescription" data-theme="b" data-form="ui-body-b" class="ui-body ui-body-b ui-corner-all"></div>
+            <div id="taskNotesList" data-theme="b" data-form="ui-body-b" class="ui-body ui-body-b ui-corner-all">
+
+            </div>
             <div id="partList">
                 <ul id="parts" data-role="listview" data-inset="true" data-count-theme="c" data-split-icon="delete">
                 </ul>
@@ -133,6 +136,7 @@
                 <button id="task_btn_scan" class="ui-disabled" data-icon="bars" onclick="app.addMaterial()">Add material</button>
                 <button id="supplier_pickup_btn" data-icon="camera" onclick="app.supplierPickup()">Supplier Pickup</button>
                 <button id="task_btn_cam" class="ui-disabled" data-icon="camera" onclick="app.makePhoto()">Take a photo</button>
+                <button id="add_extra_note" data-icon="comment" onclick="app.addNote()">Add note</button>
             </div>
         </div>
         <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
@@ -241,6 +245,18 @@
             <h3>&copy; AFA Protective Systems</h3>
             <h5 id="appversion"></h5>
         </div>
+    </div>
+    <div data-role="page" id="addextranote">
+        <div data-role="header">
+            <button data-icon="back" data-iconpos="notext" onclick="app.goBack();"></button>
+            <h2>Note</h2>
+        </div>
+        <div role="main" class="ui-content" id="addextranoteContent">
+            <label for="note">NOTE</label>
+            <textarea name="note" id="note" cols="30" rows="10" required="required"></textarea>
+            <button data-icon="check" onclick="app.saveAddExtraNote()">Save</button>
+        </div>
+        <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
     </div>
 </body>
 

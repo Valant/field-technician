@@ -905,6 +905,24 @@ var app = {
 
         } );
 
+        $.when( jQuery.getJSON( app.apiUrl + '/ticketnotes/getticketnotes', {
+            'service_ticked_id': app.task_id,
+            'access-token': app.access_token,
+            'per-page': 100,
+            'expand': 'user'
+        }, this.drawTaskNotes.bind( this ) ) ).done( function ( res )
+        {
+
+            $.mobile.loading( 'hide' );
+//            if (res.length) {
+//                $.mobile.navigate( '#taskDetails' );
+//            }
+//             app.showReceiptPage();
+//             app.showSignPopup();
+
+
+        } );
+
     },
     dbError: function ( err )
     {
@@ -1204,6 +1222,13 @@ var app = {
                 'OK'                  // buttonName
             );
         }
+    },
+    drawTaskNotes: function(data){
+        var notesListHolder = jQuery("#taskNotesList");
+        notesListHolder.empty();
+        $.each( data, function ( index, value ){
+            notesListHolder.append("<p><span>"+value.user.fullname+" at "+moment(value.Entered_Date, 'MMM DD YYYY HH:mm:ss0A' ).format( 'YYYY-MM-DD HH:mm:ss' )+"</span></br>"+value.Notes+"</p>")
+        });
     },
     clearTask: function ()
     {
@@ -1930,6 +1955,39 @@ var app = {
     updateOrientation: function(){
         if(app.initCanvas.context){
             app.initCanvas.init();
+        }
+    },
+    addNote: function(){
+        jQuery("#note").val("");
+        $.mobile.navigate( '#addextranote' );
+    },
+    saveAddExtraNote: function(){
+        if(jQuery("#note").val().length > 2) {
+            this.showLoader('Adding note...');
+            jQuery.ajax({
+                type: 'POST',
+                url : app.apiUrl + '/ticketnotes/create?access-token=' + app.access_token,
+                data: {
+                    Service_Ticket_Id: app.task_data[app.task_id].Service_Ticket_Id,
+                    UserCode         : app.user_code,
+                    Edit_UserCode    : app.user_code,
+                    Ticket_Number    : app.task_data[app.task_id].Ticket_Number,
+                    Notes            : jQuery("#note").val(),
+                    Entered_Date     : moment().format('MMM DD YYYY HH:mm:ss A'),
+                    Edit_Date        : moment().format('MMM DD YYYY HH:mm:ss A'),
+                    Is_resolution    : "N",
+                    Access_level     : 1
+                }
+            }).then(function (data) {
+
+                var notesListHolder = jQuery("#taskNotesList");
+
+                notesListHolder.append("<p><span>"+app.user_data.servicetechcode+" at "+moment().format( 'YYYY-MM-DD HH:mm:ss' )+"</span></br>"+jQuery("#note").val()+"</p>")
+
+
+                $.mobile.loading('hide');
+                app.goBack();
+            });
         }
     }
 };
