@@ -143,6 +143,8 @@
                 return $this->First_Name . ' ' . $this->Last_Name;
             };
 
+            unset($fields['Picture']);
+
             return $fields;
         }
     }
