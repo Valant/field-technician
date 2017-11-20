@@ -37,7 +37,7 @@
      * @property integer $User_Id
      * @property string $Supervisor_Commission_Pctg
      * @property integer $Job_Approval_Group_Id
-     * @property resource $Picture
+//     * @property resource $Picture
      */
     class SYEmployee extends \yii\db\ActiveRecord
     {
@@ -69,7 +69,7 @@
                         'Payroll_File_No',
                         'Entered_By',
                         'Updated_By',
-                        'Picture'
+//                        'Picture'
                     ],
                     'string'
                 ],
@@ -130,7 +130,7 @@
                 'User_Id'                    => 'User  ID',
                 'Supervisor_Commission_Pctg' => 'Supervisor  Commission  Pctg',
                 'Job_Approval_Group_Id'      => 'Job  Approval  Group  ID',
-                'Picture'                    => 'Picture',
+//                'Picture'                    => 'Picture',
             ];
         }
 
