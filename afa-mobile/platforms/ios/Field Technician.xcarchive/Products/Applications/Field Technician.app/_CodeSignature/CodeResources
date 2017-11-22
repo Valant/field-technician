@@ -90,7 +90,7 @@
 		</data>
 		<key>Assets.car</key>
 		<data>
-		21elg0GXDqQTljuENcbeJkLk4Ys=
+		oG8lVweeBb/aHTUWhboVm4schUM=
 		</data>
 		<key>CDVBarcodeScanner.bundle/beep.caf</key>
 		<data>
@@ -230,7 +230,7 @@
 		</data>
 		<key>CDVLaunchScreen.storyboardc/01J-lp-oVM-view-Ze5-6b-2t3.nib</key>
 		<data>
-		pddRKZCzHFeAxXRBbb6hzlOLBeo=
+		nw21zVMXMhlQhXkv3FifjPnTHi0=
 		</data>
 		<key>CDVLaunchScreen.storyboardc/Info.plist</key>
 		<data>
@@ -238,7 +238,7 @@
 		</data>
 		<key>CDVLaunchScreen.storyboardc/UIViewController-01J-lp-oVM.nib</key>
 		<data>
-		m/NArS9eK52nZOosh5vdyj6RVso=
+		lgDORZrkVEsFYHjDvlSD6wm5JWc=
 		</data>
 		<key>CDVNotification.bundle/beep.wav</key>
 		<data>
@@ -306,7 +306,7 @@
 		</data>
 		<key>MainViewController.nib</key>
 		<data>
-		YMkSF2NuIQqlsVrhs8bVNlPBJts=
+		C6W2AZNvYmJTYSSADTrJ+F4W6JU=
 		</data>
 		<key>PkgInfo</key>
 		<data>
@@ -326,7 +326,7 @@
 		</data>
 		<key>scannerOverlay.nib</key>
 		<data>
-		GcQ6Y2WUQK2hZtjBV6p3UkWT6ew=
+		3pb13tAkRuvpgvnMUBdQJOxXT04=
 		</data>
 		<key>www/cordova-js-src/exec.js</key>
 		<data>
@@ -1226,7 +1226,7 @@
 		</data>
 		<key>www/js/index.js</key>
 		<data>
-		z9VQODi/7xCKShe36ZiPiwdGQMk=
+		cSMBDQ02bFkLfSbQLs/D5chwVJc=
 		</data>
 		<key>www/js/jquery.blockUI.js</key>
 		<data>
@@ -2018,11 +2018,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			21elg0GXDqQTljuENcbeJkLk4Ys=
+			oG8lVweeBb/aHTUWhboVm4schUM=
 			</data>
 			<key>hash2</key>
 			<data>
-			KndHJ/N7C1j80rEgKKICtFiEYjbnnvmAUGLcBJO2c90=
+			oaWNOZEf9le4uIE6qxq8u85j0196yyWicskhoBKNOk8=
 			</data>
 		</dict>
 		<key>CDVBarcodeScanner.bundle/beep.caf</key>
@@ -2356,11 +2356,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			pddRKZCzHFeAxXRBbb6hzlOLBeo=
+			nw21zVMXMhlQhXkv3FifjPnTHi0=
 			</data>
 			<key>hash2</key>
 			<data>
-			gWwRLAqM+G4OMO8v+tAsVbFQpay7J9eGCq47jkcUz84=
+			WKEjBhnvGOWCkWi6WXL69MPX1Ch/uxa452isjN71QsI=
 			</data>
 		</dict>
 		<key>CDVLaunchScreen.storyboardc/Info.plist</key>
@@ -2378,11 +2378,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			m/NArS9eK52nZOosh5vdyj6RVso=
+			lgDORZrkVEsFYHjDvlSD6wm5JWc=
 			</data>
 			<key>hash2</key>
 			<data>
-			ES6XQGYWYAOiwviIl8RLY8numlTBnIh1BGayy1+zonU=
+			MbeQf/nc4xiQCmmjjwyVjmnMGhiW3iHyt10SjCxjrUI=
 			</data>
 		</dict>
 		<key>CDVNotification.bundle/beep.wav</key>
@@ -2554,11 +2554,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			YMkSF2NuIQqlsVrhs8bVNlPBJts=
+			C6W2AZNvYmJTYSSADTrJ+F4W6JU=
 			</data>
 			<key>hash2</key>
 			<data>
-			y6psoGkXFkKyRkz/0IEt8v2RZu6pQA7LSgpo01wEvyA=
+			Vk64c6ZztB2iU8NaswbEjqwTYMlYCzAecbjZP7iC8N4=
 			</data>
 		</dict>
 		<key>archived-expanded-entitlements.xcent</key>
@@ -2598,11 +2598,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			GcQ6Y2WUQK2hZtjBV6p3UkWT6ew=
+			3pb13tAkRuvpgvnMUBdQJOxXT04=
 			</data>
 			<key>hash2</key>
 			<data>
-			wda6TB/NfwVdm1SYVS80ubKkFD2rV25RPOGDNpFTM74=
+			bdOP8F8v4q4V98QXNuip8fFLD9sDVd/xj+maEF29AZY=
 			</data>
 		</dict>
 		<key>www/cordova-js-src/exec.js</key>
@@ -5073,11 +5073,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			z9VQODi/7xCKShe36ZiPiwdGQMk=
+			cSMBDQ02bFkLfSbQLs/D5chwVJc=
 			</data>
 			<key>hash2</key>
 			<data>
-			gWTL5WglYEQYTBtOHcrwjZoadmW5CcNSGFggcWbuU2I=
+			QTJxlSVtnziohWd399SFfFc320M8xjagPqpzkUk0+II=
 			</data>
 		</dict>
 		<key>www/js/jquery.blockUI.js</key>

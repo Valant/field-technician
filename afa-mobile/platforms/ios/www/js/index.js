@@ -1913,6 +1913,7 @@ var app = {
         } ).then(function(data){
             $.mobile.loading( 'hide' );
             app.showTasksList();
+            app.logout();
         });
     },
     showTasksList: function(){

@@ -17,14 +17,14 @@
  * under the License.
  */
 var app = {
-    version: '0.13.38',
+    version: '0.14.10',
     db: false,
     task_id: false,
     dispatch_id: false,
     uploaded: 0,
     needToUpload: 0,
 //     apiUrl: 'http://api.field-technician.loc/',
-//    apiUrl: 'http://ftapi.afap.com/',
+//     apiUrl: 'http://ftapi.afap.com/',
     apiUrl: 'http://ftapitest.afap.com/',
     user_id: 0,
     user_code: '',
@@ -77,7 +77,6 @@ var app = {
         }
         mobile_prompt = navigator.notification.prompt;
         if ('android' != cordova.platformId && undefined != window.plugins.iosNumpad) {
-            data.locked_length + ' minutes ago'
             mobile_prompt = window.plugins.iosNumpad.prompt;
         }
 
@@ -135,6 +134,7 @@ var app = {
                         app.userLogIn = true;
                         app.loadTasks();
                         app.loadResolitons();
+                        app.resetTimer();
 
                     } else {
                         console.log("LOGOUT ON load user data");
@@ -196,15 +196,21 @@ var app = {
         );
     },
     checkLoginExpiration: function(){
-        console.log("CHeck login expiration");
+//        console.log("CHeck login expiration");
         var currentTime  = new Date().getTime();
-        if(((currentTime - app.lastTime)/1000) > 1500){
+        app.lastTime = window.localStorage.getItem('last_time');
+        if(((currentTime - app.lastTime)/1000) > 840){
             if(app.userLogIn) {
                 console.log("logout on login expiration");
                 app.logout();
             }
         }
 
+    },
+    resetTimer: function(){
+        app.lastTime = new Date().getTime();
+        window.localStorage.setItem( 'last_time', app.lastTime);
+        console.log("RESET TIMER: ", app.lastTime);
     },
     populateDB: function ( tx )
     {
@@ -274,6 +280,7 @@ var app = {
                         $( '#resolution_code' ).attr("Resolution_Code",el.Description);
 
                     } );
+                    app.resetTimer();
                 }
             } );
     },
@@ -362,6 +369,7 @@ var app = {
     },
     drawTask: function ( data )
     {
+        app.resetTimer();
         if ($( '#tasks #tasks_content table' )) {
             $( '#tasks #tasks_content table' ).table();
         }
@@ -414,10 +422,11 @@ var app = {
         $.mobile.loading( 'hide' );
         $.mobile.navigate('#tasks');
         $( '.ui-collapsible' ).find( 'tr:not(:first)' ).toggle();
-        navigator.notification && navigator.notification.vibrate( 1000 );
+        navigator.notification && navigator.vibrate( 1000 );
     },
     addMaterial: function ()
     {
+        app.resetTimer();
         navigator.notification.confirm(
             'Add Material',
             function ( button )
@@ -437,6 +446,7 @@ var app = {
     },
     addPartToTicket: function ( data )
     {
+        app.resetTimer();
         mobile_prompt(
             'Please enter quantity',  // message
             function ( results )
@@ -599,6 +609,7 @@ var app = {
     },
     scanBarCode: function ()
     {
+        app.resetTimer();
         var scanner = cordova.require( 'com.phonegap.plugins.barcodescanner.barcodescanner' ); // ver.0.6.0
         try {
             scanner.scan(
@@ -626,7 +637,7 @@ var app = {
     },
     uploadPhoto: function ( imageURI, id )
     {
-
+        app.resetTimer();
         var options = new FileUploadOptions();
         options.fileKey = 'path';
         options.fileName = imageURI.substr( imageURI.lastIndexOf( '/' ) + 1 );
@@ -680,6 +691,7 @@ var app = {
     },
     uploadPhotoWin: function ( r )
     {
+        app.resetTimer();
         var data = JSON.parse( r.response );
         console.log( JSON.parse( r.response ) );
         console.log( 'Code = ' + r.responseCode );
@@ -750,6 +762,7 @@ var app = {
                 'Select photo source',
                 ['Camera', 'Gallery'] // buttonLabels
             );
+            app.resetTimer();
     },
     supplierTicketNotes: function(){
         jQuery.ajax( {
@@ -802,6 +815,7 @@ var app = {
     },
     saveTaskData: function ()
     {
+        app.resetTimer();
         var self = this;
         var filesList = [];
 
@@ -856,6 +870,7 @@ var app = {
     },
     showTaskDetail: function ( task_id, dispatch_id )
     {
+        app.resetTimer();
         this.showLoader( 'Loading task data' );
         this.clearTask();
         var task = app.task_data[task_id];
@@ -863,7 +878,9 @@ var app = {
         app.attachmentToDelete = [];
         app.task_id = task_id;
         app.dispatch_id = dispatch_id;
-        this.db && this.db.transaction( this.getTaskData, this.dbError );
+        console.log(this.db);
+//        this.db && this.db.transaction( this.getTaskData, this.dbError );
+        this.getTaskData();
 
         $.when( jQuery.getJSON( app.apiUrl + '/ticket/find', {
             'id': dispatch_id,
@@ -891,7 +908,8 @@ var app = {
     },
     getTaskData: function ( tx )
     {
-
+        console.log('get task data');
+        app.resetTimer();
         jQuery.getJSON( app.apiUrl + 'ticket/getdispatch', {
             'dispatch_id': app.dispatch_id,
 //            'task_id': app.task_id,
@@ -914,6 +932,7 @@ var app = {
             app.task_data[data.Service_Ticket_Id]['Dispatch_Id'] = data.Dispatch_Id;
             if (data) {
                 if (app.taskLocked[app.task_id]) {
+                    console.log("935");
                     var locked_time_message = ''
                     if (data.locked_length <= 1) {
                         locked_time_message = ' one minute ago';
@@ -922,15 +941,16 @@ var app = {
                     } else {
                         locked_time_message = ' about ' + Math.round( data.locked_length / 60 ) + ' hour(s) ago';
                     }
+                    console.log("944");
                     navigator.notification.alert(
-                        'Task Locked by user: "' + app.taskLocked[app.task_id] + '"' + locked_time_message,  // message
+                        'Task Locked by user: "' + app.taskLocked[app.task_id] + '" ' + locked_time_message,  // message
                         function ( res )
                         {
                         },         // callback
                         'Task Locked',            // title
                         'OK'                  // buttonName
                     );
-
+                    console.log("953");
                     $( '#status_dispatch,#status_arrived,#status_depart,button[id^="task_btn_"]' ).addClass(
                         'ui-disabled' );
 
@@ -970,13 +990,18 @@ var app = {
             {
                 if (data) {
                     for (var i in data) {
-                        $( '#photos' ).append(
-                            '<div class="newImage" data-attachment-id="' + data[i].id + '" >' +
+
+                        var attachCode = '<div class="newImage" data-attachment-id="' + data[i].id + '" >' +
                             '<img class="photoPreview" ' +
                             'data-on-server="true" ' +
-                            'src="' + app.apiUrl + '/uploads/' + data[i].task_id + '/' + data[i].path + '"/>' +
-                            '<button data-icon="delete" data-iconpos="notext" onclick="app.removeImage(this);"></button>' +
-                            '</div>' );
+                            'src="' + app.apiUrl + '/uploads/' + data[i].task_id + '/' + data[i].path + '"/>';
+                        if((!data[i].tech_id)||(data[i].tech_id == app.user_id) ) {
+                            attachCode += '<button data-icon="delete" data-iconpos="notext" onclick="app.removeImage(this);"></button>';
+                        }
+
+                        attachCode += '</div>';
+
+                        $( '#photos' ).append(attachCode);
                         $( '#photos' ).trigger( 'create' );
                     }
                 }
@@ -993,13 +1018,18 @@ var app = {
                 if (data) {
                     for (var i in data) {
                         app.usedParts[data[i].part.Part_Id] = data[i].Quantity;
-                        $( '#parts' ).append( '<li id="part' + data[i].part.Part_Id + '">' +
-                                              '<a data-inline="true" onclick="app.changePartQuantity('+ data[i].Service_Ticket_Part_Id + ',' + data[i].part.Part_Id + ',' + data[i].Quantity+ ',\'' + data[i].part.Part_Code+ '\',\'' + htmlEncode(data[i].part.Description) + '\'); return false;">'
-                                              + data[i].part.Part_Code + ' ' + data[i].part.Description +
-                                              '<span class="ui-li-count" >' + data[i].Quantity + '</span>' +
-                                              '</a>'+
-                                              '<a onclick="app.removePart(' + data[i].part.Part_Id + ', '+data[i].Quantity+','+ data[i].Service_Ticket_Part_Id + ')" class="delete">Delete</a>' +
-                                              '</li>' );
+                        if(data[i].Service_Tech_Id == app.user_id) {
+                            $('#parts').append('<li id="part' + data[i].part.Part_Id + '">' +
+                                '<a data-inline="true" onclick="app.changePartQuantity(' + data[i].Service_Ticket_Part_Id + ',' + data[i].part.Part_Id + ',' + data[i].Quantity + ',\'' + data[i].part.Part_Code + '\',\'' + htmlEncode(
+                                    data[i].part.Description) + '\'); return false;">'
+                                + data[i].part.Part_Code + ' ' + data[i].part.Description +
+                                '<span class="ui-li-count" >' + data[i].Quantity + '</span>' +
+                                '</a>' +
+                                '<a onclick="app.removePart(' + data[i].part.Part_Id + ', ' + data[i].Quantity + ',' + data[i].Service_Ticket_Part_Id + ')" class="delete">Delete</a>' +
+                                '</li>');
+                        }else{
+                            $('#parts').append('<li data-icon="false" id="part' + data[i].part.Part_Id + '"><a data-inline="true">' + data[i].part.Part_Code + ' ' + data[i].part.Description +'<span class="ui-li-count" >' + data[i].Quantity + '</span></a></li>');
+                        }
                     }
                     $( '#parts:visible' ).listview( 'refresh' );
                 }
@@ -1009,6 +1039,7 @@ var app = {
 
     },
     changePartQuantity: function(Service_Ticket_Part_Id, part_id, currentQuantity, partCode, partDescription){
+        app.resetTimer();
         mobile_prompt(
             'Please enter total quantity for '+ partCode + ' '+ partDescription,  // message
             function ( results )
@@ -1103,6 +1134,7 @@ var app = {
 //                             $.mobile.silentScroll( $( '#parts' ).offset().top );
     //                        app.uploadTaskData();
                             $.mobile.loading( 'hide' );
+                            app.resetTimer();
                         });
 //                     });
                 }
@@ -1114,6 +1146,7 @@ var app = {
     },
     drawTaskDetails: function ( data )
     {
+        app.resetTimer();
         data = data[0];
 
         if (undefined != data) {
@@ -1170,6 +1203,7 @@ var app = {
     },
     clearTask: function ()
     {
+        app.resetTimer();
         $( '#taskName, #taskDescription, #photos, #files, #parts' ).empty();
 
         $( '#status_dispatch,#status_arrived,#status_depart,button[id^="task_btn_"]' ).addClass( 'ui-disabled' );
@@ -1181,6 +1215,7 @@ var app = {
     },
     saveTaskStatus: function ( taskStatusData )
     {
+        app.resetTimer();
 
         taskStatusData.data.UserCode = app.user_code;
         taskStatusData.data.Ticket_Number = app.task_data[app.task_id].Ticket_Number;
@@ -1358,6 +1393,7 @@ var app = {
             {
                 $( '#task' + data.Service_Ticket_Id ).remove();
             } );
+            app.resetTimer();
         }
     },
     launchMASMobile: function ()
@@ -1382,10 +1418,12 @@ var app = {
     },
     setTaskStatus: function ( status )
     {
+        console.log("SET TASK STATUS START");
         var canSetStatus = false;
         var data = {};
         switch (status) {
             case 'dispatch':
+                console.log( navigator.notification);
                 navigator.notification.confirm(
                     '', // message
                     function ( button )
@@ -1450,6 +1488,7 @@ var app = {
                 );
                 break;
         }
+        app.resetTimer();
     },
     goBack: function ()
     {
@@ -1468,6 +1507,7 @@ var app = {
             $.mobile.back();
             return false;
         }
+        app.resetTimer();
     },
     removePart: function ( part_id, quantity, service_ticket_part_id )
     {
@@ -1505,7 +1545,7 @@ var app = {
             'Part removing',           // title
             ['Yes', 'No']         // buttonLabels
         );
-
+        app.resetTimer();
     },
     removeImage: function ( obj )
     {
@@ -1529,7 +1569,7 @@ var app = {
             ['Yes', 'No']         // buttonLabels
         );
 
-
+        app.resetTimer();
     },
     settings: function ()
     {
@@ -1627,6 +1667,7 @@ var app = {
     },
     showReceiptPage: function ()
     {
+        app.resetTimer();
         jQuery("#receiptData .timing" ).empty();
         jQuery( '#receiptData .parts' ).empty();
         jQuery("#userEmail" ).val("");
@@ -1847,6 +1888,7 @@ var app = {
     },
     showTasksList: function(){
         app.loadTasks();
+        app.resetTimer();
 
     },
     showSignPopup: function(){
@@ -1862,6 +1904,7 @@ var app = {
         $("#addSignBtn").hide();
         window.screen.unlockOrientation();
         $.mobile.navigate( '#receipt' );
+        app.resetTimer();
     },
     showTerms: function(){
         navigator.notification.alert(
@@ -1870,6 +1913,7 @@ var app = {
             'Terms',            // title
             'OK'                  // buttonName
         );
+        app.resetTimer();
     },
     checkTerms: function(){
         if(jQuery("#terms").is(":checked")){

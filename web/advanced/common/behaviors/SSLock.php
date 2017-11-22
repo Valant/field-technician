@@ -79,7 +79,7 @@ class SSLock extends Behavior
             if (!$tickedLocked || $tickedLocked['LockTable_Id'] == null) {
 
                 $lock->save();
-            } elseif ((time() - strtotime($tickedLocked['LockedTime'])) > 60 *5 || $tickedLocked['LockedByUser'] == $userCode) {
+            } elseif ((time() - strtotime($tickedLocked['LockedTime'])) > 60 * 5 || $tickedLocked['LockedByUser'] == $userCode) {
                 SSLockTable::deleteAll("Code ='".$ticketNumber."' and Form = 'mobile'");
                if(strtolower($tickedLocked['Form'])=='mobile') {
                    $lock->save();
