@@ -178,3 +178,11 @@ h1 {
 .ui-li-count {
     z-index: 999;
 }
+
+#pannel_status h1{
+    text-align: center;
+}
+#pannel_status h1.error{
+    color: red;
+    font-weight: bold;
+}

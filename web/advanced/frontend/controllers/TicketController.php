@@ -88,12 +88,31 @@
              ')
                     ->from('SV_Service_Ticket_Dispatch')
                     ->innerJoin('SV_Service_Ticket', 'SV_Service_Ticket.Service_Ticket_Id = SV_Service_Ticket_Dispatch.Service_Ticket_Id')
-                    ->leftJoin('SS_LockTable', 'SV_Service_Ticket.Ticket_Number = SS_LockTable.Code AND SS_LockTable.Table_Name = "sv_service_ticket"')
+                    ->leftJoin('SS_LockTable', 'SV_Service_Ticket.Ticket_Number = SS_LockTable.Code AND SS_LockTable.Table_Name = \'sv_service_ticket\'')
                     ->where(['SV_Service_Ticket_Dispatch.Dispatch_Id'=>$dispatch_id, 'Service_Tech_Id'=>Yii::$app->user->getIdentity()->technition_id])
                     ->orderBy(['Dispatch_Id'=>SORT_DESC])
                     ->limit(1)
                 , 'pagination' => false
             ]);
+        }
+
+        public function actionPanelstatus($customer_id){
+        	$query = new Query();
+        	return new ActiveDataProvider([
+        		'query'=> $query
+		            ->select('
+		            AR_Customer.Customer_Number as Customer_Number,
+					AR_Userdef_7.Userdef_7_code as System_User_Table_7
+		            ')
+		        ->from('AR_Customer')
+		        ->innerJoin('AR_Customer_Site', 'AR_Customer.Customer_Id = AR_Customer_Site.Customer_Id')
+		        ->leftJoin('AR_Customer_System', 'AR_Customer_Site.Customer_Site_Id = AR_Customer_System.Customer_Site_Id')
+		        ->leftJoin('AR_Customer_System_Userdef', 'AR_Customer_System.Customer_System_Id = AR_Customer_System_Userdef.Customer_System_Id')
+		        ->leftJoin('AR_Userdef_7', 'AR_Customer_System_Userdef.Table7_Id = AR_Userdef_7.Userdef_7_Id')
+		        ->where(['AR_Customer.Customer_Id'=>$customer_id])
+		        ->orderBy(['AR_Customer.Customer_Number'=>SORT_DESC])
+		        , 'pagination' => false
+	        ]);
         }
     }
     /*

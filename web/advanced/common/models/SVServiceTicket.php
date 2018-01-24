@@ -327,7 +327,7 @@
                   ->innerJoin('AR_Customer_Site',
                     'AR_Customer_Site.Customer_Site_Id = SV_Service_Ticket.Customer_Site_Id')
                   ->leftJoin('SS_LockTable',
-                    'SV_Service_Ticket.Ticket_Number = SS_LockTable.Code and SS_LockTable.Table_Name = "sv_service_ticket"')
+                    'SV_Service_Ticket.Ticket_Number = SS_LockTable.Code and SS_LockTable.Table_Name = \'sv_service_ticket\'')
                   ->where([
                     "SV_Service_Ticket.Ticket_Status"            => $ticketStatus,
                     "SV_Service_Ticket_Dispatch.Service_Tech_Id" => $service_tech_id,

@@ -23,9 +23,9 @@ var app = {
     dispatch_id: false,
     uploaded: 0,
     needToUpload: 0,
-//     apiUrl: 'http://api.field-technician.loc/',
+    apiUrl: 'http://api.field-technician.loc/',
 //     apiUrl: 'http://ftapi.afap.com/',
-    apiUrl: 'http://ftapitest.afap.com/',
+//     apiUrl: 'http://ftapitest.afap.com/',
     user_id: 0,
     user_code: '',
     service_tech_code: '',
@@ -44,6 +44,7 @@ var app = {
     lastTime: null,
     userLogIn: false,
     statID: false,
+    customer_id: false,
     // Application Constructor
     initialize: function ()
     {
@@ -895,6 +896,29 @@ var app = {
         }, this.drawTaskDetails.bind( this ) ) ).done( function ( res )
         {
 
+            jQuery.getJSON(app.apiUrl + '/ticket/panelstatus',
+                {
+                    'customer_id' : app.customer_id,
+                    'access-token': app.access_token,
+                }, function (data) {
+                    var isProgrammed = false;
+                    for(var i in data){
+                        console.log("PPP: ", data[i]['System_User_Table_7'].toLowerCase());
+                        if(data[i]['System_User_Table_7'].toLowerCase() == "panel programmed"){
+                            isProgrammed = true;
+                            break;
+                        }
+                    }
+
+                    if(isProgrammed){
+                        jQuery("#pannel_status h1").text("PANEL PROGRAMMED");
+                        jQuery("#pannel_status h1").removeClass('error')
+                    }else{
+                        jQuery("#pannel_status h1").text("PANEL NOT PROGRAMMED");
+                        jQuery("#pannel_status h1").addClass('error')
+                    }
+                });
+
             $.mobile.loading( 'hide' );
             if (res.length) {
                 $.mobile.navigate( '#taskDetails' );
@@ -1175,8 +1199,8 @@ var app = {
             //this.task_data[this.task_id] = data; // here was error with rewriting task custom params
             $.extend( this.task_data[this.task_id], data );
 
-
             var task = data;
+            app.customer_id = task.Customer_Id;
 
             $( '#taskName' ).text( task.ProblemDescription + ' - ' + task.Customer_Name );
 
