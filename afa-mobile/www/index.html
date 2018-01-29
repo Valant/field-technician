@@ -118,7 +118,7 @@
         <div role="main" class="ui-content" id="taskContent">
             <h3 id="taskName"></h3>
             <div id="taskDescription" data-theme="b" data-form="ui-body-b" class="ui-body ui-body-b ui-corner-all"></div>
-            <div id="taskNotesList" data-theme="b" data-form="ui-body-b" class="ui-body ui-body-b ui-corner-all">
+            <!--<div id="taskNotesList" data-theme="b" data-form="ui-body-b" class="ui-body ui-body-b ui-corner-all">-->
 
             </div>
             <div id="partList">
@@ -138,7 +138,7 @@
                 <button id="supplier_pickup_btn" data-icon="camera" onclick="app.supplierPickup()">Supplier Pickup</button>
                 <br/>
                 <!--<button id="task_btn_cam" class="ui-disabled" data-icon="camera" onclick="app.makePhoto()">Take a photo</button>-->
-                <button id="add_extra_note" data-icon="comment" onclick="app.addNote()">Add note</button>
+                <button  data-icon="comment" onclick="$.mobile.navigate( '#notesmanagement' );">Notes</button>
                 <button id="show_manage_photos" data-icon="comment" onclick="app.showManagePhotos()">Photos</button>
             </div>
         </div>
@@ -284,6 +284,30 @@
         </div>
         <div role="main" class="ui-content" id="photosPageContent">
             <div id="photos"><h1>Photos</h1></div>
+        </div>
+        <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
+    </div>
+
+    <div data-role="page" id="notesmanagement">
+        <div data-role="header">
+            <button data-icon="back" data-iconpos="notext" onclick="app.goBack();"></button>
+            <h2>Photos</h2>
+        </div>
+        <div role="main" class="ui-content" id="notesmanagementContent">
+            <button id="add_extra_note" data-icon="comment" onclick="app.addNote()">Add note</button>
+            <br/>
+            <button data-icon="check" onclick="$.mobile.navigate( '#notesPage' );">View Notes</button>
+        </div>
+        <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
+    </div>
+
+    <div data-role="page" id="notesPage">
+        <div data-role="header">
+            <button data-icon="back" data-iconpos="notext" onclick="app.goBack();"></button>
+            <h2>Notes</h2>
+        </div>
+        <div role="main" class="ui-content" id="notesPageContent">
+            <div id="taskNotesList" data-theme="b" data-form="ui-body-b" class="ui-body ui-body-b ui-corner-all">
         </div>
         <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
     </div>
