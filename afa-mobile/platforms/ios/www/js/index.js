@@ -2017,6 +2017,9 @@ var app = {
                 app.goBack();
             });
         }
+    },
+    showManagePhotos: function(){
+        $.mobile.navigate( '#photosmanagement' );
     }
 };
 
