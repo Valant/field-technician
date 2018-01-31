@@ -23,9 +23,9 @@ var app = {
     dispatch_id: false,
     uploaded: 0,
     needToUpload: 0,
-    // apiUrl: 'http://api.field-technician.loc/',
+    apiUrl: 'http://api.field-technician.loc/',
 //     apiUrl: 'http://ftapi.afap.com/',
-    apiUrl: 'http://ftapitest.afap.com/',
+//     apiUrl: 'http://ftapitest.afap.com/',
     user_id: 0,
     user_code: '',
     service_tech_code: '',
@@ -1066,7 +1066,7 @@ var app = {
                 if (data) {
                     for (var i in data) {
                         app.usedParts[data[i].part.Part_Id] = data[i].Quantity;
-                        if(data[i].Service_Tech_Id == app.user_id) {
+                        if((data[i].Service_Tech_Id == app.user_id) &&(data[i].Warehouse_Id == app.user_warehouse_id)) {
                             $('#parts').append('<li id="part' + data[i].part.Part_Id + '">' +
                                 '<a data-inline="true" onclick="app.changePartQuantity(' + data[i].Service_Ticket_Part_Id + ',' + data[i].part.Part_Id + ',' + data[i].Quantity + ',\'' + data[i].part.Part_Code + '\',\'' + htmlEncode(
                                     data[i].part.Description) + '\'); return false;">'
