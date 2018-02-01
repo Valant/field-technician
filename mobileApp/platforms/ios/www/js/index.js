@@ -75,7 +75,7 @@ var app = {
             StatusBar.overlaysWebView( false );
             this.prepareDB();
         }
-        mobile_prompt = navigator.notification.prompt;
+        var mobile_prompt = navigator.notification.prompt;
         if ('android' != cordova.platformId && undefined != window.plugins.iosNumpad) {
             mobile_prompt = window.plugins.iosNumpad.prompt;
         }

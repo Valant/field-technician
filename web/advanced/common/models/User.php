@@ -23,6 +23,7 @@
      * @property integer $status
      * @property integer $created_at
      * @property integer $updated_at
+     * @property integer $show_days_count
      * @property integer $technition_id
      */
     class User extends ActiveRecord implements IdentityInterface
@@ -31,21 +32,21 @@
 
         const STATUS_DELETED = 0;
         const STATUS_ACTIVE = 10;
-        
+
         const ROLE_USER = 10;
         const ROLE_ADMIN = 20;
-        
+
         public static $roleLabels = [
             self::ROLE_USER => 'User',
             self::ROLE_ADMIN => 'Admin'
         ];
-        
+
         public static $roleAccess = [
             'app-frontend' => self::ROLE_USER,
             'app-backend' => self::ROLE_ADMIN
         ];
-        
-        public function validateRole() 
+
+        public function validateRole()
         {
             return self::$roleAccess[Yii::$app->id] === $this->role;
         }
@@ -89,7 +90,7 @@
             return [
                 [ [ 'username',  'password_hash', 'email' ], 'required', 'on'=>'create' ],
                 [ [ 'username',  'email' ], 'required', 'on'=>'update' ],
-                [ [ 'role', 'status', 'technition_id','branch_id' ], 'integer' ],
+                [ [ 'role', 'status', 'technition_id','branch_id','show_days_count' ], 'integer' ],
                 [ [ 'username', 'password_hash', 'password_reset_token', 'email', 'userCode' ], 'string', 'max' => 255 ],
                 [ [ 'auth_key' ], 'string', 'max' => 32 ]
             ];
@@ -111,6 +112,7 @@
                 'status'               => 'Status',
                 'created_at'           => 'Created At',
                 'updated_at'           => 'Updated At',
+                'show_days_count'      => 'Show Days Count',
                 'technition_id'        => 'Technician ID',
             ];
         }

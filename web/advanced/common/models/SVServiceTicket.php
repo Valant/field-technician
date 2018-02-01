@@ -333,9 +333,12 @@
                     "SV_Service_Ticket_Dispatch.Service_Tech_Id" => $service_tech_id,
                     "SV_Service_Ticket_Dispatch.Resolution_Id"   => 1
                   ])
+                  ->andWhere("[SV_Service_Ticket_Dispatch].[Schedule_Time] <= DATEADD(day, :days, CURRENT_TIMESTAMP)",[":days"=>Yii::$app->user->getIdentity()->show_days_count])
                   ->orderBy('SV_Service_Ticket_Dispatch.Schedule_Time',
                     SORT_DESC)
                   ->limit(100);
+
+
 
             return new ActiveDataProvider([
                                             'query' => $query
