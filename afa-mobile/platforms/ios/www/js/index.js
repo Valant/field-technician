@@ -264,7 +264,7 @@ var app = {
         jQuery.getJSON( app.apiUrl + '/ticket/list', {
             'access-token': app.access_token,
             'UserCode': app.user_code,
-            'per-page': 100
+            'per-page': 7
         }, this.drawTask );
 
 
