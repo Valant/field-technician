@@ -43,10 +43,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'created_at',
             // 'updated_at',
             'technitionName',
-	[	
+	[
 		'attribute'=>'Branch',
 		'value'=>'branch.name'
 	],
+	        'show_days_count',
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>

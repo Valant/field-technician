@@ -38,6 +38,8 @@
     ] )->label( 'Technician' );
     ?>
 
+	<?= $form->field( $model, 'show_days_count' )->textInput( [ 'maxlength' => 3 ] ) ?>
+
     <?= $form->field( $model, 'password_hash' )->textInput( [
         'maxlength' => 255,
         'value'     => ""

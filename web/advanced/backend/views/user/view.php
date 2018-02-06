@@ -44,6 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
 	    'value'=>isset($model->branch->name)?$model->branch->name:"Not set"
 		],
             'status',
+            'show_days_count',
             'created_at',
             'updated_at',
             'technitionName',
