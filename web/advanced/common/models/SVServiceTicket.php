@@ -303,7 +303,8 @@
 
         public static function getList(
           $service_tech_id,
-          $ticketStatus = ['SC', 'IP']
+          $ticketStatus = ['SC', 'IP'],
+	        $is_closed = false
         ) {
 
             $query = new Query();
@@ -332,9 +333,13 @@
                     "SV_Service_Ticket.Ticket_Status"            => $ticketStatus,
                     "SV_Service_Ticket_Dispatch.Service_Tech_Id" => $service_tech_id,
                     "SV_Service_Ticket_Dispatch.Resolution_Id"   => 1
-                  ])
-                  ->andWhere("[SV_Service_Ticket_Dispatch].[Schedule_Time] <= DATEADD(day, :days, CURRENT_TIMESTAMP)",[":days"=>Yii::$app->user->getIdentity()->show_days_count])
-                  ->orderBy('SV_Service_Ticket_Dispatch.Schedule_Time',
+                  ]);
+
+                if(!$is_closed) {
+                	$query->andWhere( "[SV_Service_Ticket_Dispatch].[Schedule_Time] <= DATEADD(day, :days, CURRENT_TIMESTAMP)", [ ":days" => Yii::$app->user->getIdentity()->show_days_count ] );
+                }
+
+                  $query->orderBy('SV_Service_Ticket_Dispatch.Schedule_Time',
                     SORT_DESC)
                   ->limit(100);
 

@@ -28,7 +28,11 @@
 
         public function actionList()
         {
-            return SVServiceTicket::getList( Yii::$app->user->getIdentity()->technition_id );
+        	if(Yii::$app->request->get('isClosed')){
+		        return SVServiceTicket::getList( Yii::$app->user->getIdentity()->technition_id, ['CL','DP','DS','GB','OP','RS'], true );
+	        }else {
+		        return SVServiceTicket::getList( Yii::$app->user->getIdentity()->technition_id );
+	        }
         }
 
         public function actionFind($id, $Ticket_Number)

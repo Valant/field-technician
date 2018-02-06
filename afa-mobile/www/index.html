@@ -90,22 +90,49 @@
             <a data-icon="gear" data-role="button" data-theme="a" data-iconpos="notext" onclick="app.settings();" class="ui-btn-right ui-btn-a"></a>
         </div>
         <div role="main" class="ui-content" id="tasks_content">
-            <table data-role="table" id="table-custom-2" data-mode="columntoggle"
-                   class="ui-body-d ui-shadow table-stripe ui-responsive" data-column-btn-theme="b"
-                   data-column-btn-text="Columns to display..." data-column-popup-theme="a">
-                <thead>
-                <tr class="ui-bar-d">
-                    <th><abbr title="Date">Scheduled</abbr></th>
-                    <th data-priority="1"><abbr title="Ticket Number">ID</abbr></th>
-                    <th><abbr title="Problem detail">Problem</abbr></th>
-                    <th data-priority="1"><abbr title="Customer name">Name</abbr></th>
-                    <th data-priority="1"><abbr title="Customer city">City</abbr></th>
-                    <th data-priority="1"><abbr title="Ticket status">Status</abbr></th>
 
-                </tr>
-                </thead>
+            <div data-role="tabs">
+                <div data-role="navbar">
+                    <ul>
+                        <li><a href="#fragment-1" class="ui-btn-active">Active tasks</a></li>
+                        <li><a href="#fragment-2">Closed tasks</a></li>
+                    </ul>
+                </div>
+                <div id="fragment-1">
+                    <table data-role="table" id="table-custom-2" data-mode="columntoggle"
+                           class="ui-body-d ui-shadow table-stripe ui-responsive" data-column-btn-theme="b"
+                           data-column-btn-text="Columns to display..." data-column-popup-theme="a">
+                        <thead>
+                        <tr class="ui-bar-d">
+                            <th><abbr title="Date">Scheduled</abbr></th>
+                            <th data-priority="1"><abbr title="Ticket Number">ID</abbr></th>
+                            <th><abbr title="Problem detail">Problem</abbr></th>
+                            <th data-priority="1"><abbr title="Customer name">Name</abbr></th>
+                            <th data-priority="1"><abbr title="Customer city">City</abbr></th>
+                            <th data-priority="1"><abbr title="Ticket status">Status</abbr></th>
 
-            </table>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div id="fragment-2">
+                    <table data-role="table" id="table-closed" data-mode="columntoggle"
+                           class="ui-body-d ui-shadow table-stripe ui-responsive" data-column-btn-theme="b"
+                           data-column-btn-text="Columns to display..." data-column-popup-theme="a">
+                        <thead>
+                        <tr class="ui-bar-d">
+                            <th><abbr title="Date">Scheduled</abbr></th>
+                            <th data-priority="1"><abbr title="Ticket Number">ID</abbr></th>
+                            <th><abbr title="Problem detail">Problem</abbr></th>
+                            <th data-priority="1"><abbr title="Customer name">Name</abbr></th>
+                            <th data-priority="1"><abbr title="Customer city">City</abbr></th>
+                            <th data-priority="1"><abbr title="Ticket status">Status</abbr></th>
+
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
         </div>
         <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
     </div>
