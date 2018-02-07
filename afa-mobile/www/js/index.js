@@ -17,7 +17,7 @@
  * under the License.
  */
 var app = {
-    version: '0.15.2',
+    version: '0.15.1',
     db: false,
     task_id: false,
     dispatch_id: false,
@@ -413,11 +413,11 @@ var app = {
             }
             var taskTime = moment( value.Schedule_Time, 'MMM DD YYYY HH:mm:ss0A' ).format( 'HH:mm:ss' );
 
-            if(is_closed) {
-                app.task_data_closed[value.Service_Ticket_Id] = value;
-            }else {
+            // if(is_closed) {
+            //     app.task_data_closed[value.Service_Ticket_Id] = value;
+            // }else {
                 app.task_data[value.Service_Ticket_Id] = value;
-            }
+            // }
 
             var tr = $( rawCurDayBegin + '<tr id="task' + value.Service_Ticket_Id + '" onClick="app.showTaskDetail('+ value.Service_Ticket_Id +',' + value.Dispatch_Id + ');">' +
                 '<td>' + taskTime + '</td>' +
