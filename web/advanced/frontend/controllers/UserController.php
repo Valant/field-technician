@@ -10,6 +10,8 @@
 
     use common\components\PageLoaderComponent;
     use common\models\LoginStats;
+    use common\models\SSLockTable;
+    use common\models\SVServiceTicket;
     use common\models\TaskAttachment;
     use Yii;
     use yii\base\ErrorException;
@@ -99,6 +101,13 @@
                     );
 
                     $signUrl = Yii::$app->params['domainName'] . "/uploads/" . $model->task_id . "/" . $fileName;
+
+	                SSLockTable::deleteAll( [
+		                'Table_Name'   => SVServiceTicket::tableName(),
+		                'LockedByUser' => $postData['user_code'],
+		                'Code'         => $postData['ticket_number'],
+		                'Form'         => 'Mobile'
+	                ] );
                 } else {
                     throw new HttpException('503', 'Not valid email');
                 }
