@@ -17,20 +17,21 @@
  * under the License.
  */
 var app = {
-    version: '0.15',
+    version: '0.15.1',
     db: false,
     task_id: false,
     dispatch_id: false,
     uploaded: 0,
     needToUpload: 0,
-    apiUrl: 'http://api.field-technician.loc/',
+    // apiUrl: 'http://api.field-technician.loc/',
 //     apiUrl: 'http://ftapi.afap.com/',
-//     apiUrl: 'http://ftapitest.afap.com/',
+    apiUrl: 'http://ftapitest.afap.com/',
     user_id: 0,
     user_code: '',
     service_tech_code: '',
     user_data: {},
     task_data: [],
+    task_data_closed: [],
     taskLocked: [],
     usedParts: {},
     user_warehouse_id: null,
@@ -110,8 +111,8 @@ var app = {
 //         alert("8");
         app.access_token = window.localStorage.getItem('access_token');
         app.user_code = window.localStorage.getItem('user_code');
-        app.checkLoginExpiration();
-        window.setInterval(app.checkLoginExpiration, 300);
+        // app.checkLoginExpiration();
+        // window.setInterval(app.checkLoginExpiration, 300);
 
         if (window.localStorage.getItem( 'tech_id' ) && window.localStorage.getItem( 'access_token' ) && window.localStorage.getItem( 'last_time' )) {
             app.loadUserData();
@@ -265,7 +266,14 @@ var app = {
             'access-token': app.access_token,
             'UserCode': app.user_code,
             'per-page': 100
-        }, this.drawTask );
+        }, this.drawActiveTasks );
+
+        jQuery.getJSON( app.apiUrl + '/ticket/list', {
+             'access-token': app.access_token,
+             'UserCode': app.user_code,
+             'per-page': 100,
+            'isClosed': true
+         }, this.drawClosedTasks );
 
 
     },
@@ -369,13 +377,19 @@ var app = {
         $toggleRaw.find( 'a' ).toggleClass( 'ui-icon-plus' );
 
     },
-    drawTask: function ( data )
+    drawActiveTasks: function(data){
+        app.drawTask(data, 'table-custom-2', false)
+    },
+    drawClosedTasks: function(data){
+        app.drawTask(data, 'table-closed', true)
+    },
+    drawTask: function ( data, tableSelector, is_closed )
     {
         app.resetTimer();
-        if ($( '#tasks #tasks_content table' )) {
-            $( '#tasks #tasks_content table' ).table();
+        if ($( '#tasks #tasks_content table#'+tableSelector )) {
+            $( '#tasks #tasks_content table#'+tableSelector ).table();
         }
-        $( '#tasks #tasks_content table tbody' ).remove();
+        $( '#tasks #tasks_content table#'+tableSelector+' tbody' ).remove();
 
         var taskDay = null;
         $.each( data, function ( index, value )
@@ -399,7 +413,11 @@ var app = {
             }
             var taskTime = moment( value.Schedule_Time, 'MMM DD YYYY HH:mm:ss0A' ).format( 'HH:mm:ss' );
 
-            app.task_data[value.Service_Ticket_Id] = value;
+            // if(is_closed) {
+            //     app.task_data_closed[value.Service_Ticket_Id] = value;
+            // }else {
+                app.task_data[value.Service_Ticket_Id] = value;
+            // }
 
             var tr = $( rawCurDayBegin + '<tr id="task' + value.Service_Ticket_Id + '" onClick="app.showTaskDetail('+ value.Service_Ticket_Id +',' + value.Dispatch_Id + ');">' +
                 '<td>' + taskTime + '</td>' +
@@ -411,19 +429,19 @@ var app = {
                 //'<td><button data-icon="info" onclick="app.showTaskDetail(' + value.Service_Ticket_Id + ')">Details</button></td>' +
                 '</tr>' + rawCurDayEnd );
             if(curDay != taskDay) {
-                tr.appendTo( '#tasks #tasks_content table' ).closest( 'table#table-custom-2' ).table(
+                tr.appendTo( '#tasks #tasks_content table#'+tableSelector ).closest( 'table' ).table(
                     'refresh' ).trigger( 'create' );
             }else{
-                tr.appendTo( '.row'+moment( value.Schedule_Time, 'MMM DD YYYY HH:mm:ss0A' ).format( 'MM_DD_YYYY' ) ).closest( 'table#table-custom-2' ).table(
+                tr.appendTo( '#tasks #tasks_content table#'+tableSelector + '.row'+moment( value.Schedule_Time, 'MMM DD YYYY HH:mm:ss0A' ).format( 'MM_DD_YYYY' ) ).closest( 'table#'+tableSelector ).table(
                     'refresh' ).trigger( 'create' );
             }
             taskDay = curDay;
         } );
-        $( '#tasks #tasks_content table' ).table( 'refresh' );
+        $( '#tasks #tasks_content table#'+tableSelector ).table( 'refresh' );
 
         $.mobile.loading( 'hide' );
         $.mobile.navigate('#tasks');
-        $( '.ui-collapsible' ).find( 'tr:not(:first)' ).toggle();
+        $( 'table#'+tableSelector + ' .ui-collapsible' ).find( 'tr:not(:first)' ).toggle();
         navigator.notification && navigator.vibrate( 1000 );
     },
     addMaterial: function ()
@@ -901,12 +919,14 @@ var app = {
                     'customer_id' : app.customer_id,
                     'access-token': app.access_token,
                 }, function (data) {
+
                     var isProgrammed = false;
                     for(var i in data){
-                        console.log("PPP: ", data[i]['System_User_Table_7'].toLowerCase());
-                        if(data[i]['System_User_Table_7'].toLowerCase() == "panel programmed"){
-                            isProgrammed = true;
-                            break;
+                        if(data[i]['System_User_Table_7']) {
+                            if (data[i]['System_User_Table_7'].toLowerCase() == "panel programmed") {
+                                isProgrammed = true;
+                                break;
+                            }
                         }
                     }
 
@@ -1064,7 +1084,7 @@ var app = {
                 if (data) {
                     for (var i in data) {
                         app.usedParts[data[i].part.Part_Id] = data[i].Quantity;
-                        if(data[i].Service_Tech_Id == app.user_id) {
+                        if((data[i].Service_Tech_Id == app.user_id) &&(data[i].Warehouse_Id == app.user_warehouse_id)) {
                             $('#parts').append('<li id="part' + data[i].part.Part_Id + '">' +
                                 '<a data-inline="true" onclick="app.changePartQuantity(' + data[i].Service_Ticket_Part_Id + ',' + data[i].part.Part_Id + ',' + data[i].Quantity + ',\'' + data[i].part.Part_Code + '\',\'' + htmlEncode(
                                     data[i].part.Description) + '\'); return false;">'
@@ -1258,6 +1278,7 @@ var app = {
     {
         app.resetTimer();
         $( '#taskName, #taskDescription, #photos, #files, #parts' ).empty();
+        jQuery("#pannel_status h1").text("");
 
         $( '#status_dispatch,#status_arrived,#status_depart,button[id^="task_btn_"]' ).addClass( 'ui-disabled' );
     },
@@ -1927,6 +1948,7 @@ var app = {
         data.parts = jQuery("#receiptData .parts" ).html();
         data.time = jQuery("#receiptData .timing" ).html();
         data.task_id = app.task_id;
+        data.user_code = app.user_code;
         data.ticket_number = app.task_data[app.task_id].Ticket_Number;
         data.comment = app.task_data[app.task_id].Resolution_Notes_Comment;
 
@@ -1938,6 +1960,12 @@ var app = {
             $.mobile.loading( 'hide' );
             app.showTasksList();
             app.logout();
+            navigator.notification.alert(
+                'Please log in again when you are ready for your next ticket',  // message
+                false,         // callback
+                'Ticket Complete',            // title
+                'OK'                  // buttonName
+            );
         });
     },
     showTasksList: function(){
@@ -2014,6 +2042,9 @@ var app = {
                 app.goBack();
             });
         }
+    },
+    showManagePhotos: function(){
+        $.mobile.navigate( '#photosmanagement' );
     }
 };
 

@@ -72,7 +72,10 @@
         app.initialize();
     </script>
     <div data-role="page" id="signin">
-        <div data-role="header">
+        <div data-role="header" style="text-align: center">
+
+            <img style="width: 50%; text-align: center" src="img/logo.png">
+
             <h2>Field Technician</h2>
         </div>
         <div role="main" class="ui-content" id="signin_content">
@@ -90,22 +93,49 @@
             <a data-icon="gear" data-role="button" data-theme="a" data-iconpos="notext" onclick="app.settings();" class="ui-btn-right ui-btn-a"></a>
         </div>
         <div role="main" class="ui-content" id="tasks_content">
-            <table data-role="table" id="table-custom-2" data-mode="columntoggle"
-                   class="ui-body-d ui-shadow table-stripe ui-responsive" data-column-btn-theme="b"
-                   data-column-btn-text="Columns to display..." data-column-popup-theme="a">
-                <thead>
-                <tr class="ui-bar-d">
-                    <th><abbr title="Date">Scheduled</abbr></th>
-                    <th data-priority="1"><abbr title="Ticket Number">ID</abbr></th>
-                    <th><abbr title="Problem detail">Problem</abbr></th>
-                    <th data-priority="1"><abbr title="Customer name">Name</abbr></th>
-                    <th data-priority="1"><abbr title="Customer city">City</abbr></th>
-                    <th data-priority="1"><abbr title="Ticket status">Status</abbr></th>
 
-                </tr>
-                </thead>
+            <div data-role="tabs">
+                <div data-role="navbar">
+                    <ul>
+                        <li><a href="#fragment-1" class="ui-btn-active">Active tasks</a></li>
+                        <li><a href="#fragment-2">Closed tasks</a></li>
+                    </ul>
+                </div>
+                <div id="fragment-1">
+                    <table data-role="table" id="table-custom-2" data-mode="columntoggle"
+                           class="ui-body-d ui-shadow table-stripe ui-responsive" data-column-btn-theme="b"
+                           data-column-btn-text="Columns to display..." data-column-popup-theme="a">
+                        <thead>
+                        <tr class="ui-bar-d">
+                            <th><abbr title="Date">Scheduled</abbr></th>
+                            <th data-priority="1"><abbr title="Ticket Number">ID</abbr></th>
+                            <th><abbr title="Problem detail">Problem</abbr></th>
+                            <th data-priority="1"><abbr title="Customer name">Name</abbr></th>
+                            <th data-priority="1"><abbr title="Customer city">City</abbr></th>
+                            <th data-priority="1"><abbr title="Ticket status">Status</abbr></th>
 
-            </table>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div id="fragment-2">
+                    <table data-role="table" id="table-closed" data-mode="columntoggle"
+                           class="ui-body-d ui-shadow table-stripe ui-responsive" data-column-btn-theme="b"
+                           data-column-btn-text="Columns to display..." data-column-popup-theme="a">
+                        <thead>
+                        <tr class="ui-bar-d">
+                            <th><abbr title="Date">Scheduled</abbr></th>
+                            <th data-priority="1"><abbr title="Ticket Number">ID</abbr></th>
+                            <th><abbr title="Problem detail">Problem</abbr></th>
+                            <th data-priority="1"><abbr title="Customer name">Name</abbr></th>
+                            <th data-priority="1"><abbr title="Customer city">City</abbr></th>
+                            <th data-priority="1"><abbr title="Ticket status">Status</abbr></th>
+
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
         </div>
         <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
     </div>
@@ -118,26 +148,27 @@
         <div role="main" class="ui-content" id="taskContent">
             <h3 id="taskName"></h3>
             <div id="taskDescription" data-theme="b" data-form="ui-body-b" class="ui-body ui-body-b ui-corner-all"></div>
-            <div id="taskNotesList" data-theme="b" data-form="ui-body-b" class="ui-body ui-body-b ui-corner-all">
-
-            </div>
+            <!--<div id="taskNotesList" data-theme="b" data-form="ui-body-b" class="ui-body ui-body-b ui-corner-all">-->
+            <!--</div>-->
             <div id="partList">
                 <ul id="parts" data-role="listview" data-inset="true" data-count-theme="c" data-split-icon="delete">
                 </ul>
             </div>
-            <div id="photos"><h1>Photos</h1>
-            </div>
-            <div id="files"><h1>Files</h1></div>
+            <!--<div id="photos"><h1>Photos</h1></div>-->
+            <!--<div id="files"><h1>Files</h1></div>-->
             <div id="pannel_status"><h1></h1></div>
             <div id="taskControls">
                 <button id="status_dispatch" class="ui-disabled" data-icon="navigation" onclick="app.setTaskStatus('dispatch')">On my way</button>
                 <button id="status_arrived" class="ui-disabled" data-icon="user" onclick="app.setTaskStatus('arrived')">Arrived</button>
                 <button id="status_depart" class="ui-disabled" data-icon="tag" onclick="app.setTaskStatus('depart')">Depart</button>
-                <button id="task_btn_pic" class="ui-disabled" data-icon="eye" onclick="app.choiseFile()">Use existing pic</button>
+                <br/>
+                <!--<button id="task_btn_pic" class="ui-disabled" data-icon="eye" onclick="app.choiseFile()">Use existing pic</button>-->
                 <button id="task_btn_scan" class="ui-disabled" data-icon="bars" onclick="app.addMaterial()">Add material</button>
                 <button id="supplier_pickup_btn" data-icon="camera" onclick="app.supplierPickup()">Supplier Pickup</button>
-                <button id="task_btn_cam" class="ui-disabled" data-icon="camera" onclick="app.makePhoto()">Take a photo</button>
-                <button id="add_extra_note" data-icon="comment" onclick="app.addNote()">Add note</button>
+                <br/>
+                <!--<button id="task_btn_cam" class="ui-disabled" data-icon="camera" onclick="app.makePhoto()">Take a photo</button>-->
+                <button  data-icon="comment" onclick="$.mobile.navigate( '#notesmanagement' );">Notes</button>
+                <button id="show_manage_photos" data-icon="comment" onclick="app.showManagePhotos()">Photos</button>
             </div>
         </div>
         <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
@@ -259,6 +290,58 @@
         </div>
         <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
     </div>
+
+    <div data-role="page" id="photosmanagement">
+        <div data-role="header">
+            <button data-icon="back" data-iconpos="notext" onclick="app.goBack();"></button>
+            <h2>Photos</h2>
+        </div>
+        <div role="main" class="ui-content" id="photosmanagementContent">
+            <button id="task_btn_cam" class="ui-disabled" data-icon="camera" onclick="app.makePhoto()">Take Photo</button>
+            <button id="task_btn_pic" class="ui-disabled" data-icon="eye" onclick="app.choiseFile()">Add Existing Photo</button>
+            <br/>
+            <button data-icon="check" onclick="$.mobile.navigate( '#photosPage' );">View Photos</button>
+        </div>
+        <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
+    </div>
+
+
+    <div data-role="page" id="photosPage">
+        <div data-role="header">
+            <button data-icon="back" data-iconpos="notext" onclick="app.goBack();"></button>
+            <h2>Photos</h2>
+        </div>
+        <div role="main" class="ui-content" id="photosPageContent">
+            <div id="photos"><h1>Photos</h1></div>
+            <div id="files"><h1>Files</h1></div>
+        </div>
+        <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
+    </div>
+
+    <div data-role="page" id="notesmanagement">
+        <div data-role="header">
+            <button data-icon="back" data-iconpos="notext" onclick="app.goBack();"></button>
+            <h2>Photos</h2>
+        </div>
+        <div role="main" class="ui-content" id="notesmanagementContent">
+            <button id="add_extra_note" data-icon="comment" onclick="app.addNote()">Add note</button>
+            <br/>
+            <button data-icon="check" onclick="$.mobile.navigate( '#notesPage' );">View Notes</button>
+        </div>
+        <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
+    </div>
+
+    <div data-role="page" id="notesPage">
+        <div data-role="header">
+            <button data-icon="back" data-iconpos="notext" onclick="app.goBack();"></button>
+            <h2>Notes</h2>
+        </div>
+        <div role="main" class="ui-content" id="notesPageContent">
+            <div id="taskNotesList" data-theme="b" data-form="ui-body-b" class="ui-body ui-body-b ui-corner-all">
+        </div>
+        <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
+    </div>
+
 </body>
 
 </html>

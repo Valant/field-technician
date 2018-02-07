@@ -23,9 +23,9 @@ var app = {
     dispatch_id: false,
     uploaded: 0,
     needToUpload: 0,
-    apiUrl: 'http://api.field-technician.loc/',
+    // apiUrl: 'http://api.field-technician.loc/',
 //     apiUrl: 'http://ftapi.afap.com/',
-//     apiUrl: 'http://ftapitest.afap.com/',
+    apiUrl: 'http://ftapitest.afap.com/',
     user_id: 0,
     user_code: '',
     service_tech_code: '',
@@ -111,8 +111,8 @@ var app = {
 //         alert("8");
         app.access_token = window.localStorage.getItem('access_token');
         app.user_code = window.localStorage.getItem('user_code');
-        app.checkLoginExpiration();
-        window.setInterval(app.checkLoginExpiration, 300);
+        // app.checkLoginExpiration();
+        // window.setInterval(app.checkLoginExpiration, 300);
 
         if (window.localStorage.getItem( 'tech_id' ) && window.localStorage.getItem( 'access_token' ) && window.localStorage.getItem( 'last_time' )) {
             app.loadUserData();
@@ -1948,6 +1948,7 @@ var app = {
         data.parts = jQuery("#receiptData .parts" ).html();
         data.time = jQuery("#receiptData .timing" ).html();
         data.task_id = app.task_id;
+        data.user_code = app.user_code;
         data.ticket_number = app.task_data[app.task_id].Ticket_Number;
         data.comment = app.task_data[app.task_id].Resolution_Notes_Comment;
 
@@ -1959,6 +1960,12 @@ var app = {
             $.mobile.loading( 'hide' );
             app.showTasksList();
             app.logout();
+            navigator.notification.alert(
+                'Please log in again when you are ready for your next ticket',  // message
+                false,         // callback
+                'Ticket Complete',            // title
+                'OK'                  // buttonName
+            );
         });
     },
     showTasksList: function(){
