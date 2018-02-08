@@ -177,4 +177,8 @@
                 'Route_Id'                      => 'Route  ID',
             ];
         }
+
+        public function getSystemUserdef(){
+        	return $this->hasOne(ARCustomerSystemUserdef::className(), ['Customer_System_Id'=>'Customer_System_Id']);
+        }
     }

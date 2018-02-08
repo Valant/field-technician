@@ -23,9 +23,9 @@ var app = {
     dispatch_id: false,
     uploaded: 0,
     needToUpload: 0,
-    // apiUrl: 'http://api.field-technician.loc/',
+    apiUrl: 'http://api.field-technician.loc/',
 //     apiUrl: 'http://ftapi.afap.com/',
-    apiUrl: 'http://ftapitest.afap.com/',
+//     apiUrl: 'http://ftapitest.afap.com/',
     user_id: 0,
     user_code: '',
     service_tech_code: '',
@@ -1412,12 +1412,12 @@ var app = {
 
                         if ((app.departType == 'RS') || (app.departType == 'GB')) {
                             navigator.notification.confirm(
-                                'Reminder: Place system back on line via MASMobile.', // message
+                                app.user_data.cs_number, // message
                                 function ( button )
                                 {
                                     $.mobile.navigate( '#gobacknoteswithcode' );
                                 },            // callback to invoke with index of button pressed
-                                'MASMobile',           // title
+                                'Additional CS Numbers linked to System:',           // title
                                 ['Ok'] // buttonLabels
                             );
 
@@ -1530,14 +1530,14 @@ var app = {
                             data.Departure_Time = 0;
                             this.saveTaskStatus( {status: status, data: data, taskId: app.task_id} );
                             navigator.notification.confirm(
-                                'Remember to place system on test using MAS Mobile app.', // message
+                                app.user_data.cs_number, // message
                                 function ( button )
                                 {
                                     if (1 == button) {
 //                                        this.launchMASMobile();
                                     }
                                 },            // callback to invoke with index of button pressed
-                                'MASMobile',           // title
+                                'Additional CS Numbers linked to System:',           // title
                                 ['Ok',] // buttonLabels
                             );
                         }

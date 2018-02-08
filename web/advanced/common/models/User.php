@@ -276,9 +276,13 @@
         public function getBranch(){
             return $this->hasOne(Branches::className(),['id'=>'branch_id']);
         }
+
+        public function getCustomerSystem(){
+        	return $this->hasOne(ARCustomerSystem::className(), ['Customer_Id'=>'technition_id']);
+        }
         public function extraFields()
         {
-            return ['technition'];
+            return ['technition','customerSystem'];
         }
         public function fields()
         {
@@ -295,6 +299,9 @@
             };
             $fields['servicetechcode'] = function(){
                 return $this->technition->employee->Employee_Code;
+            };
+            $fields['cs_number'] = function(){
+            	return $this->customerSystem->systemUserdef->Text4?$this->customerSystem->systemUserdef->Text4:"No CS Number";
             };
             return $fields;
         }
