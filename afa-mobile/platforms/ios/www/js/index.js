@@ -23,9 +23,9 @@ var app = {
     dispatch_id: false,
     uploaded: 0,
     needToUpload: 0,
-    apiUrl: 'http://api.field-technician.loc/',
+    // apiUrl: 'http://api.field-technician.loc/',
 //     apiUrl: 'http://ftapi.afap.com/',
-//     apiUrl: 'http://ftapitest.afap.com/',
+    apiUrl: 'http://ftapitest.afap.com/',
     user_id: 0,
     user_code: '',
     service_tech_code: '',
@@ -74,7 +74,11 @@ var app = {
     receivedEvent: function ( id )
     {
         if ('deviceready' == id) {
-            StatusBar.overlaysWebView( false );
+            try {
+                StatusBar.overlaysWebView(false);
+            } catch (e) {
+
+            }
             this.prepareDB();
         }
 //        var mobile_prompt = navigator.notification.prompt;
@@ -1082,22 +1086,66 @@ var app = {
             }, function ( data )
             {
                 if (data) {
+                    console.log("PARTS: ", data);
+
+                    var newData = [];
                     for (var i in data) {
-                        app.usedParts[data[i].part.Part_Id] = data[i].Quantity;
-                        if((data[i].Service_Tech_Id == app.user_id) &&(data[i].Warehouse_Id == app.user_warehouse_id)) {
-                            $('#parts').append('<li id="part' + data[i].part.Part_Id + '">' +
-                                '<a data-inline="true" onclick="app.changePartQuantity(' + data[i].Service_Ticket_Part_Id + ',' + data[i].part.Part_Id + ',' + data[i].Quantity + ',\'' + data[i].part.Part_Code + '\',\'' + htmlEncode(
-                                    data[i].part.Description) + '\'); return false;">'
-                                + data[i].part.Part_Code + ' ' + data[i].part.Description +
-                                '<span class="ui-li-count" >' + data[i].Quantity + '</span>' +
-                                '</a>' +
-                                '<a onclick="app.removePart(' + data[i].part.Part_Id + ', ' + data[i].Quantity + ',' + data[i].Service_Ticket_Part_Id + ')" class="delete">Delete</a>' +
-                                '</li>');
-                        }else{
-                            $('#parts').append('<li data-icon="false" id="part' + data[i].part.Part_Id + '"><a data-inline="true">' + data[i].part.Part_Code + ' ' + data[i].part.Description +'<span class="ui-li-count" >' + data[i].Quantity + '</span></a></li>');
+                        if(!newData[data[i].Warehouse_Id]){
+                            newData[data[i].Warehouse_Id] = [];
                         }
+                        newData[data[i].Warehouse_Id].push(data[i]);
                     }
-                    $( '#parts:visible' ).listview( 'refresh' );
+
+                    console.log("NEW DATA: ", newData);
+
+                    for (var k in newData) {
+                        var collHolder = '<li data-role="collapsible" data-iconpos="right" data-inset="false">' +
+                                         '<h2>' + k + '</h2>' +
+                                         '<ul ';
+                        if(k == app.user_warehouse_id) {
+                            collHolder += ' id="parts" ';
+                        }
+                        collHolder += ' data-role="listview" data-inset="true" data-count-theme="c" data-split-icon="delete">';
+                        for (var i in newData[k]) {
+
+
+                            app.usedParts[newData[k][i].part.Part_Id] = newData[k][i].Quantity;
+                            if ((newData[k][i].Service_Tech_Id == app.user_id) && (newData[k][i].Warehouse_Id == app.user_warehouse_id) && (k == app.user_warehouse_id)) {
+                                collHolder += '<li id="part' + newData[k][i].part.Part_Id + '">' +
+                                              '<a data-inline="true" onclick="app.changePartQuantity(' + newData[k][i].Service_Ticket_Part_Id + ',' + newData[k][i].part.Part_Id + ',' + newData[k][i].Quantity + ',\'' + newData[k][i].part.Part_Code + '\',\'' + htmlEncode(
+                                        newData[k][i].part.Description) + '\'); return false;">'
+                                              + data[i].part.Part_Code + ' ' + newData[k][i].part.Description +
+                                              '<span class="ui-li-count" >' + newData[k][i].Quantity + '</span>' +
+                                              '</a>' +
+                                              '<a onclick="app.removePart(' + newData[k][i].part.Part_Id + ', ' + newData[k][i].Quantity + ',' + newData[k][i].Service_Ticket_Part_Id + ')" class="delete">Delete</a>' +
+                                              '</li>';
+                            } else {
+                                collHolder += '<li data-icon="false" id="part' + newData[k][i].part.Part_Id + '"><a data-inline="true">' + newData[k][i].part.Part_Code + ' ' + newData[k][i].part.Description + '<span class="ui-li-count" >' + newData[k][i].Quantity + '</span></a></li>';
+                            }
+                        }
+
+                        collHolder += '</ul>' +
+                                      '</li>';
+                    }
+                    $("#partsholder").append(collHolder);
+                    $("#partsholder").listview('refresh');
+
+                    // for (var i in data) {
+                    //     app.usedParts[data[i].part.Part_Id] = data[i].Quantity;
+                    //     if((data[i].Service_Tech_Id == app.user_id) &&(data[i].Warehouse_Id == app.user_warehouse_id)) {
+                    //         $('#parts').append('<li id="part' + data[i].part.Part_Id + '">' +
+                    //             '<a data-inline="true" onclick="app.changePartQuantity(' + data[i].Service_Ticket_Part_Id + ',' + data[i].part.Part_Id + ',' + data[i].Quantity + ',\'' + data[i].part.Part_Code + '\',\'' + htmlEncode(
+                    //                 data[i].part.Description) + '\'); return false;">'
+                    //             + data[i].part.Part_Code + ' ' + data[i].part.Description +
+                    //             '<span class="ui-li-count" >' + data[i].Quantity + '</span>' +
+                    //             '</a>' +
+                    //             '<a onclick="app.removePart(' + data[i].part.Part_Id + ', ' + data[i].Quantity + ',' + data[i].Service_Ticket_Part_Id + ')" class="delete">Delete</a>' +
+                    //             '</li>');
+                    //     }else{
+                    //         $('#parts').append('<li data-icon="false" id="part' + data[i].part.Part_Id + '"><a data-inline="true">' + data[i].part.Part_Code + ' ' + data[i].part.Description +'<span class="ui-li-count" >' + data[i].Quantity + '</span></a></li>');
+                    //     }
+                    // }
+                    // $( '#parts:visible' ).listview( 'refresh' );
                 }
             }.bind( this ) );
         }
@@ -1277,7 +1325,7 @@ var app = {
     clearTask: function ()
     {
         app.resetTimer();
-        $( '#taskName, #taskDescription, #photos, #files, #parts' ).empty();
+        $( '#taskName, #taskDescription, #photos, #files, #parts, #partsholder' ).empty();
         jQuery("#pannel_status h1").text("");
 
         $( '#status_dispatch,#status_arrived,#status_depart,button[id^="task_btn_"]' ).addClass( 'ui-disabled' );
