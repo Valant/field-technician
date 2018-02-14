@@ -1099,9 +1099,13 @@ var app = {
                     console.log("NEW DATA: ", newData);
 
                     for (var k in newData) {
-                        var collHolder = '<li data-role="collapsible" data-iconpos="right" data-inset="false">' +
+                        var collHolder = '<li data-role="collapsible" data-iconpos="right" ';
+                        if(k == app.user_warehouse_id) {
+                            collHolder += ' data-collapsed="false" ';
+                        }
+                        collHolder += ' data-inset="false">' +
                                          '<h2>' + k + '</h2>' +
-                                         '<ul ';
+                                         '<ul data-theme="c" ';
                         if(k == app.user_warehouse_id) {
                             collHolder += ' id="parts" ';
                         }
