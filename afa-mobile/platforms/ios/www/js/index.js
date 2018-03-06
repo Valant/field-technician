@@ -1099,9 +1099,13 @@ var app = {
                     console.log("NEW DATA: ", newData);
 
                     for (var k in newData) {
-                        var collHolder = '<li data-role="collapsible" data-iconpos="right" data-inset="false">' +
+                        var collHolder = '<li data-role="collapsible" data-iconpos="right" ';
+                        if(k == app.user_warehouse_id) {
+                            collHolder += ' data-collapsed="false" ';
+                        }
+                        collHolder += ' data-inset="false" >' +
                                          '<h2>' + k + '</h2>' +
-                                         '<ul ';
+                                         '<ul data-theme="c" ';
                         if(k == app.user_warehouse_id) {
                             collHolder += ' id="parts" ';
                         }
@@ -1294,7 +1298,7 @@ var app = {
             $( '<h4>Ticket Information</h4>' ).appendTo( '#taskDescription' );
             $( '<p><pre>Ticket number: ' + task.Ticket_Number + '</pre></p>' ).appendTo( '#taskDescription' );
             $( '<p><pre>Status: ' + task.ticket_status + '</pre></p>' ).appendTo( '#taskDescription' );
-            $( '<p><pre>Created on: ' + task.Creation_Date + '</pre></p>' ).appendTo( '#taskDescription' );
+            $( '<p><pre>Created on: ' + moment(task.Creation_Date, 'MMM DD YYYY HH:mm:ss0A' ).format( 'MM/DD/YYYY' ) + '</pre></p>' ).appendTo( '#taskDescription' );
             $( '<p><pre>Created by: ' + task.entered_by + '</pre></p>' ).appendTo( '#taskDescription' );
             $( '<p><pre>Contact: ' + task.Requested_By + '</pre></p>' ).appendTo( '#taskDescription' );
             $( '<p><pre>Phone: ' + task.requested_by_phone + '</pre></p>' ).appendTo( '#taskDescription' );
@@ -1319,7 +1323,7 @@ var app = {
         var notesListHolder = jQuery("#taskNotesList");
         notesListHolder.empty();
         $.each( data, function ( index, value ){
-            notesListHolder.append("<p><span>"+value.user.fullname+" at "+moment(value.Entered_Date, 'MMM DD YYYY HH:mm:ss0A' ).format( 'YYYY-MM-DD HH:mm:ss' )+"</span></br>"+value.Notes+"</p>")
+            notesListHolder.append("<p><span class='noteAuthor'>"+value.user.fullname+" at "+moment(value.Entered_Date, 'MMM DD YYYY HH:mm:ss0A' ).format( 'MM/DD/YYYY HH:mm:ss0A' )+"</span></br>"+value.Notes+"</p>")
         });
     },
     clearTask: function ()

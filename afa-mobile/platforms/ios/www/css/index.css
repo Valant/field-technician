@@ -160,6 +160,7 @@ h1 {
 #tasks_content{
     overflow-x: scroll;
 }
+#taskNotesList,
 #taskDescription{
     background-color: #deebf7;
     color: #000;
@@ -185,4 +186,24 @@ h1 {
 #pannel_status h1.error{
     color: red;
     font-weight: bold;
+}
+
+.ui-li-static.ui-collapsible > .ui-collapsible-heading {
+    margin: 0;
+}
+.ui-li-static.ui-collapsible {
+    padding: 0;
+}
+.ui-li-static.ui-collapsible > .ui-collapsible-heading > .ui-btn {
+    border-top-width: 0;
+}
+.ui-li-static.ui-collapsible > .ui-collapsible-heading.ui-collapsible-heading-collapsed > .ui-btn,
+.ui-li-static.ui-collapsible > .ui-collapsible-content {
+    border-bottom-width: 0;
+}
+
+.noteAuthor {
+    font-style: italic;
+    font-size: 10px;
+    font-weight: normal;
 }
