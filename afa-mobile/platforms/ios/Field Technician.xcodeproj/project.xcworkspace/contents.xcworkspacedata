@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:">
+      location = "self:/Users/godson/projects/field-technician/afa-mobile/platforms/ios/Field Technician Beta.xcodeproj">
    </FileRef>
 </Workspace>
