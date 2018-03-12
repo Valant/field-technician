@@ -56,6 +56,9 @@
     <feature name="BarcodeScanner">
         <param name="ios-package" value="CDVBarcodeScanner" />
     </feature>
+    <feature name="PinDialog">
+        <param name="ios-package" value="CDVPinDialog" />
+    </feature>
     <name>Field Technician</name>
     <description>
         Hello World sample application that responds to the deviceready event.

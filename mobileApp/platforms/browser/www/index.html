@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+    <!--<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />-->
+    <meta name="viewport" content="initial-scale=1, minimum-scale=0.5, maximum-scale=1.5, user-scalable=1"/>
+
+    <link rel="stylesheet" type="text/css" href="css/index.css"/>
+    <link rel="stylesheet" type="text/css" href="css/jquery.mobile.min.css"/>
+    <link rel="stylesheet" type="text/css" href="css/jquery.mobile.theme.min.css"/>
+    <link rel="stylesheet" type="text/css" href="css/jquery.mobile.structure.min.css"/>
+
+    <meta name="msapplication-tap-highlight" content="no"/>
+    <title>AFA Field Technician</title>
+</head>
+<body>
+
+
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/jquery.mobile.min.js"></script>
+<script type="text/javascript" src="js/jquery.blockUI.js"></script>
+<script type="text/javascript" src="js/moment.js"></script>
+<script type="text/javascript" charset="utf-8" src="cordova_plugins.js"></script>
+<script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript" src="js/index.js"></script>
+<script type="text/javascript">
+    $( document ).on( "pageinit", "#partsearch", function() {
+
+        $("#autocomplete").on("filterablebeforefilter", function (e, data) {
+
+
+            var value = $(data.input).val();
+            if (value.length > 2) {
+                app.keywordSuggestParts(value, $('#partsearch').attr('data-searchbycode'));
+            }
+        });
+
+    });
+    app.initialize();
+</script>
+<div data-role="page" id="signin">
+    <div data-role="header">
+        <h2>Field Technician</h2>
+    </div>
+    <div role="main" class="ui-content" id="signin_content">
+        <pre class="errors"></pre>
+        <input style="text" id="login" placeholder="Login"/>
+        <input type="password" style="password" id="password" placeholder="Password"/>
+        <button data-icon="home" onclick="app.signin()">Sign In</button>
+    </div>
+    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
+</div>
+<div data-role="page" id="tasks">
+    <div data-role="header">
+        <a data-icon="refresh" data-role="button" data-theme="a" data-iconpos="notext" onclick="app.loadTasks();" class="ui-btn-a"></a>
+        <h2>Task list</h2>
+        <a data-icon="gear" data-role="button" data-theme="a" data-iconpos="notext" onclick="app.settings();" class="ui-btn-right ui-btn-a"></a>
+    </div>
+    <div role="main" class="ui-content" id="tasks_content">
+        <table data-role="table" id="table-custom-2" data-mode="columntoggle"
+               class="ui-body-d ui-shadow table-stripe ui-responsive" data-column-btn-theme="b"
+               data-column-btn-text="Columns to display..." data-column-popup-theme="a">
+            <thead>
+            <tr class="ui-bar-d">
+                <th><abbr title="Date">Scheduled</abbr></th>
+                <th data-priority="1"><abbr title="Ticket Number">ID</abbr></th>
+                <th><abbr title="Problem detail">Problem</abbr></th>
+                <th data-priority="1"><abbr title="Customer name">Name</abbr></th>
+                <th data-priority="1"><abbr title="Customer city">City</abbr></th>
+                <th data-priority="1"><abbr title="Ticket status">Status</abbr></th>
+
+            </tr>
+            </thead>
+
+        </table>
+    </div>
+    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
+</div>
+<div data-role="page" id="taskDetails">
+    <div data-role="header">
+        <button data-icon="back" data-iconpos="notext" onclick="app.loadTasks();"></button>
+        <h2>Task details</h2>
+        <button data-icon="gear" data-iconpos="notext" onclick="app.settings();"></button>
+    </div>
+    <div role="main" class="ui-content" id="taskContent">
+        <h3 id="taskName"></h3>
+        <div id="taskDescription" data-theme="b" data-form="ui-body-b" class="ui-body ui-body-b ui-corner-all"></div>
+        <div id="partList">
+            <ul id="parts" data-role="listview" data-inset="true" data-count-theme="c" data-split-icon="delete">
+            </ul>
+        </div>
+        <div id="photos"><h1>Photos</h1>
+        </div>
+        <div id="files"><h1>Files</h1></div>
+        <div id="taskControls">
+            <button id="status_dispatch" class="ui-disabled" data-icon="navigation" onclick="app.setTaskStatus('dispatch')">On my way</button>
+            <button id="status_arrived" class="ui-disabled" data-icon="user" onclick="app.setTaskStatus('arrived')">Arrived</button>
+            <button id="status_depart" class="ui-disabled" data-icon="tag" onclick="app.setTaskStatus('depart')">Depart</button>
+            <button id="task_btn_pic" class="ui-disabled" data-icon="eye" onclick="app.choiseFile()">Use existing pic</button>
+            <button id="task_btn_scan" class="ui-disabled" data-icon="bars" onclick="app.addMaterial()">Add material</button>
+            <button id="supplier_pickup_btn" data-icon="camera" onclick="app.supplierPickup()">Supplier Pickup</button>
+            <button id="task_btn_cam" class="ui-disabled" data-icon="camera" onclick="app.makePhoto()">Take a photo</button>
+        </div>
+    </div>
+    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
+</div>
+<div data-role="page" id="progress">
+    <div data-role="header">
+        <a onclick="app.goBack();">Back</a>
+
+        <h2>Save data</h2>
+    </div>
+    <div role="main" class="ui-content" id="progressContent">
+        <h3>Upload...</h3>
+
+        <div id="progressBars"></div>
+    </div>
+    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
+</div>
+<div data-role="page" id="gobacknotes">
+    <div data-role="header">
+        <button data-icon="back" data-iconpos="notext" onclick="app.goBack();"></button>
+        <h2>Resolution</h2>
+    </div>
+    <div role="main" class="ui-content" id="gobacknotesContent">
+        <label for="resolution_notes">RESOLUTION NOTE</label>
+        <textarea name="resolution_notes" id="resolution_notes" cols="30" rows="10" required="required"></textarea>
+        <button data-icon="check" onclick="app.saveGoBackNotes(0)">Save</button>
+    </div>
+    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
+</div>
+<div data-role="page" id="receipt">
+    <div data-role="header">
+        <!--<button data-icon="back" data-iconpos="notext" onclick="app.goBack();"></button>-->
+        <h2>Receipt</h2>
+    </div>
+    <div id="receiptData">
+        <h3 style="display: none;" id="usedPartsLabel">Parts Used</h3>
+        <div class="parts"></div>
+        <h3>Timing</h3>
+        <div class="timing"></div>
+    </div>
+    <div id="emailHolder">
+        <input type="email" id="userEmail" placeholder="Email"/>
+        <input type="text" id="signName" placeholder="Print Name"/>
+    </div>
+    <button onclick="app.showSignPopup()" id="addSignBtn">Add Signature</button>
+    <button onclick="app.sendReceipt()" id="noSigner">No Signer Available</button>
+    <div id="termsBlock">
+        <button onclick="app.sendReceipt()" disabled="disabled" id="sendReceiptBtn">Ok</button>
+        <label for="terms">By checking this box you agree to AFA terms and conditions</label>
+        <input type="checkbox" name="terms" id="terms" onclick="app.checkTerms()">
+        <button onclick="app.showTerms();">Terms</button>
+    </div>
+    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
+</div>
+
+<div data-role="page" id="signature">
+    <div id="contentCanvas">
+    </div>
+    <div id="canvasControl">
+        <button onclick="app.clearCanvas()">Clear</button>
+        <button onclick="app.saveSignature()" id="saveSignatureBtn" disabled="disabled">Ok</button>
+        <button onclick="app.showReceiptPage()">Cancel</button>
+    </div>
+</div>
+<div data-role="page" id="gobacknoteswithcode">
+    <div data-role="header">
+        <button data-icon="back" data-iconpos="notext" onclick="app.goBack();"></button>
+
+        <h2>Resolution</h2>
+    </div>
+    <div role="main" class="ui-content" id="gobacknoteswithcodeContent">
+
+        <!-- label for="resolution_code">RESOLUTION CODE</label -->
+        <input name="resolution_code" id="resolution_code" required="required" type="hidden"/>
+        <label for="resolution_notes_withcode">RESOLUTION NOTE</label>
+        <textarea name="resolution_notes_withcode" id="resolution_notes_withcode" cols="30" rows="10" required="required"></textarea>
+        <button data-icon="check" onclick="app.saveGoBackNotes(1)">Save</button>
+    </div>
+    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
+</div>
+<div data-role="page" id="partsearch">
+    <div data-role="header">
+        <button data-icon="back" data-iconpos="notext" onclick="app.goBack();"></button>
+        <h2>Search part</h2>
+    </div>
+    <div role="main" class="ui-content" id="partsearchContent">
+
+        <ul id="autocomplete" data-role="listview" data-inset="true" data-filter="true" data-filter-placeholder="Find material"
+             data-filter-theme="a"  ></ul>
+    </div>
+    <div data-role="footer" position="fixed"><h3>&copy; AFA Protective Systems</h3></div>
+</div>
+<div data-role="page" id="profile">
+    <div data-role="header">
+        <button data-icon="back" data-iconpos="notext" onclick="app.goBack();"></button>
+        <h2>Profile</h2>
+    </div>
+    <div role="main" class="ui-content" id="profile_content">
+        <pre class="errors"></pre>
+        <input disabled="disabled" type="text" id="username" placeholder="Login"/>
+        <input disabled="disabled" type="email" id="email" placeholder="email@domain.zone"/>
+
+        <button data-icon="action" onclick="app.logout()">Logout</button>
+    </div>
+    <div data-role="footer" position="fixed">
+        <h3>&copy; AFA Protective Systems</h3>
+        <h5 id="appversion"></h5>
+    </div>
+</div>
+</body>
+</html>

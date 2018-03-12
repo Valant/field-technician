@@ -381,6 +381,14 @@ module.exports = [
     "clobbers": [
       "cordova.plugins.barcodeScanner"
     ]
+  },
+  {
+    "id": "cordova-plugin-pin-dialog.PinDialog",
+    "file": "plugins/cordova-plugin-pin-dialog/www/pin.js",
+    "pluginId": "cordova-plugin-pin-dialog",
+    "merges": [
+      "window.plugins.pinDialog"
+    ]
   }
 ];
 module.exports.metadata = 
@@ -398,7 +406,8 @@ module.exports.metadata =
   "cordova-plugin-inappbrowser": "1.7.1",
   "cordova-plugin-network-information": "1.3.3",
   "cordova-plugin-vibration": "2.1.5",
-  "phonegap-plugin-barcodescanner": "7.0.0"
+  "phonegap-plugin-barcodescanner": "7.0.0",
+  "cordova-plugin-pin-dialog": "0.1.3"
 };
 // BOTTOM OF METADATA
 });

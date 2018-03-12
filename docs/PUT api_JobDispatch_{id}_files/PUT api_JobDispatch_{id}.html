@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<!-- saved from url=(0057)http://sedonaapi.afap.com/Help/Api/PUT-api-JobDispatch-id -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>PUT api/JobDispatch/{id}</title>
+    <link href="./PUT api_JobDispatch_{id}_files/css" rel="stylesheet" type="text/css">
+    
+    
+    <style>
+        body {
+            margin: 20px;           
+        }
+    </style>
+</head>
+<body>
+    <img src="./PUT api_JobDispatch_{id}_files/logo.png" alt="SedonaAPI">
+    
+
+<link type="text/css" href="./PUT api_JobDispatch_{id}_files/HelpPage.css" rel="stylesheet">
+<div id="body" class="help-page">
+    <section class="featured">
+        <div class="content-wrapper">
+            <p>
+                <a href="http://sedonaapi.afap.com/Help">Help Page Home</a>
+            </p>
+        </div>
+    </section>
+    <section class="content-wrapper main-content clear-fix">
+        
+<h1>PUT api/JobDispatch/{id}</h1>
+<div>
+    <p>Update a specific Job Dispatch record by DispatchID</p>
+
+    <h2>Request Information</h2>
+
+    <h3>URI Parameters</h3>
+        <table class="help-page-table">
+        <thead>
+            <tr><th>Name</th><th>Description</th><th>Type</th><th>Additional information</th></tr>
+        </thead>
+        <tbody>
+                <tr>
+                    <td class="parameter-name">id</td>
+                    <td class="parameter-documentation">
+                        <p>DispatchID</p>
+                    </td>
+                    <td class="parameter-type">
+                        integer
+                    </td>
+                    <td class="parameter-annotations">
+                                <p>Required</p>
+                    </td>
+                </tr>
+        </tbody>
+    </table>
+
+
+
+    <h3>Body Parameters</h3>
+
+    <p></p>
+
+<a href="http://sedonaapi.afap.com/Help/ResourceModel?modelName=JobDispatch">JobDispatch</a>    <table class="help-page-table">
+        <thead>
+            <tr><th>Name</th><th>Description</th><th>Type</th><th>Additional information</th></tr>
+        </thead>
+        <tbody>
+                <tr>
+                    <td class="parameter-name">DispatchId</td>
+                    <td class="parameter-documentation">
+                        <p>Sedona internal autonumber for the Dispatch record</p>
+                    </td>
+                    <td class="parameter-type">
+                        integer
+                    </td>
+                    <td class="parameter-annotations">
+                                <p>Required</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">ServiceTechCode</td>
+                    <td class="parameter-documentation">
+                        <p>Employee_Code from SY_Employee table; cannot change the Service Tech (must cancel and add new)</p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                                <p>Required</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">ScheduleTime</td>
+                    <td class="parameter-documentation">
+                        <p>Scheduled time for the appointment</p>
+                    </td>
+                    <td class="parameter-type">
+                        date
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">DispatchTime</td>
+                    <td class="parameter-documentation">
+                        <p>Actual dispatch time</p>
+                    </td>
+                    <td class="parameter-type">
+                        date
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">ArrivalTime</td>
+                    <td class="parameter-documentation">
+                        <p>Actual arrival time</p>
+                    </td>
+                    <td class="parameter-type">
+                        date
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">DepartureTime</td>
+                    <td class="parameter-documentation">
+                        <p>Actual departure time</p>
+                    </td>
+                    <td class="parameter-type">
+                        date
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">EstimatedLength</td>
+                    <td class="parameter-documentation">
+                        <p>Estimated length of the appointment in minutes (i.e. 30, 60, etc.), zero if not supplied</p>
+                    </td>
+                    <td class="parameter-type">
+                        integer
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">Completed</td>
+                    <td class="parameter-documentation">
+                        <p>Defaults to False if not supplied</p>
+                    </td>
+                    <td class="parameter-type">
+                        boolean
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">TaskCode</td>
+                    <td class="parameter-documentation">
+                        <p>Task_Code from the OE_Task table</p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">LaborTaskCode</td>
+                    <td class="parameter-documentation">
+                        <p>Task_Code from the OE_Task table; defaults to N/A if not supplied</p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">UserCode</td>
+                    <td class="parameter-documentation">
+                        <p>the user making this change; defaults to UserCode value from config file if not set explicitly</p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                                <p>String length: inclusive between 0 and 50</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">IsFirm</td>
+                    <td class="parameter-documentation">
+                        <p>Is the Appointment Time firm?</p>
+                    </td>
+                    <td class="parameter-type">
+                        boolean
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+        </tbody>
+    </table>
+
+
+        <h3>Request Formats</h3>
+
+<div>
+        <h4 class="sample-header">application/json, text/json</h4>
+        <div class="sample-content">
+            <span><b>Sample:</b></span>
+<pre class="wrapped">{
+  "DispatchId": 1,
+  "ServiceTechCode": "sample string 2",
+  "ScheduleTime": "2015-12-10T09:01:47.42475-05:00",
+  "DispatchTime": "2015-12-10T09:01:47.42475-05:00",
+  "ArrivalTime": "2015-12-10T09:01:47.42475-05:00",
+  "DepartureTime": "2015-12-10T09:01:47.42475-05:00",
+  "EstimatedLength": 1,
+  "Completed": true,
+  "TaskCode": "sample string 3",
+  "LaborTaskCode": "sample string 4",
+  "UserCode": "sample string 5",
+  "IsFirm": true
+}
+</pre>
+        </div>
+        <h4 class="sample-header">application/xml, text/xml</h4>
+        <div class="sample-content">
+            <span><b>Sample:</b></span>
+<pre class="wrapped">&lt;JobDispatch xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/SedonaServices.Models"&gt;
+  &lt;ArrivalTime&gt;2015-12-10T09:01:47.42475-05:00&lt;/ArrivalTime&gt;
+  &lt;Completed&gt;true&lt;/Completed&gt;
+  &lt;DepartureTime&gt;2015-12-10T09:01:47.42475-05:00&lt;/DepartureTime&gt;
+  &lt;DispatchId&gt;1&lt;/DispatchId&gt;
+  &lt;DispatchTime&gt;2015-12-10T09:01:47.42475-05:00&lt;/DispatchTime&gt;
+  &lt;EstimatedLength&gt;1&lt;/EstimatedLength&gt;
+  &lt;IsFirm&gt;true&lt;/IsFirm&gt;
+  &lt;LaborTaskCode&gt;sample string 4&lt;/LaborTaskCode&gt;
+  &lt;ScheduleTime&gt;2015-12-10T09:01:47.42475-05:00&lt;/ScheduleTime&gt;
+  &lt;ServiceTechCode&gt;sample string 2&lt;/ServiceTechCode&gt;
+  &lt;TaskCode&gt;sample string 3&lt;/TaskCode&gt;
+  &lt;UserCode&gt;sample string 5&lt;/UserCode&gt;
+&lt;/JobDispatch&gt;
+</pre>
+        </div>
+        <h4 class="sample-header">application/x-www-form-urlencoded</h4>
+        <div class="sample-content">
+            <span><b>Sample:</b></span>
+    <div class="warning-message-container">
+        <p>Failed to generate the sample for media type 'application/x-www-form-urlencoded'. Cannot use formatter 'JQueryMvcFormUrlEncodedFormatter' to write type 'JobDispatch'.</p>
+    </div>
+
+        </div>
+</div>
+    <h2>Response Information</h2>
+
+    <h3>Resource Description</h3>
+
+    <p></p>
+
+<a href="http://sedonaapi.afap.com/Help/ResourceModel?modelName=IHttpActionResult">IHttpActionResult</a>    <p>None.</p>
+
+
+        <h3>Response Formats</h3>
+
+<div>
+        <h4 class="sample-header">application/json, text/json, application/xml, text/xml</h4>
+        <div class="sample-content">
+            <span><b>Sample:</b></span>
+                    <p>Sample not available.</p>
+
+        </div>
+</div>
+</div>
+    </section>
+</div>
+
+
+</body></html>

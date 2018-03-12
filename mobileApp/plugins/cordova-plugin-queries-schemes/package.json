@@ -1,0 +1,68 @@
+{
+  "_from": "cordova-plugin-queries-schemes",
+  "_id": "cordova-plugin-queries-schemes@0.1.5",
+  "_inBundle": false,
+  "_integrity": "sha1-iz65Rgm6h1RDG/GHtpYrmlTcWe8=",
+  "_location": "/cordova-plugin-queries-schemes",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "cordova-plugin-queries-schemes",
+    "name": "cordova-plugin-queries-schemes",
+    "escapedName": "cordova-plugin-queries-schemes",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/cordova-plugin-queries-schemes/-/cordova-plugin-queries-schemes-0.1.5.tgz",
+  "_shasum": "8b3eb94609ba8754431bf187b6962b9a54dc59ef",
+  "_spec": "cordova-plugin-queries-schemes",
+  "_where": "/Users/godson/projects/field-technician/mobileApp/node_modules",
+  "author": {
+    "name": "Rob Hilgefort",
+    "email": "rjhilgefort@gmail.com",
+    "url": "http://rob.hilgefort.me"
+  },
+  "bugs": {
+    "url": "https://github.com/rjhilgefort/cordova-plugin-queries-schemes/issues"
+  },
+  "bundleDependencies": false,
+  "cordova": {
+    "id": "cordova-plugin-queries-schemes",
+    "platforms": [
+      "ios"
+    ]
+  },
+  "deprecated": false,
+  "description": "Cordova / PhoneGap Plugin to work arround Apple's iOS9 requirement that URL Schemes be declared and submitted to Apple (via Info.plist file).",
+  "engines": [
+    {
+      "name": "cordova",
+      "version": ">=3.0.0"
+    }
+  ],
+  "homepage": "https://github.com/rjhilgefort/cordova-plugin-queries-schemes#readme",
+  "keywords": [
+    "cordova",
+    "ios",
+    "app",
+    "queries",
+    "url",
+    "schemes",
+    "lsapplicationqueriesschemes",
+    "ecosystem:cordova",
+    "cordova-ios"
+  ],
+  "license": "MIT",
+  "name": "cordova-plugin-queries-schemes",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rjhilgefort/cordova-plugin-queries-schemes.git"
+  },
+  "version": "0.1.5"
+}

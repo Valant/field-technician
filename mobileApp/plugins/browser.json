@@ -1,0 +1,61 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {
+        "com.phonegap.plugins.barcodescanner": {
+            "PACKAGE_NAME": "com.fieldtechnicianafa.app"
+        },
+        "cordova-plugin-screen-orientation": {
+            "PACKAGE_NAME": "com.fieldtechnicianafa.app"
+        },
+        "cordova-plugin-touch-id": {
+            "PACKAGE_NAME": "com.fieldtechnicianafa.app"
+        },
+        "org.apache.cordova.dialogs": {
+            "PACKAGE_NAME": "com.fieldtechnicianafa.app"
+        },
+        "cordova-plugin-app-launcher": {
+            "PACKAGE_NAME": "com.fieldtechnicianafa.app"
+        },
+        "cordova-plugin-queries-schemes": {
+            "PACKAGE_NAME": "com.fieldtechnicianafa.app"
+        }
+    },
+    "dependent_plugins": {
+        "com.hutchind.cordova.plugins.launcher": {
+            "PACKAGE_NAME": "com.fieldtechnicianafa.app"
+        },
+        "org.apache.cordova.camera": {
+            "PACKAGE_NAME": "com.fieldtechnicianafa.app"
+        },
+        "org.apache.cordova.console": {
+            "PACKAGE_NAME": "com.fieldtechnicianafa.app"
+        },
+        "org.apache.cordova.device": {
+            "PACKAGE_NAME": "com.fieldtechnicianafa.app"
+        },
+        "org.apache.cordova.file": {
+            "PACKAGE_NAME": "com.fieldtechnicianafa.app"
+        },
+        "org.apache.cordova.file-transfer": {
+            "PACKAGE_NAME": "com.fieldtechnicianafa.app"
+        },
+        "org.apache.cordova.inappbrowser": {
+            "PACKAGE_NAME": "com.fieldtechnicianafa.app"
+        },
+        "org.apache.cordova.statusbar": {
+            "PACKAGE_NAME": "com.fieldtechnicianafa.app"
+        },
+        "org.apache.cordova.vibration": {
+            "PACKAGE_NAME": "com.fieldtechnicianafa.app"
+        },
+        "phonegap.plugins.iosnumpad": {
+            "PACKAGE_NAME": "com.fieldtechnicianafa.app"
+        }
+    }
+}

@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>GET api/dispatch/{id}/{option}</title>
+    <link href="GET%20api_dispatch_%7Bid%7D_%7Boption%7D_files/css.htm" rel="stylesheet" type="text/css">
+    
+    
+    <style>
+        body {
+            margin: 20px;           
+        }
+    </style>
+</head>
+<body>
+    <img src="GET%20api_dispatch_%7Bid%7D_%7Boption%7D_files/logo.png" alt="SedonaAPI">
+    
+
+<link type="text/css" href="GET%20api_dispatch_%7Bid%7D_%7Boption%7D_files/HelpPage.css" rel="stylesheet">
+<div id="body" class="help-page">
+    <section class="featured">
+        <div class="content-wrapper">
+            <p>
+                <a href="http://sedonaapi.afap.com/Help">Help Page Home</a>
+            </p>
+        </div>
+    </section>
+    <section class="content-wrapper main-content clear-fix">
+        
+<h1>GET api/dispatch/{id}/{option}</h1>
+<div>
+    <p></p>
+
+    <h2>Request Information</h2>
+
+    <h3>URI Parameters</h3>
+        <table class="help-page-table">
+        <thead>
+            <tr><th>Name</th><th>Description</th><th>Type</th><th>Additional information</th></tr>
+        </thead>
+        <tbody>
+                <tr>
+                    <td class="parameter-name">id</td>
+                    <td class="parameter-documentation">
+                        <p></p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                                <p>Required</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">option</td>
+                    <td class="parameter-documentation">
+                        <p></p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                                <p>Required</p>
+                    </td>
+                </tr>
+        </tbody>
+    </table>
+
+
+
+    <h3>Body Parameters</h3>
+
+    <p></p>
+
+        <p>None.</p>
+
+
+    <h2>Response Information</h2>
+
+    <h3>Resource Description</h3>
+
+    <p></p>
+
+        Collection of <a href="http://sedonaapi.afap.com/Help/ResourceModel?modelName=Dispatch">Dispatch</a>
+    <table class="help-page-table">
+        <thead>
+            <tr><th>Name</th><th>Description</th><th>Type</th><th>Additional information</th></tr>
+        </thead>
+        <tbody>
+                <tr>
+                    <td class="parameter-name">Dispatch_Id</td>
+                    <td class="parameter-documentation">
+                        <p></p>
+                    </td>
+                    <td class="parameter-type">
+                        integer
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">Dispatch_Type</td>
+                    <td class="parameter-documentation">
+                        <p></p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">Reference</td>
+                    <td class="parameter-documentation">
+                        <p></p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">Status</td>
+                    <td class="parameter-documentation">
+                        <p></p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">Description</td>
+                    <td class="parameter-documentation">
+                        <p></p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">Service_Technician</td>
+                    <td class="parameter-documentation">
+                        <p></p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">Schedule_Time</td>
+                    <td class="parameter-documentation">
+                        <p></p>
+                    </td>
+                    <td class="parameter-type">
+                        date
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">Dispatch_Time</td>
+                    <td class="parameter-documentation">
+                        <p></p>
+                    </td>
+                    <td class="parameter-type">
+                        date
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">Arrival_Time</td>
+                    <td class="parameter-documentation">
+                        <p></p>
+                    </td>
+                    <td class="parameter-type">
+                        date
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">Departure_Time</td>
+                    <td class="parameter-documentation">
+                        <p></p>
+                    </td>
+                    <td class="parameter-type">
+                        date
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">Estimated_Length</td>
+                    <td class="parameter-documentation">
+                        <p></p>
+                    </td>
+                    <td class="parameter-type">
+                        integer
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">SiteName</td>
+                    <td class="parameter-documentation">
+                        <p></p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">Address_1</td>
+                    <td class="parameter-documentation">
+                        <p></p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">Address_2</td>
+                    <td class="parameter-documentation">
+                        <p></p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">Address_3</td>
+                    <td class="parameter-documentation">
+                        <p></p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">City</td>
+                    <td class="parameter-documentation">
+                        <p></p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">State</td>
+                    <td class="parameter-documentation">
+                        <p></p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">Zip_Code</td>
+                    <td class="parameter-documentation">
+                        <p></p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">Job_Task</td>
+                    <td class="parameter-documentation">
+                        <p></p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">Complete</td>
+                    <td class="parameter-documentation">
+                        <p></p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">Ticket_Priority</td>
+                    <td class="parameter-documentation">
+                        <p></p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">Ticket_GoBack</td>
+                    <td class="parameter-documentation">
+                        <p></p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">Resolution_Code</td>
+                    <td class="parameter-documentation">
+                        <p></p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">Ticket_Resolution_Note</td>
+                    <td class="parameter-documentation">
+                        <p></p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+        </tbody>
+    </table>
+
+
+        <h3>Response Formats</h3>
+
+<div>
+        <h4 class="sample-header">application/json, text/json</h4>
+        <div class="sample-content">
+            <span><b>Sample:</b></span>
+<pre class="wrapped">[
+  {
+    "Dispatch_Id": 1,
+    "Dispatch_Type": "sample string 2",
+    "Reference": "sample string 3",
+    "Status": "sample string 4",
+    "Description": "sample string 5",
+    "Service_Technician": "sample string 6",
+    "Schedule_Time": "2015-12-08T08:45:49.3759219-05:00",
+    "Dispatch_Time": "2015-12-08T08:45:49.3759219-05:00",
+    "Arrival_Time": "2015-12-08T08:45:49.3768985-05:00",
+    "Departure_Time": "2015-12-08T08:45:49.3768985-05:00",
+    "Estimated_Length": 11,
+    "SiteName": "sample string 12",
+    "Address_1": "sample string 13",
+    "Address_2": "sample string 14",
+    "Address_3": "sample string 15",
+    "City": "sample string 16",
+    "State": "sample string 17",
+    "Zip_Code": "sample string 18",
+    "Job_Task": "sample string 19",
+    "Complete": "sample string 20",
+    "Ticket_Priority": "sample string 21",
+    "Ticket_GoBack": "sample string 22",
+    "Resolution_Code": "sample string 23",
+    "Ticket_Resolution_Note": "sample string 24"
+  },
+  {
+    "Dispatch_Id": 1,
+    "Dispatch_Type": "sample string 2",
+    "Reference": "sample string 3",
+    "Status": "sample string 4",
+    "Description": "sample string 5",
+    "Service_Technician": "sample string 6",
+    "Schedule_Time": "2015-12-08T08:45:49.3759219-05:00",
+    "Dispatch_Time": "2015-12-08T08:45:49.3759219-05:00",
+    "Arrival_Time": "2015-12-08T08:45:49.3768985-05:00",
+    "Departure_Time": "2015-12-08T08:45:49.3768985-05:00",
+    "Estimated_Length": 11,
+    "SiteName": "sample string 12",
+    "Address_1": "sample string 13",
+    "Address_2": "sample string 14",
+    "Address_3": "sample string 15",
+    "City": "sample string 16",
+    "State": "sample string 17",
+    "Zip_Code": "sample string 18",
+    "Job_Task": "sample string 19",
+    "Complete": "sample string 20",
+    "Ticket_Priority": "sample string 21",
+    "Ticket_GoBack": "sample string 22",
+    "Resolution_Code": "sample string 23",
+    "Ticket_Resolution_Note": "sample string 24"
+  }
+]
+</pre>
+        </div>
+        <h4 class="sample-header">application/xml, text/xml</h4>
+        <div class="sample-content">
+            <span><b>Sample:</b></span>
+<pre class="wrapped">&lt;ArrayOfDispatch xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/SedonaServices.Models"&gt;
+  &lt;Dispatch&gt;
+    &lt;Address_1&gt;sample string 13&lt;/Address_1&gt;
+    &lt;Address_2&gt;sample string 14&lt;/Address_2&gt;
+    &lt;Address_3&gt;sample string 15&lt;/Address_3&gt;
+    &lt;Arrival_Time&gt;2015-12-08T08:45:49.3768985-05:00&lt;/Arrival_Time&gt;
+    &lt;City&gt;sample string 16&lt;/City&gt;
+    &lt;Complete&gt;sample string 20&lt;/Complete&gt;
+    &lt;Departure_Time&gt;2015-12-08T08:45:49.3768985-05:00&lt;/Departure_Time&gt;
+    &lt;Description&gt;sample string 5&lt;/Description&gt;
+    &lt;Dispatch_Id&gt;1&lt;/Dispatch_Id&gt;
+    &lt;Dispatch_Time&gt;2015-12-08T08:45:49.3759219-05:00&lt;/Dispatch_Time&gt;
+    &lt;Dispatch_Type&gt;sample string 2&lt;/Dispatch_Type&gt;
+    &lt;Estimated_Length&gt;11&lt;/Estimated_Length&gt;
+    &lt;Job_Task&gt;sample string 19&lt;/Job_Task&gt;
+    &lt;Reference&gt;sample string 3&lt;/Reference&gt;
+    &lt;Resolution_Code&gt;sample string 23&lt;/Resolution_Code&gt;
+    &lt;Schedule_Time&gt;2015-12-08T08:45:49.3759219-05:00&lt;/Schedule_Time&gt;
+    &lt;Service_Technician&gt;sample string 6&lt;/Service_Technician&gt;
+    &lt;SiteName&gt;sample string 12&lt;/SiteName&gt;
+    &lt;State&gt;sample string 17&lt;/State&gt;
+    &lt;Status&gt;sample string 4&lt;/Status&gt;
+    &lt;Ticket_GoBack&gt;sample string 22&lt;/Ticket_GoBack&gt;
+    &lt;Ticket_Priority&gt;sample string 21&lt;/Ticket_Priority&gt;
+    &lt;Ticket_Resolution_Note&gt;sample string 24&lt;/Ticket_Resolution_Note&gt;
+    &lt;Zip_Code&gt;sample string 18&lt;/Zip_Code&gt;
+  &lt;/Dispatch&gt;
+  &lt;Dispatch&gt;
+    &lt;Address_1&gt;sample string 13&lt;/Address_1&gt;
+    &lt;Address_2&gt;sample string 14&lt;/Address_2&gt;
+    &lt;Address_3&gt;sample string 15&lt;/Address_3&gt;
+    &lt;Arrival_Time&gt;2015-12-08T08:45:49.3768985-05:00&lt;/Arrival_Time&gt;
+    &lt;City&gt;sample string 16&lt;/City&gt;
+    &lt;Complete&gt;sample string 20&lt;/Complete&gt;
+    &lt;Departure_Time&gt;2015-12-08T08:45:49.3768985-05:00&lt;/Departure_Time&gt;
+    &lt;Description&gt;sample string 5&lt;/Description&gt;
+    &lt;Dispatch_Id&gt;1&lt;/Dispatch_Id&gt;
+    &lt;Dispatch_Time&gt;2015-12-08T08:45:49.3759219-05:00&lt;/Dispatch_Time&gt;
+    &lt;Dispatch_Type&gt;sample string 2&lt;/Dispatch_Type&gt;
+    &lt;Estimated_Length&gt;11&lt;/Estimated_Length&gt;
+    &lt;Job_Task&gt;sample string 19&lt;/Job_Task&gt;
+    &lt;Reference&gt;sample string 3&lt;/Reference&gt;
+    &lt;Resolution_Code&gt;sample string 23&lt;/Resolution_Code&gt;
+    &lt;Schedule_Time&gt;2015-12-08T08:45:49.3759219-05:00&lt;/Schedule_Time&gt;
+    &lt;Service_Technician&gt;sample string 6&lt;/Service_Technician&gt;
+    &lt;SiteName&gt;sample string 12&lt;/SiteName&gt;
+    &lt;State&gt;sample string 17&lt;/State&gt;
+    &lt;Status&gt;sample string 4&lt;/Status&gt;
+    &lt;Ticket_GoBack&gt;sample string 22&lt;/Ticket_GoBack&gt;
+    &lt;Ticket_Priority&gt;sample string 21&lt;/Ticket_Priority&gt;
+    &lt;Ticket_Resolution_Note&gt;sample string 24&lt;/Ticket_Resolution_Note&gt;
+    &lt;Zip_Code&gt;sample string 18&lt;/Zip_Code&gt;
+  &lt;/Dispatch&gt;
+&lt;/ArrayOfDispatch&gt;
+</pre>
+        </div>
+</div>
+</div>
+    </section>
+</div>
+
+
+</body></html>

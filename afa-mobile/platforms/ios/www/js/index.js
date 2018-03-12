@@ -25,7 +25,7 @@ var app = {
     needToUpload: 0,
 //     apiUrl: 'http://api.field-technician.loc/',
 //     apiUrl: 'http://ftapi.afap.com/',
-    apiUrl: 'http://ftapitest.afap.com/',
+    apiUrl: 'http://ftapibeta.afap.com/',
     user_id: 0,
     user_code: '',
     service_tech_code: '',

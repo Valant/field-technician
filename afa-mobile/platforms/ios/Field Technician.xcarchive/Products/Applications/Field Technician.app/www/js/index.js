@@ -25,7 +25,7 @@ var app = {
     needToUpload: 0,
 //     apiUrl: 'http://api.field-technician.loc/',
 //     apiUrl: 'http://ftapi.afap.com/',
-    apiUrl: 'http://ftapitest.afap.com/',
+    apiUrl: 'http://ftapibeta.afap.com/',
     user_id: 0,
     user_code: '',
     service_tech_code: '',
@@ -75,10 +75,10 @@ var app = {
             StatusBar.overlaysWebView( false );
             this.prepareDB();
         }
-        mobile_prompt = navigator.notification.prompt;
-        if ('android' != cordova.platformId && undefined != window.plugins.iosNumpad) {
-            mobile_prompt = window.plugins.iosNumpad.prompt;
-        }
+//        var mobile_prompt = navigator.notification.prompt;
+//        if ('android' != cordova.platformId && undefined != window.plugins.iosNumpad) {
+//            mobile_prompt = window.plugins.pinDialog.prompt;
+//        }
 
         console.log( 'Received Event: ' + id );
     },
@@ -447,7 +447,7 @@ var app = {
     addPartToTicket: function ( data )
     {
         app.resetTimer();
-        mobile_prompt(
+        window.plugins.pinDialog.prompt(
             'Please enter quantity',  // message
             function ( results )
             {
@@ -1040,7 +1040,7 @@ var app = {
     },
     changePartQuantity: function(Service_Ticket_Part_Id, part_id, currentQuantity, partCode, partDescription){
         app.resetTimer();
-        mobile_prompt(
+        window.plugins.pinDialog.prompt(
             'Please enter total quantity for '+ partCode + ' '+ partDescription,  // message
             function ( results )
             {

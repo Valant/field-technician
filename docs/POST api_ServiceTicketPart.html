@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<!-- saved from url=(0061)http://sedonaapi.afap.com/Help/Api/POST-api-ServiceTicketPart -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>POST api/ServiceTicketPart</title>
+    <link href="./POST api_ServiceTicketPart_files/css" rel="stylesheet" type="text/css">
+    
+    
+    <style>
+        body {
+            margin: 20px;           
+        }
+    </style>
+</head>
+<body>
+    <img src="./POST api_ServiceTicketPart_files/logo.png" alt="SedonaAPI">
+    
+
+<link type="text/css" href="./POST api_ServiceTicketPart_files/HelpPage.css" rel="stylesheet">
+<div id="body" class="help-page">
+    <section class="featured">
+        <div class="content-wrapper">
+            <p>
+                <a href="http://sedonaapi.afap.com/Help">Help Page Home</a>
+            </p>
+        </div>
+    </section>
+    <section class="content-wrapper main-content clear-fix">
+        
+<h1>POST api/ServiceTicketPart</h1>
+<div>
+    <p>Creates a Service Ticket Part</p>
+
+    <h2>Request Information</h2>
+
+    <h3>URI Parameters</h3>
+        <p>None.</p>
+
+
+
+    <h3>Body Parameters</h3>
+
+    <p></p>
+
+<a href="http://sedonaapi.afap.com/Help/ResourceModel?modelName=ServiceTicketPart">ServiceTicketPart</a>    <table class="help-page-table">
+        <thead>
+            <tr><th>Name</th><th>Description</th><th>Type</th><th>Additional information</th></tr>
+        </thead>
+        <tbody>
+                <tr>
+                    <td class="parameter-name">ServiceTicketPartId</td>
+                    <td class="parameter-documentation">
+                        <p>Sedona internal autonumber for the SV_Service_Ticket_Parts record (assigned automatically on POST)</p>
+                    </td>
+                    <td class="parameter-type">
+                        integer
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">ServiceTicketNumber</td>
+                    <td class="parameter-documentation">
+                        <p>Service Ticket Number from SV_Service_Ticket table</p>
+                    </td>
+                    <td class="parameter-type">
+                        integer
+                    </td>
+                    <td class="parameter-annotations">
+                                <p>Required</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">PartCode</td>
+                    <td class="parameter-documentation">
+                        <p>Abbreviated Part_Code, from IN_Part table</p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                                <p>Required</p>
+                                <p>String length: inclusive between 0 and 25</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">Quantity</td>
+                    <td class="parameter-documentation">
+                        <p>Quantity of the Part</p>
+                    </td>
+                    <td class="parameter-type">
+                        decimal number
+                    </td>
+                    <td class="parameter-annotations">
+                                <p>Required</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">Rate</td>
+                    <td class="parameter-documentation">
+                        <p>Rate</p>
+                    </td>
+                    <td class="parameter-type">
+                        decimal number
+                    </td>
+                    <td class="parameter-annotations">
+                                <p>Required</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">Location</td>
+                    <td class="parameter-documentation">
+                        <p>Location; can be blank</p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">ServiceTechCode</td>
+                    <td class="parameter-documentation">
+                        <p>Employee_Code from SY_Employee table; defaults to N/A if not supplied</p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">FromStock</td>
+                    <td class="parameter-documentation">
+                        <p>Defaults to False if not supplied</p>
+                    </td>
+                    <td class="parameter-type">
+                        boolean
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">SerialNumber</td>
+                    <td class="parameter-documentation">
+                        <p>Serial Number for this part</p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                                <p>String length: inclusive between 0 and 50</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">LotNumber</td>
+                    <td class="parameter-documentation">
+                        <p>Lot Number for this part</p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                                <p>String length: inclusive between 0 and 50</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">WarehouseCode</td>
+                    <td class="parameter-documentation">
+                        <p>value from IN_Warehouse; setting this will relieve inventory (if specified, part must have inventory in this Warehouse); defaults to N/A if not supplied</p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+        </tbody>
+    </table>
+
+
+        <h3>Request Formats</h3>
+
+<div>
+        <h4 class="sample-header">application/json, text/json</h4>
+        <div class="sample-content">
+            <span><b>Sample:</b></span>
+<pre class="wrapped">{
+  "ServiceTicketPartId": 1,
+  "ServiceTicketNumber": 2,
+  "PartCode": "sample string 3",
+  "Quantity": 1.1,
+  "Rate": 4.0,
+  "Location": "sample string 5",
+  "ServiceTechCode": "sample string 6",
+  "FromStock": true,
+  "SerialNumber": "sample string 7",
+  "LotNumber": "sample string 8",
+  "WarehouseCode": "sample string 9"
+}
+</pre>
+        </div>
+        <h4 class="sample-header">application/xml, text/xml</h4>
+        <div class="sample-content">
+            <span><b>Sample:</b></span>
+<pre class="wrapped">&lt;ServiceTicketPart xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/SedonaServices.Models"&gt;
+  &lt;FromStock&gt;true&lt;/FromStock&gt;
+  &lt;Location&gt;sample string 5&lt;/Location&gt;
+  &lt;LotNumber&gt;sample string 8&lt;/LotNumber&gt;
+  &lt;PartCode&gt;sample string 3&lt;/PartCode&gt;
+  &lt;Quantity&gt;1.1&lt;/Quantity&gt;
+  &lt;Rate&gt;4&lt;/Rate&gt;
+  &lt;SerialNumber&gt;sample string 7&lt;/SerialNumber&gt;
+  &lt;ServiceTechCode&gt;sample string 6&lt;/ServiceTechCode&gt;
+  &lt;ServiceTicketNumber&gt;2&lt;/ServiceTicketNumber&gt;
+  &lt;ServiceTicketPartId&gt;1&lt;/ServiceTicketPartId&gt;
+  &lt;WarehouseCode&gt;sample string 9&lt;/WarehouseCode&gt;
+&lt;/ServiceTicketPart&gt;
+</pre>
+        </div>
+        <h4 class="sample-header">application/x-www-form-urlencoded</h4>
+        <div class="sample-content">
+            <span><b>Sample:</b></span>
+    <div class="warning-message-container">
+        <p>Failed to generate the sample for media type 'application/x-www-form-urlencoded'. Cannot use formatter 'JQueryMvcFormUrlEncodedFormatter' to write type 'ServiceTicketPart'.</p>
+    </div>
+
+        </div>
+</div>
+    <h2>Response Information</h2>
+
+    <h3>Resource Description</h3>
+
+    <p></p>
+
+<a href="http://sedonaapi.afap.com/Help/ResourceModel?modelName=ServiceTicketPart">ServiceTicketPart</a>    <table class="help-page-table">
+        <thead>
+            <tr><th>Name</th><th>Description</th><th>Type</th><th>Additional information</th></tr>
+        </thead>
+        <tbody>
+                <tr>
+                    <td class="parameter-name">ServiceTicketPartId</td>
+                    <td class="parameter-documentation">
+                        <p>Sedona internal autonumber for the SV_Service_Ticket_Parts record (assigned automatically on POST)</p>
+                    </td>
+                    <td class="parameter-type">
+                        integer
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">ServiceTicketNumber</td>
+                    <td class="parameter-documentation">
+                        <p>Service Ticket Number from SV_Service_Ticket table</p>
+                    </td>
+                    <td class="parameter-type">
+                        integer
+                    </td>
+                    <td class="parameter-annotations">
+                                <p>Required</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">PartCode</td>
+                    <td class="parameter-documentation">
+                        <p>Abbreviated Part_Code, from IN_Part table</p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                                <p>Required</p>
+                                <p>String length: inclusive between 0 and 25</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">Quantity</td>
+                    <td class="parameter-documentation">
+                        <p>Quantity of the Part</p>
+                    </td>
+                    <td class="parameter-type">
+                        decimal number
+                    </td>
+                    <td class="parameter-annotations">
+                                <p>Required</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">Rate</td>
+                    <td class="parameter-documentation">
+                        <p>Rate</p>
+                    </td>
+                    <td class="parameter-type">
+                        decimal number
+                    </td>
+                    <td class="parameter-annotations">
+                                <p>Required</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">Location</td>
+                    <td class="parameter-documentation">
+                        <p>Location; can be blank</p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">ServiceTechCode</td>
+                    <td class="parameter-documentation">
+                        <p>Employee_Code from SY_Employee table; defaults to N/A if not supplied</p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">FromStock</td>
+                    <td class="parameter-documentation">
+                        <p>Defaults to False if not supplied</p>
+                    </td>
+                    <td class="parameter-type">
+                        boolean
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">SerialNumber</td>
+                    <td class="parameter-documentation">
+                        <p>Serial Number for this part</p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                                <p>String length: inclusive between 0 and 50</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">LotNumber</td>
+                    <td class="parameter-documentation">
+                        <p>Lot Number for this part</p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                                <p>String length: inclusive between 0 and 50</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parameter-name">WarehouseCode</td>
+                    <td class="parameter-documentation">
+                        <p>value from IN_Warehouse; setting this will relieve inventory (if specified, part must have inventory in this Warehouse); defaults to N/A if not supplied</p>
+                    </td>
+                    <td class="parameter-type">
+                        string
+                    </td>
+                    <td class="parameter-annotations">
+                            <p>None.</p>
+                    </td>
+                </tr>
+        </tbody>
+    </table>
+
+
+        <h3>Response Formats</h3>
+
+<div>
+        <h4 class="sample-header">application/json, text/json</h4>
+        <div class="sample-content">
+            <span><b>Sample:</b></span>
+<pre class="wrapped">{
+  "ServiceTicketPartId": 1,
+  "ServiceTicketNumber": 2,
+  "PartCode": "sample string 3",
+  "Quantity": 1.1,
+  "Rate": 4.0,
+  "Location": "sample string 5",
+  "ServiceTechCode": "sample string 6",
+  "FromStock": true,
+  "SerialNumber": "sample string 7",
+  "LotNumber": "sample string 8",
+  "WarehouseCode": "sample string 9"
+}
+</pre>
+        </div>
+        <h4 class="sample-header">application/xml, text/xml</h4>
+        <div class="sample-content">
+            <span><b>Sample:</b></span>
+<pre class="wrapped">&lt;ServiceTicketPart xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/SedonaServices.Models"&gt;
+  &lt;FromStock&gt;true&lt;/FromStock&gt;
+  &lt;Location&gt;sample string 5&lt;/Location&gt;
+  &lt;LotNumber&gt;sample string 8&lt;/LotNumber&gt;
+  &lt;PartCode&gt;sample string 3&lt;/PartCode&gt;
+  &lt;Quantity&gt;1.1&lt;/Quantity&gt;
+  &lt;Rate&gt;4&lt;/Rate&gt;
+  &lt;SerialNumber&gt;sample string 7&lt;/SerialNumber&gt;
+  &lt;ServiceTechCode&gt;sample string 6&lt;/ServiceTechCode&gt;
+  &lt;ServiceTicketNumber&gt;2&lt;/ServiceTicketNumber&gt;
+  &lt;ServiceTicketPartId&gt;1&lt;/ServiceTicketPartId&gt;
+  &lt;WarehouseCode&gt;sample string 9&lt;/WarehouseCode&gt;
+&lt;/ServiceTicketPart&gt;
+</pre>
+        </div>
+</div>
+</div>
+    </section>
+</div>
+
+
+</body></html>
