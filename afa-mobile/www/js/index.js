@@ -1132,6 +1132,7 @@ var app = {
                                       '</li>';
                     }
                     $("#partsholder").append(collHolder);
+                    $("#partsholder").trigger('create');
                     $("#partsholder").listview('refresh');
 
                     // for (var i in data) {
