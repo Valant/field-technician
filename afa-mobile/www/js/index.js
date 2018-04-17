@@ -1018,7 +1018,7 @@ var app = {
                 if (data) {
                     for (var i in data) {
                         app.usedParts[data[i].part.Part_Id] = data[i].Quantity;
-                        if(data[i].Service_Tech_Id == app.user_id) {
+                        // if(data[i].Service_Tech_Id == app.user_id) {
                             $('#parts').append('<li id="part' + data[i].part.Part_Id + '">' +
                                 '<a data-inline="true" onclick="app.changePartQuantity(' + data[i].Service_Ticket_Part_Id + ',' + data[i].part.Part_Id + ',' + data[i].Quantity + ',\'' + data[i].part.Part_Code + '\',\'' + htmlEncode(
                                     data[i].part.Description) + '\'); return false;">'
@@ -1027,10 +1027,11 @@ var app = {
                                 '</a>' +
                                 '<a onclick="app.removePart(' + data[i].part.Part_Id + ', ' + data[i].Quantity + ',' + data[i].Service_Ticket_Part_Id + ')" class="delete">Delete</a>' +
                                 '</li>');
-                        }else{
-                            $('#parts').append('<li data-icon="false" id="part' + data[i].part.Part_Id + '"><a data-inline="true">' + data[i].part.Part_Code + ' ' + data[i].part.Description +'<span class="ui-li-count" >' + data[i].Quantity + '</span></a></li>');
-                        }
+                        // }else{
+                        //     $('#parts').append('<li data-icon="false" id="part' + data[i].part.Part_Id + '"><a data-inline="true">' + data[i].part.Part_Code + ' ' + data[i].part.Description +'<span class="ui-li-count" >' + data[i].Quantity + '</span></a></li>');
+                        // }
                     }
+                    $( '#parts' ).listview( 'refresh' );
                     $( '#parts:visible' ).listview( 'refresh' );
                 }
             }.bind( this ) );
