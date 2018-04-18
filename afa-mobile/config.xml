@@ -110,4 +110,5 @@
         <variable name="CAMERA_USAGE_DESCRIPTION" value=" " />
     </plugin>
     <plugin name="cordova-plugin-pin-dialog" spec="git+https://github.com/Paldom/PinDialog.git" />
+    <plugin name="cordova-plugin-file-transfer" spec="^1.7.1" />
 </widget>
