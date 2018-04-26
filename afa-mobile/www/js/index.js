@@ -1155,6 +1155,10 @@ var app = {
                     //     }
                     // }
                     // $( '#parts:visible' ).listview( 'refresh' );
+
+
+                    $( '#partsholder' ).listview( 'refresh' );
+                    $( '#partsholder:visible' ).listview( 'refresh' );
                 }
             }.bind( this ) );
         }

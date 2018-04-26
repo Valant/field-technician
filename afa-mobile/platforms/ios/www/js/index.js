@@ -1098,6 +1098,8 @@ var app = {
 
                     console.log("NEW DATA: ", newData);
 
+
+
                     for (var k in newData) {
                         var collHolder = '<li data-role="collapsible" data-iconpos="right" ';
                         if(k == app.user_warehouse_id) {
@@ -1130,9 +1132,12 @@ var app = {
 
                         collHolder += '</ul>' +
                                       '</li>';
+
+                        $("#partsholder").append(collHolder);
+                        $("#partsholder").trigger('create');
+                        $("#partsholder").listview('refresh');
                     }
-                    $("#partsholder").append(collHolder);
-                    $("#partsholder").listview('refresh');
+
 
                     // for (var i in data) {
                     //     app.usedParts[data[i].part.Part_Id] = data[i].Quantity;
@@ -1150,6 +1155,10 @@ var app = {
                     //     }
                     // }
                     // $( '#parts:visible' ).listview( 'refresh' );
+
+
+                    $( '#partsholder' ).listview( 'refresh' );
+                    $( '#partsholder:visible' ).listview( 'refresh' );
                 }
             }.bind( this ) );
         }
