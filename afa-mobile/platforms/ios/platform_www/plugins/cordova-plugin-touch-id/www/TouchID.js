@@ -32,4 +32,5 @@ TouchID.install = function () {
 };
 
 cordova.addConstructor(TouchID.install);
+
 });

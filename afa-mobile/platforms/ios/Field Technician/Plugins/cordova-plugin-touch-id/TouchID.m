@@ -22,7 +22,13 @@ NSString *keychainItemServiceName;
     LAContext *laContext = [[LAContext alloc] init];
 
     if ([laContext canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&error]) {
-      [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK]
+      NSString *biometryType = @"touch";
+      if (@available(iOS 11.0, *)) {
+        if (laContext.biometryType == LABiometryTypeFaceID) {
+          biometryType = @"face";
+        }
+      }
+      [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:biometryType]
                                   callbackId:command.callbackId];
     } else {
       NSArray *errorKeys = @[@"code", @"localizedDescription"];
