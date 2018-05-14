@@ -17,7 +17,7 @@
  * under the License.
  */
 var app = {
-    version: '0.15.1',
+    version: '0.15.2',
     db: false,
     task_id: false,
     dispatch_id: false,
@@ -238,6 +238,7 @@ var app = {
         {
             if (data.user) {
                 console.log( 'user login [OK]' );
+                console.log("USER DATA: ", data);
                 app.user_data = data.user;
                 window.localStorage.setItem( 'tech_id', data.user.technition_id );
                 window.localStorage.setItem( 'user_id', data.user.id );
@@ -553,6 +554,8 @@ var app = {
                         $.mobile.silentScroll( $( '#parts' ).offset().top );
 //                        app.uploadTaskData();
                         $.mobile.loading( 'hide' );
+                        app.showTaskDetail(app.task_id, app.dispatch_id);
+
                     });
                 }
             }.bind( this ),                  // callback to invoke
@@ -1332,7 +1335,7 @@ var app = {
         var notesListHolder = jQuery("#taskNotesList");
         notesListHolder.empty();
         $.each( data, function ( index, value ){
-            notesListHolder.append("<p><span class='noteAuthor'>"+value.user.fullname+" at "+moment(value.Entered_Date, 'MMM DD YYYY HH:mm:ss0A' ).format( 'MM/DD/YYYY HH:mm:ss0A' )+"</span></br>"+value.Notes+"</p>")
+            notesListHolder.append("<p><span class='noteAuthor'>"+value.user.fullname+" at "+moment(value.Entered_Date, 'MMM DD YYYY HH:mm:ss0A' ).format( 'MM/DD/YYYY HH:mm A' )+"</span></br>"+value.Notes+"</p>")
         });
     },
     clearTask: function ()
@@ -1636,6 +1639,7 @@ var app = {
             } else {
                 window.localStorage.clear();
                 $.mobile.navigate( '#signin' );
+                // app.logout();
             }
         }
         else {
@@ -1671,6 +1675,7 @@ var app = {
                     } ).always(function(){
                         delete app.usedParts[app.part_to_delete];
                         $( '#part' + app.part_to_delete ).remove();
+                        app.showTaskDetail(app.task_id, app.dispatch_id);
                         $.mobile.loading( 'hide' );
                     })
 
@@ -2020,13 +2025,15 @@ var app = {
         } ).then(function(data){
             $.mobile.loading( 'hide' );
             app.showTasksList();
-            app.logout();
             navigator.notification.alert(
                 'Please log in again when you are ready for your next ticket',  // message
-                false,         // callback
+                function(){
+                    app.logout();
+                },         // callback
                 'Ticket Complete',            // title
                 'OK'                  // buttonName
             );
+
         });
     },
     showTasksList: function(){
@@ -2096,7 +2103,8 @@ var app = {
 
                 var notesListHolder = jQuery("#taskNotesList");
 
-                notesListHolder.append("<p><span>"+app.user_data.servicetechcode+" at "+moment().format( 'YYYY-MM-DD HH:mm:ss' )+"</span></br>"+jQuery("#note").val()+"</p>")
+                notesListHolder.append("<p><span class='noteAuthor'>"+app.user_data.servicetechcode+" at "+moment().format( 'MM/DD/YYYY HH:mm A' )+"</span></br>"+jQuery("#note").val()+"</p>");
+                // notesListHolder.append("<p><span class='noteAuthor'>"+app.user_data.servicetechcode+" at "+moment().format( 'YYYY-MM-DD HH:mm:ss' )+"</span></br>"+jQuery("#note").val()+"</p>")
 
 
                 $.mobile.loading('hide');
