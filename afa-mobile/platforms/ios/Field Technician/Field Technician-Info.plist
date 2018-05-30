@@ -25,7 +25,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>181</string>
+	<string>183</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -34,19 +34,21 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string></string>
+	<string>Take a Photo</string>
 	<key>NSFaceIDUsageDescription</key>
-	<string></string>
+	<string>Auto login</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Authorize</string>
 	<key>NSMainNibFile</key>
 	<string></string>
 	<key>NSMainNibFile~ipad</key>
 	<string></string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string></string>
+	<string>Check volume</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Upload photo</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string></string>
+	<string>Upload photo</string>
 	<key>UIRequiresFullScreen</key>
 	<true/>
 	<key>UISupportedInterfaceOrientations</key>
