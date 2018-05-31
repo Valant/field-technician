@@ -1083,7 +1083,7 @@ var app = {
 
             jQuery.getJSON( app.apiUrl + '/taskpart/search', {
                 'Service_Ticket_Id': app.task_id,
-                'expand': 'part',
+                'expand': 'part,warehouse',
                 'access-token': app.access_token,
                 'per-page': 100
             }, function ( data )
@@ -1093,10 +1093,11 @@ var app = {
 
                     var newData = [];
                     for (var i in data) {
-                        if(!newData[data[i].Warehouse_Id]){
-                            newData[data[i].Warehouse_Id] = [];
+                        if(!newData[data[i].warehouse.Warehouse_Code]){
+                            newData[data[i].warehouse.Warehouse_Code] = [];
                         }
-                        newData[data[i].Warehouse_Id].push(data[i]);
+                        data[i].warehouse_id = data[i].Warehouse_Id;
+                        newData[data[i].warehouse.Warehouse_Code].push(data[i]);
                     }
 
                     console.log("NEW DATA: ", newData);
@@ -1105,13 +1106,13 @@ var app = {
 
                     for (var k in newData) {
                         var collHolder = '<li data-role="collapsible" data-iconpos="right" ';
-                        if(k == app.user_warehouse_id) {
+                        if(newData[k].warehouse_id == app.user_warehouse_id) {
                             collHolder += ' data-collapsed="false" ';
                         }
                         collHolder += ' data-inset="false" >' +
                                          '<h2>' + k + '</h2>' +
                                          '<ul data-theme="c" ';
-                        if(k == app.user_warehouse_id) {
+                        if(newData[k].warehouse_id == app.user_warehouse_id) {
                             collHolder += ' id="parts" ';
                         }
                         collHolder += ' data-role="listview" data-inset="true" data-count-theme="c" data-split-icon="delete">';
