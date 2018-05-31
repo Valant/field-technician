@@ -94,7 +94,7 @@
 
         public function extraFields()
         {
-            return ['part'];
+            return ['part','warehouse'];
         }
 
         public function beforeSave($insert){
@@ -111,5 +111,9 @@
                 }
             }
             return parent::beforeSave($insert);
+        }
+
+	    public function getWarehouse(){
+		    return $this->hasOne( INWarehouse::className(), [ 'Warehouse_Id' => 'Warehouse_Id' ] );
         }
     }
